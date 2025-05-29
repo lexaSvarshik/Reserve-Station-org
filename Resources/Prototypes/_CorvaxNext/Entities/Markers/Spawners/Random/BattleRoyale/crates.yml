@@ -1,7 +1,7 @@
 - type: entity
   name: supply drop spawner
   description: BR issue
-  suffix: DO NOT MAP, Battle Royal
+  suffix: DO NOT MAP, Battle Royale
   id: RoyalCrateSupplyDropSpawner
   parent: MarkerBase
   components:

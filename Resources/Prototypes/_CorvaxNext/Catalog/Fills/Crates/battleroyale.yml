@@ -2,7 +2,7 @@
   id: RoyalCrateSupplyDrop
   name: supply drop
   description: Airdropped crate containing valuable battle equipment.
-  suffix: DO NOT MAP, Battle Royal
+  suffix: DO NOT MAP, Battle Royale
   parent: CratePirate
   components:
   - type: AmbientSound

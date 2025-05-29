@@ -3,7 +3,7 @@
   id: ClothingBackpackDuffelSyndicateBattleRoyalBundle
   name: syndicate royal survive bundle
   description: Contains everything you need to survive here.
-  suffix: DO NOT MAP, Battle Royal
+  suffix: DO NOT MAP, Battle Royale
   components:
   - type: StorageFill
     contents:

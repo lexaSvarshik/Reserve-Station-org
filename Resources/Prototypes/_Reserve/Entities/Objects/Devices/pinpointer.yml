@@ -1,7 +1,7 @@
 - type: entity
   name: safepointer
   description: A portable device that directs you toward salvation or death
-  suffix: DO NOT MAP, Battle Royal
+  suffix: DO NOT MAP, Battle Royale
   parent: BaseItem
   id: RoyalPinpointer
   components:

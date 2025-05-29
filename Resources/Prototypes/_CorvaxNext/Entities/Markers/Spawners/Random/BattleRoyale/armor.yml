@@ -85,7 +85,7 @@
 - type: entity
   name: BR Armor Spawner
   description: BR issue
-  suffix: DO NOT MAP, Battle Royal
+  suffix: DO NOT MAP, Battle Royale
   id: RoyalArmorTableSpawner
   parent: MarkerBase
   components:
