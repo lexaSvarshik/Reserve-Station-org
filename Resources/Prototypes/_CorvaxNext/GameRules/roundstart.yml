@@ -68,6 +68,21 @@
   parent: BaseGameRule
   components:
   - type: BattleRoyaleRule
-    gear: BattleRoyaleGear
     roundEndDelay: 10
   - type: PointManager
+  - type: GameRule
+    minPlayers: 1
+  - type: AntagSelection
+    selectionTime: PrePlayerSpawn
+    definitions:
+    - prefRoles: [ BattleRoyaleMember ]
+      spawnerPrototype: SpawnPointBattleRoyale
+      pickPlayer: true
+      startingGear: BattleRoyaleGear
+      roleLoadout:
+      - RoleSurvivalNukie
+      briefing:
+        text: "Вы участник режима Battle Royale. Выживите любой ценой, убивайте всех!"
+        sound: "/Audio/_CorvaxNext/Misc/vox_raiders_greeting.ogg"
+      mindRoles:
+      - MindRoleBattleRoyaleMember

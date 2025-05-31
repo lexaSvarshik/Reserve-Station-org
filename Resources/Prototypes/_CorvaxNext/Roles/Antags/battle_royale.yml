@@ -1,0 +1,30 @@
+- type: antag
+  id: BattleRoyaleMember
+  name: "Участник рояля"
+  antagonist: true
+  setPreference: true
+  objective: "Выживи сука"
+
+- type: entity
+  parent: BaseMindRoleAntag
+  id: MindRoleBattleRoyaleMember
+  name: Battle Royale member
+  components:
+  - type: MindRole
+    roleType: SoloAntagonist
+    antagPrototype: BattleRoyaleMember
+
+- type: entity
+  id: SpawnPointBattleRoyale
+  name: Battle Royale Spawn
+  parent: MarkerBase
+  components:
+  - type: BattleRoyaleSpawnMarker
+  - type: SpawnPoint
+  - type: Transform
+  - type: Sprite
+    sprite: Markers/jobs.rsi
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Terminator/parts.rsi
+      state: skull_icon

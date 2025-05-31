@@ -164,7 +164,7 @@
   - type: Sprite
     layers:
     - state: red
-    - sprite: Clothing/OuterClothing/Armor/captain_carapace.rsi
+    - sprite: Clothing/Head/Helmets/light_riot.rsi
       state: icon
   - type: EntityTableSpawner
     table: !type:NestedSelector
