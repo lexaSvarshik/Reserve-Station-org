@@ -4,6 +4,8 @@
   antagonist: true
   setPreference: true
   objective: "Выживи сука"
+  components:
+  - type: BattleRoyaleMember
 
 - type: entity
   parent: BaseMindRoleAntag
@@ -14,13 +16,22 @@
     roleType: SoloAntagonist
     antagPrototype: BattleRoyaleMember
 
+- type: job
+  id: BattleRoyaleMember
+  name: "Участник битвы"
+  playTimeTracker: RoyaleMember
+  setPreference: false
+
+- type: playTimeTracker
+  id: RoyaleMember
+
 - type: entity
   id: SpawnPointBattleRoyale
   name: Battle Royale Spawn
   parent: MarkerBase
   components:
-  - type: BattleRoyaleSpawnMarker
   - type: SpawnPoint
+    spawnType: Job
   - type: Transform
   - type: Sprite
     sprite: Markers/jobs.rsi

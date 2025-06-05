@@ -4,6 +4,7 @@ using Content.Shared.Storage;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
+using Robust.Shared.Map;
 
 namespace Content.Server._CorvaxNext.BattleRoyale.Rules.Components;
 
@@ -19,6 +20,9 @@ public sealed partial class BattleRoyaleRuleComponent : Component
     [DataField]
     public EntityUid? Victor;
 
-	[DataField, AutoNetworkedField, ViewVariables(VVAccess.ReadWrite)]
+    [DataField, AutoNetworkedField, ViewVariables(VVAccess.ReadWrite)]
     public bool WinnerAnnounced = false;
+
+    [DataField]
+    public MapId? MapId;
 }

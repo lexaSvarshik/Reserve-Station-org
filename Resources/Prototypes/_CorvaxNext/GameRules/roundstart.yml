@@ -69,6 +69,8 @@
   components:
   - type: BattleRoyaleRule
     roundEndDelay: 10
+  - type: LoadMapRule
+    mapPath: /Maps/_CorvaxNext/battleroyale.yml
   - type: PointManager
   - type: GameRule
     minPlayers: 1
@@ -76,7 +78,6 @@
     selectionTime: PrePlayerSpawn
     definitions:
     - prefRoles: [ BattleRoyaleMember ]
-      spawnerPrototype: SpawnPointBattleRoyale
       pickPlayer: true
       startingGear: BattleRoyaleGear
       roleLoadout:

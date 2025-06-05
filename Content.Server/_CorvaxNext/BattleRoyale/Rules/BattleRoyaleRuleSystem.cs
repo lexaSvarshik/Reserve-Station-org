@@ -3,9 +3,9 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using System.Collections.Generic;
 using System.Linq;
-using Content.Server.Administration.Commands;
-using Content.Server.Administration.Logs;
+using Content.Server.Antag;
 using Content.Server.Chat.Managers;
 using Content.Server.Chat.Systems;
 using Content.Server.GameTicking;
@@ -19,6 +19,7 @@ using Content.Server.Points;
 using Content.Server.RoundEnd;
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Systems;
+using Content.Server.Spawners.Components;
 using Content.Server.Station.Systems;
 using Content.Server._CorvaxNext.BattleRoyale.Rules.Components;
 using Content.Server._Goobstation.Ghostbar.Components; //Reserve port BattleRoyale
@@ -35,24 +36,27 @@ using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Players;
-using Content.Shared.Points;
-using Content.Shared.Traits.Assorted;
-using Content.Server.Traits.Assorted; //Reserve port BattleRoyale
-//using Content.Shared._CorvaxNext.Skills; //Reserve port BattleRoyale
-using Robust.Server.GameObjects;
-using Robust.Server.Player;
-using Robust.Shared.Network;
-using Robust.Shared.Maths;
-using Robust.Shared.Player;
+using Robust.Shared.Map;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 using Robust.Shared.Enums;
+using Robust.Server.GameObjects;
+using Robust.Shared.Player;
+using Content.Shared.Administration;
+using Content.Server.Administration.Logs;
+using Content.Server.Administration.Commands;
+using Content.Server.Players;
+using Robust.Server.Player;
+using Robust.Shared.Network;
+using Content.Shared.Points;
+
 
 namespace Content.Server._CorvaxNext.BattleRoyale.Rules
 {
     /// <summary>
-    /// Battle Royale game mode where the last player standing wins, with built-in checks to prevent late joining.
+    /// Battle Royale game mode: “последний выживший”,
+    /// реализует логику спавна игроков по образцу NukeOps.
     /// </summary>
     public sealed class BattleRoyaleRuleSystem : GameRuleSystem<BattleRoyaleRuleComponent>
     {
@@ -69,8 +73,7 @@ namespace Content.Server._CorvaxNext.BattleRoyale.Rules
         [Dependency] private readonly ChatSystem _chatSystem = default!;
         [Dependency] private readonly IGameTiming _timing = default!;
         [Dependency] private readonly IRobustRandom _random = default!;
-        //[Dependency] private readonly SharedSkillsSystem _skills = default!; //Reserve port BattleRoyale
-        [Dependency] private readonly ArrivalsSystem _arrivals = default!;
+        [Dependency] private readonly AntagSelectionSystem _antag = default!;
 
         private const int MaxNormalCallouts = 60;
         private const int MaxEnvironmentalCallouts = 10;
@@ -78,31 +81,140 @@ namespace Content.Server._CorvaxNext.BattleRoyale.Rules
         public override void Initialize()
         {
             base.Initialize();
+
+            // 1) Сбор точек через AntagSelectLocationEvent
+            SubscribeLocalEvent<BattleRoyaleRuleComponent, AntagSelectLocationEvent>(OnAntagSelectLocation);
+
+            // 2) Перехват спавна до его выполнения (по образцу NukeOps)
+            SubscribeLocalEvent<BattleRoyaleRuleComponent, PlayerBeforeSpawnEvent>(OnBeforeSpawn, before: new[] { typeof(ArrivalsSystem) });
+
+            // остальные события
+            SubscribeLocalEvent<BattleRoyaleRuleComponent, AfterAntagEntitySelectedEvent>(OnAfterAntagSelected);
+            SubscribeLocalEvent<BattleRoyaleRuleComponent, RuleLoadedGridsEvent>(OnRuleLoadedGrids);
+            SubscribeLocalEvent<PlayerAttachedEvent>(OnPlayerAttached);
             SubscribeLocalEvent<MobStateChangedEvent>(OnMobStateChanged);
             SubscribeLocalEvent<KillReportedEvent>(OnKillReported);
-            SubscribeLocalEvent<PlayerBeforeSpawnEvent>(OnBeforeSpawn);
             SubscribeLocalEvent<RefreshLateJoinAllowedEvent>(OnRefreshLateJoinAllowed);
-            SubscribeLocalEvent<PlayerSpawningEvent>(OnPlayerSpawning, before: new[] { typeof(ArrivalsSystem) });
             SubscribeLocalEvent<PlayerDetachedEvent>(OnPlayerDetached);
         }
 
         private void OnRefreshLateJoinAllowed(RefreshLateJoinAllowedEvent ev)
         {
             if (CheckBattleRoyaleActive())
-            {
                 ev.Disallow();
-            }
         }
 
-        private void OnPlayerSpawning(PlayerSpawningEvent ev)
+        private void OnRuleLoadedGrids(EntityUid uid, BattleRoyaleRuleComponent br, ref RuleLoadedGridsEvent args)
         {
-            if (CheckBattleRoyaleActive() && ev.SpawnResult == null)
+            br.MapId = args.Map;
+            Log.Info($"BattleRoyaleRule: Map loaded = {args.Map}");
+        }
+
+        /// <summary>
+        /// 1) Собираем все SpawnPoint(Type=Job, ID=SpawnPointBattleRoyale) на нашей карте
+        ///    и кладём их UID в args.SpawnPoints.
+        /// </summary>
+        private void OnAntagSelectLocation(EntityUid uid, BattleRoyaleRuleComponent br, ref AntagSelectLocationEvent args)
+        {
+            if (args.Handled || br.MapId == null)
+                return;
+
+            var query = EntityQueryEnumerator<SpawnPointComponent, TransformComponent>();
+            var found = 0;
+            while (query.MoveNext(out var spUid, out var spawnPoint, out var xform))
             {
-                if (HasComp<StationArrivalsComponent>(ev.Station))
-                {
-                    ev.SpawnResult = null;
-                }
+                if (xform.MapID != br.MapId)
+                    continue;
+
+                if (spawnPoint.SpawnType != SpawnPointType.Job)
+                    continue;
+
+                // Фильтруем только точки с prototype ID = "SpawnPointBattleRoyale"
+                if (MetaData(spUid).EntityPrototype?.ID != "SpawnPointBattleRoyale")
+                    continue;
+
+                args.SpawnPoints.Add(spUid);
+                found++;
+                Log.Info($"[BattleRoyale] Added spawner {spUid} → {_transforms.GetMapCoordinates(xform)}");
             }
+
+            if (found == 0)
+            {
+                Log.Error($"BattleRoyaleRule: не найдено ни одной SpawnPointBattleRoyale на карте {br.MapId}");
+                return;
+            }
+
+            Log.Info($"[BattleRoyale] Total Job Spawners: {found} on Map {br.MapId}");
+        }
+
+        /// <summary>
+        /// Перехват события до спавна игрока: выбираем из ev.SpawnPoints точку,
+        /// выставляем ev.SpawnResult и создаём тело вручную.
+        /// </summary>
+        private void OnBeforeSpawn(EntityUid uid, BattleRoyaleRuleComponent br, PlayerBeforeSpawnEvent ev)
+        {
+            // 1) Проверяем, что правило активно и карта задана
+            if (!CheckBattleRoyaleActive() || br.MapId == null)
+                return;
+
+            // 2) Если спавн уже «присвоен» (ev.SpawnResult != null) или был уже перехвачен, выходим
+            if (ev.Handled || ev.SpawnResult != null)
+                return;
+
+            // 3) Блокируем спавн через arrival-станцию (если ev.Station указывает на Arrival)
+            if (ev.Station != EntityUid.Invalid && HasComp<StationArrivalsComponent>(ev.Station))
+            {
+                ev.Handled = true;
+                return;
+            }
+
+            // 4) Если нет ни одной точки в ev.SpawnPoints, выходим без спавна
+            if (!ev.SpawnPoints.Any())
+            {
+                Log.Warning($"[BattleRoyale] No SpawnPoints in BeforeSpawn on Map {br.MapId} — player will not spawn.");
+                return;
+            }
+
+            // 5) Выбираем случайную точку
+            var chosen = _random.Pick(ev.SpawnPoints);
+            ev.SpawnResult = chosen;
+            ev.Handled = true;
+            Log.Info($"[BattleRoyale] Player {ev.Player.Name} will spawn at {chosen}");
+
+            // 6) Ручной спавн тела на выбранной точке
+            var xform = Transform(chosen);
+            var coords = xform.Coordinates;
+            var mobMaybe = _stationSpawning.SpawnPlayerCharacterAtCoords(coords, ev.Profile);
+            DebugTools.AssertNotNull(mobMaybe);
+            var mob = mobMaybe!.Value;
+
+            // 7) Переносим mind на созданное тело
+            var newMind = _mind.CreateMind(ev.Player.UserId, ev.Profile.Name);
+            _mind.SetUserId(newMind, ev.Player.UserId);
+            _mind.TransferTo(newMind, mob);
+
+            // 8) Присваиваем loadout (если необходимо)
+            if (!string.IsNullOrEmpty(br.Gear))
+            {
+                // Предположим, что у вас есть метод ApplyLoadout, аналогичен NukeOps
+                SetOutfitCommand.SetOutfit(mob, br.Gear, false, EntityManager);
+            }
+
+            // 9) Добавляем игровые компоненты: KillTracker, Pacified и т.д.
+            EnsureComp<KillTrackerComponent>(mob);
+            EnsureComp<SleepingComponent>(mob);
+            var pacified = EnsureComp<Content.Shared.CombatMode.Pacification.PacifiedComponent>(mob);
+            Timer.Spawn(TimeSpan.FromMinutes(2), () =>
+            {
+                if (!Deleted(mob) && HasComp<Content.Shared.CombatMode.Pacification.PacifiedComponent>(mob))
+                    RemComp<Content.Shared.CombatMode.Pacification.PacifiedComponent>(mob);
+            });
+            var blurry = EnsureComp<Content.Shared.Eye.Blinding.Components.BlurryVisionComponent>(mob);
+            Timer.Spawn(TimeSpan.FromSeconds(15), () =>
+            {
+                if (!Deleted(mob) && HasComp<Content.Shared.Eye.Blinding.Components.BlurryVisionComponent>(mob))
+                    RemComp<Content.Shared.Eye.Blinding.Components.BlurryVisionComponent>(mob);
+            });
         }
 
         private bool CheckBattleRoyaleActive()
@@ -111,91 +223,27 @@ namespace Content.Server._CorvaxNext.BattleRoyale.Rules
             return query.MoveNext(out _, out _, out _);
         }
 
-        protected override void Started(EntityUid uid, BattleRoyaleRuleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
+        private void OnAfterAntagSelected(EntityUid uid, BattleRoyaleRuleComponent br, AfterAntagEntitySelectedEvent args)
         {
-            base.Started(uid, component, gameRule, args);
+            if (args.Session == null)
+                return;
 
-            Timer.Spawn(TimeSpan.FromSeconds(5), () =>
-            {
-                CheckLastManStanding(uid, component);
-            });
-
-            Timer.Spawn(TimeSpan.FromMinutes(2), () =>
-            {
-                //Reserve edit begin
-                if (!Exists(uid) || !TryComp<GameRuleComponent>(uid, out var gameRule))
-                    return;
-                //Reserve edit end
-
-                if (!GameTicker.IsGameRuleActive(uid, gameRule))
-                    return;
-
-                var message = Loc.GetString("battle-royale-kill-or-be-killed");
-                var title = Loc.GetString("battle-royale-title");
-
-                var sound = new SoundPathSpecifier("/Audio/Ambience/Antag/traitor_start.ogg");
-
-                _chatSystem.DispatchGlobalAnnouncement(message, title, true, sound, Color.Red);
-            });
+            Log.Info($"[BattleRoyale] AfterAntagSelected: {args.Session.Name}");
+            _antag.SendBriefing(args.Session, "Вы участник Battle Royale. Сражайтесь, чтобы остаться последним!", Color.Red, null);
         }
 
-        private void OnBeforeSpawn(PlayerBeforeSpawnEvent ev)
+        private void OnPlayerAttached(PlayerAttachedEvent ev)
         {
-            var query = EntityQueryEnumerator<BattleRoyaleRuleComponent, GameRuleComponent>();
-            while (query.MoveNext(out var uid, out var br, out var gameRule))
-            {
-                if (!GameTicker.IsGameRuleActive(uid, gameRule))
-                    continue;
+            var entity = ev.Entity;
+            if (!HasComp<BattleRoyaleMemberComponent>(entity))
+                return;
 
-                var newMind = _mind.CreateMind(ev.Player.UserId, ev.Profile.Name);
-                _mind.SetUserId(newMind, ev.Player.UserId);
+            var coords = _transforms.GetMapCoordinates(entity);
+            Log.Info($"Player {ev.Player.Name} spawned at {coords}");
 
-                var mobMaybe = _stationSpawning.SpawnPlayerCharacterOnStation(ev.Station, null, ev.Profile);
-                DebugTools.AssertNotNull(mobMaybe);
-                var mob = mobMaybe!.Value;
-
-				if (HasComp<PainNumbnessComponent>(mob))
-					RemComp<PainNumbnessComponent>(mob);
-
-				//if (HasComp<MoodModifyTraitComponent>(mob)) //Reserve port BattleRoyale
-				//	RemComp<MoodModifyTraitComponent>(mob); //Reserve port BattleRoyale
-
-				if (HasComp<PermanentBlindnessComponent>(mob))
-					RemComp<PermanentBlindnessComponent>(mob);
-
-				if (HasComp<NarcolepsyComponent>(mob))
-					RemComp<NarcolepsyComponent>(mob);
-
-                _mind.TransferTo(newMind, mob);
-                SetOutfitCommand.SetOutfit(mob, br.Gear, false, EntityManager);
-                EnsureComp<KillTrackerComponent>(mob);
-                EnsureComp<SleepingComponent>(mob);
-
-                // _skills.GrantAllSkills(mob); //Reserve port BattleRoyale
-
-                var pacifiedComp = EnsureComp<PacifiedComponent>(mob);
-                Timer.Spawn(TimeSpan.FromMinutes(2), () =>
-                {
-                    if (!Deleted(mob) && HasComp<PacifiedComponent>(mob))
-				        RemComp<PacifiedComponent>(mob);
-                });
-
-                var blurryVisionComp = EnsureComp<BlurryVisionComponent>(mob);
-                Timer.Spawn(TimeSpan.FromSeconds(15), () =>
-                {
-                    if (!Deleted(mob) && HasComp<BlurryVisionComponent>(mob))
-				        RemComp<BlurryVisionComponent>(mob);
-                });
-
-                ev.Handled = true;
-
-                Timer.Spawn(TimeSpan.FromSeconds(0.5), () =>
-                {
-                    CheckLastManStanding(uid, br);
-                });
-
-                break;
-            }
+            // Теперь можно добавить любую логику, например:
+            // - добавить очки
+            // - удалить или добавить компоненты
         }
 
         private void OnMobStateChanged(MobStateChangedEvent args)
@@ -222,14 +270,9 @@ namespace Content.Server._CorvaxNext.BattleRoyale.Rules
                     continue;
 
                 if (ev.Primary is KillPlayerSource player)
-                {
                     _point.AdjustPointValue(player.PlayerId, 1, uid, point);
-                }
-
                 if (ev.Assist is KillPlayerSource assist)
-                {
                     _point.AdjustPointValue(assist.PlayerId, 0.5f, uid, point);
-                }
 
                 SendKillCallout(uid, ref ev);
             }
@@ -247,9 +290,9 @@ namespace Content.Server._CorvaxNext.BattleRoyale.Rules
                 return;
             }
 
-            string killerString;
             if (ev.Primary is KillPlayerSource primarySource)
             {
+                string killerString;
                 var primaryName = GetPlayerName(primarySource.PlayerId);
                 if (ev.Assist is KillPlayerSource assistSource)
                 {
@@ -269,7 +312,7 @@ namespace Content.Server._CorvaxNext.BattleRoyale.Rules
             }
             else if (ev.Primary is KillNpcSource npcSource)
             {
-                killerString = GetEntityName(npcSource.NpcEnt);
+                var killerString = GetEntityName(npcSource.NpcEnt);
                 var calloutNumber = _random.Next(0, MaxNormalCallouts + 1);
                 var calloutId = $"death-match-kill-callout-{calloutNumber}";
                 var victimName = GetEntityName(ev.Entity);
@@ -282,10 +325,8 @@ namespace Content.Server._CorvaxNext.BattleRoyale.Rules
         {
             if (!_player.TryGetSessionById(userId, out var session))
                 return "Unknown";
-
             if (session.AttachedEntity == null)
                 return session.Name;
-
             return Loc.GetString("death-match-name-player",
                 ("name", MetaData(session.AttachedEntity.Value).EntityName),
                 ("username", session.Name));
@@ -294,12 +335,9 @@ namespace Content.Server._CorvaxNext.BattleRoyale.Rules
         private string GetEntityName(EntityUid entity)
         {
             if (TryComp<ActorComponent>(entity, out var actor))
-            {
                 return Loc.GetString("death-match-name-player",
                     ("name", MetaData(entity).EntityName),
                     ("username", actor.PlayerSession.Name));
-            }
-
             return Loc.GetString("death-match-name-npc",
                 ("name", MetaData(entity).EntityName));
         }
@@ -307,18 +345,17 @@ namespace Content.Server._CorvaxNext.BattleRoyale.Rules
         private void CheckLastManStanding(EntityUid uid, BattleRoyaleRuleComponent component)
         {
             var alivePlayers = GetAlivePlayers();
-
             if (alivePlayers.Count == 1)
             {
                 if (!component.WinnerAnnounced || component.Victor == null || component.Victor.Value != alivePlayers.First())
                 {
                     component.Victor = alivePlayers.First();
-                    if (!component.WinnerAnnounced && _mind.TryGetMind(component.Victor.Value, out var mindId, out var mind))
+                    if (!component.WinnerAnnounced && _mind.TryGetMind(component.Victor.Value, out _, out var mind))
                     {
                         component.WinnerAnnounced = true;
                         var victorName = MetaData(component.Victor.Value).EntityName;
                         var playerName = mind.Session?.Name ?? victorName;
-                        if (Timing.CurTime < TimeSpan.FromSeconds(10))
+                        if (_timing.CurTime < TimeSpan.FromSeconds(10))
                         {
                             _chatManager.DispatchServerAnnouncement(
                                 Loc.GetString("battle-royale-single-player", ("player", playerName)));
@@ -346,11 +383,11 @@ namespace Content.Server._CorvaxNext.BattleRoyale.Rules
         private void OnPlayerDetached(PlayerDetachedEvent ev)
         {
             var query = EntityQueryEnumerator<BattleRoyaleRuleComponent, GameRuleComponent>();
-            while (query.MoveNext(out var uid, out var br, out var gameRule))
+            while (query.MoveNext(out var uid, out var component, out var gameRule))
             {
                 if (!GameTicker.IsGameRuleActive(uid, gameRule))
                     continue;
-                CheckLastManStanding(uid, br);
+                CheckLastManStanding(uid, component);
             }
         }
 
@@ -358,32 +395,25 @@ namespace Content.Server._CorvaxNext.BattleRoyale.Rules
         {
             var result = new List<EntityUid>();
             var mobQuery = EntityQueryEnumerator<MobStateComponent, ActorComponent>();
-
             while (mobQuery.MoveNext(out var uid, out var mobState, out var actor))
             {
-                if (HasComp<GhostBarPlayerComponent>(uid) || HasComp<IsDeadICComponent>(uid))
+                if ( HasComp<IsDeadICComponent>(uid))
                     continue;
-
-                if (actor.PlayerSession?.Status != SessionStatus.Connected &&
-                    actor.PlayerSession?.Status != SessionStatus.InGame)
+                var session = actor.PlayerSession;
+                if (session == null || (session.Status != SessionStatus.Connected && session.Status != SessionStatus.InGame))
                     continue;
-
                 if (_mobState.IsAlive(uid, mobState))
                     result.Add(uid);
             }
-
             return result;
         }
 
-        protected override void AppendRoundEndText(EntityUid uid,
-            BattleRoyaleRuleComponent component,
-            GameRuleComponent gameRule,
-            ref RoundEndTextAppendEvent args)
+        protected override void AppendRoundEndText(EntityUid uid, BattleRoyaleRuleComponent component, GameRuleComponent gameRule, ref RoundEndTextAppendEvent args)
         {
             if (!TryComp<PointManagerComponent>(uid, out var point))
                 return;
 
-            if (component.Victor != null && _mind.TryGetMind(component.Victor.Value, out var victorMindId, out var victorMind))
+            if (component.Victor != null && _mind.TryGetMind(component.Victor.Value, out var mindId, out var victorMind))
             {
                 var victorName = MetaData(component.Victor.Value).EntityName;
                 var victorPlayerName = victorMind.Session?.Name ?? victorName;
