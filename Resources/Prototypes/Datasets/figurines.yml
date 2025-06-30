@@ -293,7 +293,7 @@
   id: FigurinesFootsoldier
   values:
     prefix: figurines-footsoldier-
-    count: 2
+    count: 5
 
 - type: localizedDataset
   id: FigurinesWizard
@@ -329,7 +329,7 @@
   id: FigurinesMouse
   values:
     prefix: figurines-mouse-
-    count: 8 #Reserve Mouse figurine meme phrases
+    count: 7
 
 - type: localizedDataset
   id: FigurinesSlime

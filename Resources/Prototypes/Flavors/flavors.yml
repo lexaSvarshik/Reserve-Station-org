@@ -80,7 +80,15 @@
 # SPDX-FileCopyrightText: 2024 themias <89101928+themias@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2025 Alpaccalypse <21291379+Alpaccalypse@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Coolsurf6 <coolsurf24@yahoo.com.au>
+# SPDX-FileCopyrightText: 2025 Kirill2253 <kirillsuhin5@gmail.com>
+# SPDX-FileCopyrightText: 2025 RedBookcase <crazykid1590@gmail.com>
+# SPDX-FileCopyrightText: 2025 ReserveBot <211949879+ReserveBot@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2025 SX_7 <sn1.test.preria.2002@gmail.com>
+# SPDX-FileCopyrightText: 2025 SharkSnake98 <peanutbuttersharky@gmail.com>
+# SPDX-FileCopyrightText: 2025 Svarshik <96281939+lexaSvarshik@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 nazrin <tikufaev@outlook.com>
+# SPDX-FileCopyrightText: 2025 uhbg <uhbg@users.noreply.github.com>
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -685,6 +693,11 @@
   description: flavor-complex-irish-car-bomb
 
 - type: flavor
+  id: alienbrainhemorrhage
+  flavorType: Complex
+  description: flavor-complex-alien-brain-hemorrhage
+
+- type: flavor
   id: vodkaredbool
   flavorType: Complex
   description: flavor-complex-vodka-red-bool
@@ -708,6 +721,11 @@
   id: watermelonwakeup
   flavorType: Complex
   description: flavor-complex-watermelon-wakeup
+
+- type: flavor
+  id: electricshark
+  flavorType: Complex
+  description: flavor-complex-electric-shark
 
 - type: flavor
   id: rubberneck
@@ -835,6 +853,11 @@
   description: flavor-complex-coconut-rum
 
 - type: flavor
+  id: darkandstormy
+  flavorType: Complex
+  description: flavor-complex-dark-and-stormy
+
+- type: flavor
   id: coffeeliquor
   flavorType: Complex
   description: flavor-complex-coffee-liquor
@@ -883,6 +906,11 @@
   id: arnoldpalmer
   flavorType: Complex
   description: flavor-complex-arnold-palmer
+
+- type: flavor
+  id: tortuga
+  flavorType: Complex
+  description: flavor-complex-tortuga
 
 - type: flavor
   id: bluehawaiian
@@ -945,6 +973,11 @@
   description: flavor-complex-iced-beer
 
 - type: flavor
+  id: radler
+  flavorType: Complex
+  description: flavor-complex-radler
+
+- type: flavor
   id: gargleblaster
   flavorType: Complex
   description: flavor-complex-gargle-blaster
@@ -980,6 +1013,11 @@
   description: flavor-complex-atomic-cola
 
 - type: flavor
+  id: crushdepth
+  flavorType: Complex
+  description: flavor-complex-crush-depth
+
+- type: flavor
   id: cubalibre
   flavorType: Complex
   description: flavor-complex-cuba-libre
@@ -988,6 +1026,31 @@
   id: gintonic
   flavorType: Complex
   description: flavor-complex-gin-tonic
+
+- type: flavor
+  id: jackrose
+  flavorType: Complex
+  description: flavor-complex-jack-rose
+
+- type: flavor
+  id: junglebird
+  flavorType: Complex
+  description: flavor-complex-jungle-bird
+
+- type: flavor
+  id: kalimotxo
+  flavorType: Complex
+  description: flavor-complex-kalimotxo
+
+- type: flavor
+  id: vampiro
+  flavorType: Complex
+  description: flavor-complex-vampiro
+
+- type: flavor
+  id: bronx
+  flavorType: Complex
+  description: flavor-complex-bronx
 
 - type: flavor
   id: screwdriver
@@ -1080,6 +1143,11 @@
   description: flavor-complex-driest-martini
 
 - type: flavor
+  id: eggnog
+  flavorType: Complex
+  description: flavor-complex-eggnog
+
+- type: flavor
   id: erikasurprise
   flavorType: Complex
   description: flavor-complex-erika-surprise
@@ -1133,6 +1201,11 @@
   id: mojito
   flavorType: Complex
   description: flavor-complex-mojito
+
+- type: flavor
+  id: monkeybusiness
+  flavorType: Complex
+  description: flavor-complex-monkey-business
 
 - type: flavor
   id: neurotoxin
@@ -1488,3 +1561,8 @@
   id: bacchusblessing
   flavorType: Complex
   description: flavor-complex-bacchus-blessing
+
+- type: flavor
+  id: brepsi
+  flavorType: Complex
+  description: flavor-complex-brepsi
