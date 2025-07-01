@@ -350,12 +350,15 @@ namespace Content.Server._CorvaxNext.BattleRoyale.Rules
                 if (!component.WinnerAnnounced || component.Victor == null || component.Victor.Value != alivePlayers.First())
                 {
                     component.Victor = alivePlayers.First();
-                    if (!component.WinnerAnnounced && _mind.TryGetMind(component.Victor.Value, out _, out var mind))
+
+                    if (!component.WinnerAnnounced && _mind.TryGetMind(component.Victor.Value, out var mindId, out var mind)&&
+                    _player.TryGetSessionById(mind.UserId, out var session))
                     {
                         component.WinnerAnnounced = true;
                         var victorName = MetaData(component.Victor.Value).EntityName;
-                        var playerName = mind.Session?.Name ?? victorName;
-                        if (_timing.CurTime < TimeSpan.FromSeconds(10))
+                        var playerName = session.Name ?? victorName;
+                        if (Timing.CurTime < TimeSpan.FromSeconds(10))
+
                         {
                             _chatManager.DispatchServerAnnouncement(
                                 Loc.GetString("battle-royale-single-player", ("player", playerName)));
@@ -413,10 +416,12 @@ namespace Content.Server._CorvaxNext.BattleRoyale.Rules
             if (!TryComp<PointManagerComponent>(uid, out var point))
                 return;
 
-            if (component.Victor != null && _mind.TryGetMind(component.Victor.Value, out var mindId, out var victorMind))
+
+            if (component.Victor != null && _mind.TryGetMind(component.Victor.Value, out var victorMindId, out var victorMind) &&
+            _player.TryGetSessionById(victorMind.UserId, out var session))
             {
                 var victorName = MetaData(component.Victor.Value).EntityName;
-                var victorPlayerName = victorMind.Session?.Name ?? victorName;
+                var victorPlayerName = session.Name ?? victorName;
                 args.AddLine(Loc.GetString("battle-royale-winner", ("player", victorPlayerName)));
                 args.AddLine("");
             }

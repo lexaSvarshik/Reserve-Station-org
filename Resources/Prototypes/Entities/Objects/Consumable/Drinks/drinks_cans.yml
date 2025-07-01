@@ -72,7 +72,6 @@
 # SPDX-FileCopyrightText: 2024 Mr. 27 <45323883+Dutch-VanDerLinde@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2024 MureixloI <132683811+MureixloI@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2024 NakataRin <45946146+NakataRin@users.noreply.github.com>
-# SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2024 OrangeMoronage9622 <whyteterry0092@gmail.com>
 # SPDX-FileCopyrightText: 2024 PJBot <pieterjan.briers+bot@gmail.com>
 # SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
@@ -121,6 +120,10 @@
 # SPDX-FileCopyrightText: 2024 wafehling <wafehling@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2025 Alpaccalypse <21291379+Alpaccalypse@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Kirill2253 <kirillsuhin5@gmail.com>
+# SPDX-FileCopyrightText: 2025 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 ReserveBot <211949879+ReserveBot@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 nazrin <tikufaev@outlook.com>
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # When adding new drinks also add to random spawner located in Resources\Prototypes\Entities\Markers\Spawners\Random\Food_Drinks\drinks_soda.yml
@@ -139,11 +142,19 @@
         - ReagentId: Cola
           Quantity: 30
         maxVol: 30
+      grindable:
+        reagents: # 5u -> 1/2 steel sheet (10u)
+        - ReagentId: Aluminium # Fun fact: soda can makeup is approx. 75% aluminium and 25% tin/iron.
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
   - type: MixableSolution
     solution: drink
   - type: SolutionTransfer
     canChangeTransferAmount: true
     maxTransferAmount: 15
+  - type: Extractable
+    grindableSolutionName: grindable
   - type: UserInterface
     interfaces:
       enum.TransferAmountUiKey.Key:
@@ -206,6 +217,12 @@
         reagents:
         - ReagentId: Cola
           Quantity: 30
+      grindable:
+        reagents:
+        - ReagentId: Aluminium
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
   - type: Tag
     tags:
     - Cola
@@ -226,6 +243,12 @@
     solutions:
       drink:
         maxVol: 30
+      grindable:
+        reagents:
+        - ReagentId: Aluminium
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
   - type: Openable
     opened: true
   - type: Sprite
@@ -254,6 +277,12 @@
         reagents:
         - ReagentId: IcedTea
           Quantity: 30
+      grindable:
+        reagents:
+        - ReagentId: Aluminium
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
   - type: Sprite
     sprite: Objects/Consumable/Drinks/ice_tea_can.rsi
   - type: Item
@@ -272,6 +301,12 @@
         reagents:
         - ReagentId: LemonLime
           Quantity: 30
+      grindable:
+        reagents:
+        - ReagentId: Aluminium
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
   - type: Sprite
     sprite: Objects/Consumable/Drinks/lemon-lime.rsi
   - type: Item
@@ -290,6 +325,12 @@
         reagents:
         - ReagentId: LemonLimeCranberry
           Quantity: 30
+      grindable:
+        reagents:
+        - ReagentId: Aluminium
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
   - type: Sprite
     sprite: Objects/Consumable/Drinks/lemon-lime-cranberry.rsi
   - type: Item
@@ -341,6 +382,12 @@
         reagents:
         - ReagentId: GrapeSoda
           Quantity: 30
+      grindable:
+        reagents:
+        - ReagentId: Aluminium
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
   - type: Sprite
     sprite: Objects/Consumable/Drinks/purple_can.rsi
   - type: Item
@@ -359,6 +406,12 @@
         reagents:
         - ReagentId: RootBeer
           Quantity: 30
+      grindable:
+        reagents:
+        - ReagentId: Aluminium
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
   - type: Sprite
     sprite: Objects/Consumable/Drinks/rootbeer.rsi
   - type: Item
@@ -380,6 +433,12 @@
         reagents:
         - ReagentId: SodaWater
           Quantity: 30
+      grindable:
+        reagents:
+        - ReagentId: Aluminium
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
   - type: Drink
   - type: Sprite
     sprite: Objects/Consumable/Drinks/sodawater.rsi
@@ -397,6 +456,12 @@
         reagents:
         - ReagentId: SpaceMountainWind
           Quantity: 30
+      grindable:
+        reagents:
+        - ReagentId: Aluminium
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
   - type: Sprite
     sprite: Objects/Consumable/Drinks/space_mountain_wind.rsi
   - type: Item
@@ -415,6 +480,12 @@
         reagents:
         - ReagentId: SpaceUp
           Quantity: 30
+      grindable:
+        reagents:
+        - ReagentId: Aluminium
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
   - type: Sprite
     sprite: Objects/Consumable/Drinks/space-up.rsi
   - type: Item
@@ -433,6 +504,12 @@
         reagents:
         - ReagentId: SolDry
           Quantity: 30
+      grindable:
+        reagents:
+        - ReagentId: Aluminium
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
   - type: Sprite
     sprite: Objects/Consumable/Drinks/sol_dry.rsi
   - type: Item
@@ -451,6 +528,12 @@
         reagents:
         - ReagentId: Starkist
           Quantity: 30
+      grindable:
+        reagents:
+        - ReagentId: Aluminium
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
   - type: Sprite
     sprite: Objects/Consumable/Drinks/starkist.rsi
   - type: Item
@@ -469,6 +552,12 @@
         reagents:
         - ReagentId: TonicWater
           Quantity: 30
+      grindable:
+        reagents:
+        - ReagentId: Aluminium
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
   - type: Drink
   - type: Sprite
     sprite: Objects/Consumable/Drinks/tonic.rsi
@@ -486,6 +575,12 @@
         reagents:
         - ReagentId: FourteenLoko
           Quantity: 30
+      grindable:
+        reagents:
+        - ReagentId: Aluminium
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
   - type: Sprite
     sprite: Objects/Consumable/Drinks/fourteen_loko.rsi
   - type: Item
@@ -504,6 +599,12 @@
         reagents:
         - ReagentId: ChangelingSting
           Quantity: 30
+      grindable:
+        reagents:
+        - ReagentId: Aluminium
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
   - type: Drink
   - type: Sprite
     sprite: Objects/Consumable/Drinks/changelingsting.rsi
@@ -523,6 +624,12 @@
         reagents:
         - ReagentId: DrGibb
           Quantity: 30
+      grindable:
+        reagents:
+        - ReagentId: Aluminium
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
   - type: Drink
   - type: Sprite
     sprite: Objects/Consumable/Drinks/dr_gibb.rsi
@@ -546,6 +653,12 @@
           Quantity: 20
         - ReagentId: Ice
           Quantity: 5
+      grindable:
+        reagents:
+        - ReagentId: Aluminium
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
   - type: Tag
     tags:
     - DrinkCan
@@ -568,6 +681,12 @@
         reagents:
         - ReagentId: EnergyDrink
           Quantity: 30
+      grindable:
+        reagents:
+        - ReagentId: Aluminium
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
   - type: Drink
   - type: Sprite
     sprite: Objects/Consumable/Drinks/energy_drink.rsi
@@ -640,6 +759,12 @@
         reagents:
         - ReagentId: ShamblersJuice
           Quantity: 30
+      grindable:
+        reagents:
+        - ReagentId: Aluminium
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
   - type: Drink
   - type: Sprite
     sprite: Objects/Consumable/Drinks/shamblersjuice.rsi
@@ -659,6 +784,12 @@
         reagents:
         - ReagentId: PwrGame
           Quantity: 30
+      grindable:
+        reagents:
+        - ReagentId: Aluminium
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
   - type: Drink
   - type: Sprite
     sprite: Objects/Consumable/Drinks/pwrgame.rsi
@@ -678,6 +809,12 @@
         reagents:
         - ReagentId: Beer
           Quantity: 30
+      grindable:
+        reagents:
+        - ReagentId: Aluminium
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
   - type: Drink
   - type: Sprite
     sprite: Objects/Consumable/Drinks/beer_can.rsi
@@ -700,6 +837,12 @@
         reagents:
         - ReagentId: Wine
           Quantity: 30
+      grindable:
+        reagents:
+        - ReagentId: Aluminium
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
   - type: Drink
   - type: Sprite
     sprite: Objects/Consumable/Drinks/wine_can.rsi
@@ -708,3 +851,60 @@
   - type: Tag
     tags:
     - Wine
+
+- type: entity
+  parent: DrinkCanBaseFull
+  id: DrinkBrepsiCan
+  name: brepsi
+  description: A sweet, carbonated soft drink.
+  components:
+  - type: SolutionContainerManager
+    solutions:
+      drink:
+        maxVol: 30
+        reagents:
+        - ReagentId: Brepsi
+          Quantity: 30
+      grindable:
+        reagents:
+        - ReagentId: Aluminium
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
+  - type: Tag
+    tags:
+    - DrinkCan
+    - Recyclable
+  - type: Sprite
+    sprite: _Reserve/Objects/Consumable/Drinks/brepsi.rsi
+  - type: Item
+    sprite: _Reserve/Objects/Consumable/Drinks/brepsi.rsi
+
+- type: entity
+  parent: DrinkBrepsiCan
+  id: DrinkBrepsiCanEmpty
+  suffix: empty
+  components:
+  - type: SolutionContainerManager
+    solutions:
+      drink:
+        maxVol: 30
+      grindable:
+        reagents:
+        - ReagentId: Aluminium
+          Quantity: 4
+        - ReagentId: Iron
+          Quantity: 1
+  - type: Openable
+    opened: true
+  - type: Sprite
+    sprite: _Reserve/Objects/Consumable/Drinks/brepsi.rsi
+    layers:
+    - state: icon_open
+  - type: Item
+    sprite: _Reserve/Objects/Consumable/Drinks/brepsi.rsi
+  - type: Tag
+    tags:
+    - DrinkCan
+    - Recyclable
+    - Trash
