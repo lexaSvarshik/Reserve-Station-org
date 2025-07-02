@@ -9,8 +9,6 @@
   antagonist: true
   setPreference: true
   objective: "Выживи сука"
-  components:
-  - type: BattleRoyaleMember
 
 - type: entity
   parent: BaseMindRoleAntag
@@ -36,7 +34,6 @@
   parent: MarkerBase
   components:
   - type: SpawnPoint
-    spawnType: Job
   - type: Transform
   - type: Sprite
     sprite: Markers/jobs.rsi

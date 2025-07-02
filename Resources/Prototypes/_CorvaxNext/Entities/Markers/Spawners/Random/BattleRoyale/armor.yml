@@ -14,7 +14,6 @@
       children:
       - id: ClothingOuterArmorBasicSlim
       - id: ClothingOuterArmorBasic
-      - id: ClothingOuterArmorMakeshiftVestLight
       - id: ClothingOuterDogi
       - id: ClothingOuterLightVestSwat
       - id: ClothingOuterCoatDetective
@@ -35,7 +34,6 @@
       - id: ClothingOuterArmorBulletproof
       - id: ClothingOuterArmorRiot
       - id: ClothingOuterArmorReflective
-      - id: ClothingOuterArmorMakeshiftVestHeavy
       - id: ClothingOuterWinterSyndieCapArmored
       - id: ClothingOuterCoatSyndieCapArmored
       - id: ClothingOuterVoidsuitSecurity
@@ -137,7 +135,6 @@
       - id: ClothingHeadHelmetERTSecurity
       - id: ClothingHeadHatHardhatArmored
       - id: ClothingHeadHelmetMerc
-      - id: ClothingHeadMakeshiftHelmet
       - id: ClothingHeadHelmetBombSuit
       - id: ClothingHeadHelmetBasicAlt
       - id: ClothingHeadHelmetSyndicate
