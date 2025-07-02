@@ -154,17 +154,17 @@ namespace Content.Server._CorvaxNext.BattleRoyale.Rules
                 DebugTools.AssertNotNull(mobMaybe);
                 var mob = mobMaybe!.Value;
 
-				if (HasComp<PainNumbnessComponent>(mob))
-					RemComp<PainNumbnessComponent>(mob);
+                if (HasComp<PainNumbnessComponent>(mob))
+                    RemComp<PainNumbnessComponent>(mob);
 
-				//if (HasComp<MoodModifyTraitComponent>(mob)) //Reserve port BattleRoyale
-				//	RemComp<MoodModifyTraitComponent>(mob); //Reserve port BattleRoyale
+                //if (HasComp<MoodModifyTraitComponent>(mob)) //Reserve port BattleRoyale
+                //	RemComp<MoodModifyTraitComponent>(mob); //Reserve port BattleRoyale
 
-				if (HasComp<PermanentBlindnessComponent>(mob))
-					RemComp<PermanentBlindnessComponent>(mob);
+                if (HasComp<PermanentBlindnessComponent>(mob))
+                    RemComp<PermanentBlindnessComponent>(mob);
 
-				if (HasComp<NarcolepsyComponent>(mob))
-					RemComp<NarcolepsyComponent>(mob);
+                if (HasComp<NarcolepsyComponent>(mob))
+                    RemComp<NarcolepsyComponent>(mob);
 
                 _mind.TransferTo(newMind, mob);
                 SetOutfitCommand.SetOutfit(mob, br.Gear, false, EntityManager);
@@ -177,14 +177,14 @@ namespace Content.Server._CorvaxNext.BattleRoyale.Rules
                 Timer.Spawn(TimeSpan.FromMinutes(2), () =>
                 {
                     if (!Deleted(mob) && HasComp<PacifiedComponent>(mob))
-				        RemComp<PacifiedComponent>(mob);
+                        RemComp<PacifiedComponent>(mob);
                 });
 
                 var blurryVisionComp = EnsureComp<BlurryVisionComponent>(mob);
                 Timer.Spawn(TimeSpan.FromSeconds(15), () =>
                 {
                     if (!Deleted(mob) && HasComp<BlurryVisionComponent>(mob))
-				        RemComp<BlurryVisionComponent>(mob);
+                        RemComp<BlurryVisionComponent>(mob);
                 });
 
                 ev.Handled = true;
@@ -313,7 +313,7 @@ namespace Content.Server._CorvaxNext.BattleRoyale.Rules
                 if (!component.WinnerAnnounced || component.Victor == null || component.Victor.Value != alivePlayers.First())
                 {
                     component.Victor = alivePlayers.First();
-                    if (!component.WinnerAnnounced && _mind.TryGetMind(component.Victor.Value, out var mindId, out var mind)&&
+                    if (!component.WinnerAnnounced && _mind.TryGetMind(component.Victor.Value, out var mindId, out var mind) &&
                     _player.TryGetSessionById(mind.UserId, out var session))
                     {
                         component.WinnerAnnounced = true;
