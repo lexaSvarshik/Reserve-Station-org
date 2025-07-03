@@ -76,14 +76,20 @@
     roundEndDelay: 10
   - type: LoadMapRule
     mapPath: /Maps/_CorvaxNext/battleroyale.yml
+  - type: RuleGrids
   - type: PointManager
   - type: GameRule
     minPlayers: 1
+  - type: AntagLoadProfileRule
+    speciesOverride: Human
+    speciesOverrideBlacklist:
+    - Yowie
+    - Oni
   - type: AntagSelection
     selectionTime: PrePlayerSpawn
     definitions:
     - prefRoles: [ BattleRoyaleMember ]
-      pickPlayer: true
+      spawnerPrototype: SpawnPointBattleRoyale
       startingGear: BattleRoyaleGear
       roleLoadout:
       - RoleSurvivalNukie
@@ -92,3 +98,5 @@
         sound: "/Audio/_CorvaxNext/Misc/vox_raiders_greeting.ogg"
       mindRoles:
       - MindRoleBattleRoyaleMember
+      components:
+        - type: KillTracker

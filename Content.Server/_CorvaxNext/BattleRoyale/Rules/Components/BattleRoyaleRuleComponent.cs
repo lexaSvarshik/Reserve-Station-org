@@ -30,4 +30,10 @@ public sealed partial class BattleRoyaleRuleComponent : Component
 
     [DataField]
     public MapId? MapId;
+
+    [DataField]
+    public List<EntityUid> SpawnPoints = new();
+
+    [DataField]
+    public TimeSpan PacificationDuration = TimeSpan.FromMinutes(2);
 }

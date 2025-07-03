@@ -18,26 +18,3 @@
   - type: MindRole
     roleType: SoloAntagonist
     antagPrototype: BattleRoyaleMember
-
-- type: job
-  id: BattleRoyaleMember
-  name: "Участник битвы"
-  playTimeTracker: RoyaleMember
-  setPreference: false
-
-- type: playTimeTracker
-  id: RoyaleMember
-
-- type: entity
-  id: SpawnPointBattleRoyale
-  name: Battle Royale Spawn
-  parent: MarkerBase
-  components:
-  - type: SpawnPoint
-  - type: Transform
-  - type: Sprite
-    sprite: Markers/jobs.rsi
-    layers:
-    - state: green
-    - sprite: Mobs/Species/Terminator/parts.rsi
-      state: skull_icon

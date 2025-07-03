@@ -74444,7 +74444,7 @@ entities:
 
 
 
-                  Of course I do love you 
+                  Of course I do love you
 
 
 
@@ -97637,7 +97637,7 @@ entities:
     - type: Transform
       pos: 29.5,51.5
       parent: 2
-- proto: SpawnPointBattleRoyale
+- proto: SpawnPointMarkerBattleRoyale
   entities:
   - uid: 7291
     components:

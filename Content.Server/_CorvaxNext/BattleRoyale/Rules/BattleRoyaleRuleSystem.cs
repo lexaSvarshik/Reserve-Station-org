@@ -4,22 +4,15 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Linq;
-using Content.Server.Administration.Commands;
-using Content.Server.Administration.Logs;
+using Content.Server.Antag;
 using Content.Server.Chat.Managers;
 using Content.Server.Chat.Systems;
 using Content.Server.GameTicking;
-using Content.Server.GameTicking.Events;
 using Content.Server.GameTicking.Rules;
 using Content.Server.KillTracking;
 using Content.Server.Mind;
-//using Content.Server.Traits.Assorted; //Reserve port BattleRoyale
-//using Content.Server._CorvaxNext.Traits.Assorted; //Reserve port BattleRoyale
 using Content.Server.Points;
 using Content.Server.RoundEnd;
-using Content.Server.Shuttles.Components;
-using Content.Server.Shuttles.Systems;
-using Content.Server.Station.Systems;
 using Content.Server._CorvaxNext.BattleRoyale.Rules.Components;
 using Content.Server._Goobstation.Ghostbar.Components; //Reserve port BattleRoyale
 using Robust.Shared.Audio;
@@ -27,27 +20,20 @@ using Content.Shared.Bed.Sleep;
 using Content.Shared.CombatMode.Pacification;
 using Content.Shared.Chat;
 using Content.Shared.Eye.Blinding.Components;
-using Content.Shared.GameTicking;
 using Content.Shared.GameTicking.Components;
-using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
-using Content.Shared.Players;
 using Content.Shared.Points;
 using Content.Shared.Traits.Assorted;
 using Content.Server.Traits.Assorted; //Reserve port BattleRoyale
-//using Content.Shared._CorvaxNext.Skills; //Reserve port BattleRoyale
-using Robust.Server.GameObjects;
 using Robust.Server.Player;
 using Robust.Shared.Network;
-using Robust.Shared.Maths;
 using Robust.Shared.Player;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
-using Robust.Shared.Enums;
 
 namespace Content.Server._CorvaxNext.BattleRoyale.Rules
 {
@@ -60,17 +46,11 @@ namespace Content.Server._CorvaxNext.BattleRoyale.Rules
         [Dependency] private readonly MindSystem _mind = default!;
         [Dependency] private readonly PointSystem _point = default!;
         [Dependency] private readonly RoundEndSystem _roundEnd = default!;
-        [Dependency] private readonly StationSpawningSystem _stationSpawning = default!;
-        [Dependency] private readonly TransformSystem _transforms = default!;
         [Dependency] private readonly MobStateSystem _mobState = default!;
-        [Dependency] private readonly KillTrackingSystem _killTracking = default!;
-        [Dependency] private readonly IAdminLogManager _adminLogger = default!;
         [Dependency] private readonly IChatManager _chatManager = default!;
         [Dependency] private readonly ChatSystem _chatSystem = default!;
-        [Dependency] private readonly IGameTiming _timing = default!;
         [Dependency] private readonly IRobustRandom _random = default!;
-        //[Dependency] private readonly SharedSkillsSystem _skills = default!; //Reserve port BattleRoyale
-        [Dependency] private readonly ArrivalsSystem _arrivals = default!;
+        private ISawmill _sawmill = default!;
 
         private const int MaxNormalCallouts = 60;
         private const int MaxEnvironmentalCallouts = 10;
@@ -78,12 +58,15 @@ namespace Content.Server._CorvaxNext.BattleRoyale.Rules
         public override void Initialize()
         {
             base.Initialize();
+
+            _sawmill = Logger.GetSawmill("BattleRoyale");
+
             SubscribeLocalEvent<MobStateChangedEvent>(OnMobStateChanged);
             SubscribeLocalEvent<KillReportedEvent>(OnKillReported);
-            SubscribeLocalEvent<PlayerBeforeSpawnEvent>(OnBeforeSpawn);
             SubscribeLocalEvent<RefreshLateJoinAllowedEvent>(OnRefreshLateJoinAllowed);
-            SubscribeLocalEvent<PlayerSpawningEvent>(OnPlayerSpawning, before: new[] { typeof(ArrivalsSystem) });
             SubscribeLocalEvent<PlayerDetachedEvent>(OnPlayerDetached);
+
+            SubscribeLocalEvent<BattleRoyaleRuleComponent, AfterAntagEntitySelectedEvent>(OnAfterAntagSelected);
         }
 
         private void OnRefreshLateJoinAllowed(RefreshLateJoinAllowedEvent ev)
@@ -91,17 +74,6 @@ namespace Content.Server._CorvaxNext.BattleRoyale.Rules
             if (CheckBattleRoyaleActive())
             {
                 ev.Disallow();
-            }
-        }
-
-        private void OnPlayerSpawning(PlayerSpawningEvent ev)
-        {
-            if (CheckBattleRoyaleActive() && ev.SpawnResult == null)
-            {
-                if (HasComp<StationArrivalsComponent>(ev.Station))
-                {
-                    ev.SpawnResult = null;
-                }
             }
         }
 
@@ -115,6 +87,8 @@ namespace Content.Server._CorvaxNext.BattleRoyale.Rules
         {
             base.Started(uid, component, gameRule, args);
 
+            _sawmill.Info($"Battle Royale rule started: {ToPrettyString(uid)}");
+
             Timer.Spawn(TimeSpan.FromSeconds(5), () =>
             {
                 CheckLastManStanding(uid, component);
@@ -122,12 +96,10 @@ namespace Content.Server._CorvaxNext.BattleRoyale.Rules
 
             Timer.Spawn(TimeSpan.FromMinutes(2), () =>
             {
-                //Reserve edit begin
-                if (!Exists(uid) || !TryComp<GameRuleComponent>(uid, out var gameRule))
+                if (!Exists(uid) || !TryComp<GameRuleComponent>(uid, out var gameRuleComp))
                     return;
-                //Reserve edit end
 
-                if (!GameTicker.IsGameRuleActive(uid, gameRule))
+                if (!GameTicker.IsGameRuleActive(uid, gameRuleComp))
                     return;
 
                 var message = Loc.GetString("battle-royale-kill-or-be-killed");
@@ -135,67 +107,51 @@ namespace Content.Server._CorvaxNext.BattleRoyale.Rules
 
                 var sound = new SoundPathSpecifier("/Audio/Ambience/Antag/traitor_start.ogg");
 
+                _sawmill.Info("Dispatching Battle Royale announcement");
                 _chatSystem.DispatchGlobalAnnouncement(message, title, true, sound, Color.Red);
             });
         }
 
-        private void OnBeforeSpawn(PlayerBeforeSpawnEvent ev)
+        private void OnAfterAntagSelected(Entity<BattleRoyaleRuleComponent> ent, ref AfterAntagEntitySelectedEvent args)
         {
-            var query = EntityQueryEnumerator<BattleRoyaleRuleComponent, GameRuleComponent>();
-            while (query.MoveNext(out var uid, out var br, out var gameRule))
+
+            var player = args.EntityUid;
+
+            _sawmill.Info($"Setting up Battle Royale player: {ToPrettyString(player)}");
+
+            // Add required components
+            EnsureComp<KillTrackerComponent>(player);
+            EnsureComp<SleepingComponent>(player);
+
+            // Add pacification
+            var pacified = EnsureComp<PacifiedComponent>(player);
+            var removePacifiedTime = ent.Comp.PacificationDuration;
+            Timer.Spawn(removePacifiedTime, () =>
             {
-                if (!GameTicker.IsGameRuleActive(uid, gameRule))
-                    continue;
+                if (Deleted(player))
+                    return;
 
-                var newMind = _mind.CreateMind(ev.Player.UserId, ev.Profile.Name);
-                _mind.SetUserId(newMind, ev.Player.UserId);
+                RemComp<PacifiedComponent>(player);
+                _sawmill.Debug($"Removed pacification from {ToPrettyString(player)}");
+            });
 
-                var mobMaybe = _stationSpawning.SpawnPlayerCharacterOnStation(ev.Station, null, ev.Profile);
-                DebugTools.AssertNotNull(mobMaybe);
-                var mob = mobMaybe!.Value;
+            // Add temporary blurry vision
+            var blurry = EnsureComp<BlurryVisionComponent>(player);
+            Timer.Spawn(TimeSpan.FromSeconds(15), () =>
+            {
+                if (Deleted(player))
+                    return;
 
-                if (HasComp<PainNumbnessComponent>(mob))
-                    RemComp<PainNumbnessComponent>(mob);
+                RemComp<BlurryVisionComponent>(player);
+                _sawmill.Debug($"Removed blurry vision from {ToPrettyString(player)}");
+            });
 
-                //if (HasComp<MoodModifyTraitComponent>(mob)) //Reserve port BattleRoyale
-                //	RemComp<MoodModifyTraitComponent>(mob); //Reserve port BattleRoyale
+            // Remove negative traits
+            RemComp<PainNumbnessComponent>(player);
+            RemComp<PermanentBlindnessComponent>(player);
+            RemComp<NarcolepsyComponent>(player);
 
-                if (HasComp<PermanentBlindnessComponent>(mob))
-                    RemComp<PermanentBlindnessComponent>(mob);
-
-                if (HasComp<NarcolepsyComponent>(mob))
-                    RemComp<NarcolepsyComponent>(mob);
-
-                _mind.TransferTo(newMind, mob);
-                SetOutfitCommand.SetOutfit(mob, br.Gear, false, EntityManager);
-                EnsureComp<KillTrackerComponent>(mob);
-                EnsureComp<SleepingComponent>(mob);
-
-                // _skills.GrantAllSkills(mob); //Reserve port BattleRoyale
-
-                var pacifiedComp = EnsureComp<PacifiedComponent>(mob);
-                Timer.Spawn(TimeSpan.FromMinutes(2), () =>
-                {
-                    if (!Deleted(mob) && HasComp<PacifiedComponent>(mob))
-                        RemComp<PacifiedComponent>(mob);
-                });
-
-                var blurryVisionComp = EnsureComp<BlurryVisionComponent>(mob);
-                Timer.Spawn(TimeSpan.FromSeconds(15), () =>
-                {
-                    if (!Deleted(mob) && HasComp<BlurryVisionComponent>(mob))
-                        RemComp<BlurryVisionComponent>(mob);
-                });
-
-                ev.Handled = true;
-
-                Timer.Spawn(TimeSpan.FromSeconds(0.5), () =>
-                {
-                    CheckLastManStanding(uid, br);
-                });
-
-                break;
-            }
+            _sawmill.Info($"Battle Royale player setup complete: {ToPrettyString(player)}");
         }
 
         private void OnMobStateChanged(MobStateChangedEvent args)
