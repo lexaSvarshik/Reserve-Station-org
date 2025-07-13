@@ -49,8 +49,19 @@ public sealed partial class PlayerListEntry : BoxContainer
 
     private void Update(PlayerInfo info, Func<PlayerInfo, string, string>? overrideText)
     {
-        PlayerEntryLabel.Text = overrideText?.Invoke(info, $"{info.CharacterName} ({info.Username})@{AuthServer.GetServerFromCVarListByUrl(_config, //EE multiauth
-            _playerManager.GetSessionById(info.SessionId).Channel.UserData.AuthServer)?.Id})") ?? $"{info.CharacterName} ({info.Username})"; //EE multiauth
+        //EE multiauth begin
+        if (!_playerManager.TryGetSessionById(info.SessionId, out var session))
+        {
+            PlayerEntryLabel.Text = $"{info.CharacterName} ({info.Username}) [DISCONNECTED]";
+            UpdatePinButtonTexture(info.IsPinned);
+            return;
+        }
+
+        var authServer = session.Channel.UserData.AuthServer;
+        PlayerEntryLabel.Text = overrideText?.Invoke(info,
+            $"{info.CharacterName} ({info.Username})@{AuthServer.GetServerFromCVarListByUrl(_config, authServer)?.Id}"
+        ) ?? $"{info.CharacterName} ({info.Username})";
+        //EE multiauth end
 
         UpdatePinButtonTexture(info.IsPinned);
     }

@@ -39,6 +39,7 @@ using Robust.Shared.Configuration;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Input;
+using Robust.Shared.Log;
 
 namespace Content.Client.Administration.UI.CustomControls;
 
@@ -49,6 +50,7 @@ public sealed partial class PlayerListControl : BoxContainer
 
     private readonly IEntityManager _entManager;
     private readonly IUserInterfaceManager _uiManager;
+    private ISawmill _sawmill = default!;
     private readonly ISharedPlayerManager _playerManager; //EE multiauth
     private readonly IConfigurationManager _config; //EE multiauth
 
@@ -130,8 +132,15 @@ public sealed partial class PlayerListControl : BoxContainer
         _sortedPlayerList.Clear();
         foreach (var info in _playerList)
         {
-            var displayName = $"{info.CharacterName} ({info.Username}@{AuthServer.GetServerFromCVarListByUrl(_config, //EE multiauth
-                _playerManager.GetSessionById(info.SessionId).Channel.UserData.AuthServer)?.Id})"; //EE multiauth
+            //EE multiauth begin
+            if (!_playerManager.TryGetSessionById(info.SessionId, out var session))
+            {
+                _sawmill.Warning($"Player {info.Username} (ID: {info.SessionId}) doesn't have active session!");
+                continue;
+            }
+            var authServer = session.Channel.UserData.AuthServer;
+            var displayName = $"{info.CharacterName} ({info.Username}@{AuthServer.GetServerFromCVarListByUrl(_config, authServer)?.Id})";
+            //EE multiauth end
             if (info.IdentityName != info.CharacterName)
                 displayName += $" [{info.IdentityName}]";
             if (!string.IsNullOrEmpty(FilterLineEdit.Text)
@@ -141,7 +150,7 @@ public sealed partial class PlayerListControl : BoxContainer
         }
 
         if (Comparison != null)
-            _sortedPlayerList.Sort((a, b) => Comparison(a, b));
+            _sortedPlayerList.Sort(Comparison);
 
         PlayerListContainer.PopulateList(_sortedPlayerList.Select(info => new PlayerListData(info)).ToList());
         if (_selectedPlayer != null)
