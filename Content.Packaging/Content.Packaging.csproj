@@ -18,7 +18,7 @@ SPDX-License-Identifier: MIT
 
   <ItemGroup>
     <ProjectReference Include="..\Content.ModuleManager\Content.ModuleManager.csproj" />
-    <ProjectReference Include="..\SupermatterEngine\Robust.Packaging\Robust.Packaging.csproj" />
+    <ProjectReference Include="..\RobustToolbox\Robust.Packaging\Robust.Packaging.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,5 +26,5 @@ SPDX-License-Identifier: MIT
     <PackageReference Include="AsmResolver.DotNet" />
   </ItemGroup>
 
-  <Import Project="..\SupermatterEngine\MSBuild\Robust.Properties.targets" />
+  <Import Project="..\RobustToolbox\MSBuild\Robust.Properties.targets" />
 </Project>

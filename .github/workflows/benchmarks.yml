@@ -24,7 +24,7 @@ jobs:
         submodules: 'recursive'
     - name: Get Engine version
       run: |
-        cd SupermatterEngine
+        cd RobustToolbox
         git fetch --depth=1
         echo "::set-output name=out::$(git rev-parse HEAD)"
       id: engine_version

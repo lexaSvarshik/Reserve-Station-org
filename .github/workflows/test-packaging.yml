@@ -22,8 +22,8 @@ on:
       - '**.yml'
       # no docs on which one of these is supposed to work, so
       # why not just do both
-      - 'SupermatterEngine'
-      - 'SupermatterEngine/**'
+      - 'RobustToolbox'
+      - 'RobustToolbox/**'
   merge_group:
   pull_request:
     types: [ opened, reopened, synchronize, ready_for_review ]
@@ -34,8 +34,8 @@ on:
       - '**.sln'
       - '**.git**'
       - '**.yml'
-      - 'SupermatterEngine'
-      - 'SupermatterEngine/**'
+      - 'RobustToolbox'
+      - 'RobustToolbox/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -60,7 +60,7 @@ jobs:
 
       - name: Update Engine Submodules
         run: |
-          cd SupermatterEngine/
+          cd RobustToolbox/
           git submodule update --init --recursive
 
       - name: Setup .NET Core

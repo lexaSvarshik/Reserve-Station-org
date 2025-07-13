@@ -22,7 +22,7 @@ SPDX-License-Identifier: MIT
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Content.IntegrationTests\Content.IntegrationTests.csproj" />
-    <ProjectReference Include="..\SupermatterEngine\Robust.UnitTesting\Robust.UnitTesting.csproj" />
+    <ProjectReference Include="..\RobustToolbox\Robust.UnitTesting\Robust.UnitTesting.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,5 +30,5 @@ SPDX-License-Identifier: MIT
     <PackageReference Include="SixLabors.ImageSharp" />
   </ItemGroup>
 
-  <Import Project="..\SupermatterEngine\MSBuild\Robust.Properties.targets" />
+  <Import Project="..\RobustToolbox\MSBuild\Robust.Properties.targets" />
 </Project>

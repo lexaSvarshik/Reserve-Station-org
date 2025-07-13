@@ -36,12 +36,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <ProjectReference Include="..\Content.Server\Content.Server.csproj" />
     <ProjectReference Include="..\Content.Shared\Content.Shared.csproj" />
     <ProjectReference Include="..\Content.Tests\Content.Tests.csproj" />
-    <ProjectReference Include="..\SupermatterEngine\Robust.Client\Robust.Client.csproj" />
-    <ProjectReference Include="..\SupermatterEngine\Robust.Server\Robust.Server.csproj" />
-    <ProjectReference Include="..\SupermatterEngine\Robust.Shared.Maths\Robust.Shared.Maths.csproj" />
-    <ProjectReference Include="..\SupermatterEngine\Robust.Shared\Robust.Shared.csproj" />
-    <ProjectReference Include="..\SupermatterEngine\Robust.UnitTesting\Robust.UnitTesting.csproj" />
+    <ProjectReference Include="..\RobustToolbox\Robust.Client\Robust.Client.csproj" />
+    <ProjectReference Include="..\RobustToolbox\Robust.Server\Robust.Server.csproj" />
+    <ProjectReference Include="..\RobustToolbox\Robust.Shared.Maths\Robust.Shared.Maths.csproj" />
+    <ProjectReference Include="..\RobustToolbox\Robust.Shared\Robust.Shared.csproj" />
+    <ProjectReference Include="..\RobustToolbox\Robust.UnitTesting\Robust.UnitTesting.csproj" />
   </ItemGroup>
-  <Import Project="..\SupermatterEngine\MSBuild\Robust.Properties.targets" />
-  <Import Project="..\SupermatterEngine\MSBuild\Robust.CompNetworkGenerator.targets" />
+  <Import Project="..\RobustToolbox\MSBuild\Robust.Properties.targets" />
+  <Import Project="..\RobustToolbox\MSBuild\Robust.CompNetworkGenerator.targets" />
 </Project>

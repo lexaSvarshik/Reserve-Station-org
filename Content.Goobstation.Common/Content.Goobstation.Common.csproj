@@ -19,10 +19,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
     <ItemGroup>
       <ProjectReference Include="..\Content.ModuleManager\Content.ModuleManager.csproj" />
-      <ProjectReference Include="..\SupermatterEngine\Robust.Shared\Robust.Shared.csproj" />
+      <ProjectReference Include="..\RobustToolbox\Robust.Shared\Robust.Shared.csproj" />
     </ItemGroup>
 
-    <Import Project="..\SupermatterEngine\MSBuild\Robust.Properties.targets" />
-    <Import Project="..\SupermatterEngine\MSBuild\Robust.CompNetworkGenerator.targets" />
+    <Import Project="..\RobustToolbox\MSBuild\Robust.Properties.targets" />
+    <Import Project="..\RobustToolbox\MSBuild\Robust.CompNetworkGenerator.targets" />
 
 </Project>
