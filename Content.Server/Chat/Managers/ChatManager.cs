@@ -441,16 +441,33 @@ internal sealed partial class ChatManager : IChatManager
         }
 
         Color? colorOverride = null;
-        var wrappedMessage = Loc.GetString("chat-manager-send-ooc-wrap-message", ("playerName",player.Name), ("message", FormattedMessage.EscapeText(message)));
+        //EE multiauth begin
+        var authServer = player.AuthType == LoginType.LoggedIn
+                ? AuthServer.FromStringList(_configurationManager.GetCVar(CCVars.AuthServers))
+                    .FirstOrDefault(x => x.AuthUrl.ToString() == player.Channel.UserData.AuthServer)?.Id ?? "Unknown"
+                : "Unknown";
+        var wrappedMessage = Loc.GetString(
+                "chat-manager-send-ooc-wrap-message",
+                ("playerName", $"{player.Name}"),
+                ("authServer", authServer), //Reserve - althub
+                ("message", FormattedMessage.EscapeText(message)));
+        //EE multiauth end
         if (_adminManager.HasAdminFlag(player, AdminFlags.NameColor))
         {
             var prefs = _preferencesManager.GetPreferences(player.UserId);
             colorOverride = prefs.AdminOOCColor;
         }
-        if (  _netConfigManager.GetClientCVar(player.Channel, CCVars.ShowOocPatronColor) &&
+        if (_netConfigManager.GetClientCVar(player.Channel, CCVars.ShowOocPatronColor) &&
             _linkAccount.GetPatron(player)?.Tier != null) // RMC - Patreon
         {
-            wrappedMessage = Loc.GetString("chat-manager-send-ooc-patron-wrap-message", ("patronColor", "#aa00ff"),("playerName", player.Name), ("message", FormattedMessage.EscapeText(message))); // RMC - Patreon
+            //EE multiauth begin
+            wrappedMessage = Loc.GetString(
+                "chat-manager-send-ooc-patron-wrap-message",
+                ("patronColor", "#aa00ff"), // RMC - Patreon
+                ("playerName", player.Name),
+                ("authServer", authServer), //Reserve - althub
+                ("message", FormattedMessage.EscapeText(message)));
+            //EE multiauth end
         }
 
         //TODO: player.Name color, this will need to change the structure of the MsgChatMessage

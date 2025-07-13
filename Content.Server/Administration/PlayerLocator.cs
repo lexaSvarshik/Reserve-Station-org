@@ -12,6 +12,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Collections.Immutable;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -114,7 +115,7 @@ namespace Content.Server.Administration
                 return ReturnForPlayerRecord(record);
 
             // If all else fails, ask the auth server.
-            var authServer = _configurationManager.GetCVar(CVars.AuthServer);
+            var authServer = AuthServer.FromStringList(_configurationManager.GetCVar(CVars.AuthServers)).First().AuthUrl; //EE multiauth
             var requestUri = $"{authServer}api/query/name?name={WebUtility.UrlEncode(playerName)}";
             using var resp = await _httpClient.GetAsync(requestUri, cancel);
 
@@ -136,7 +137,7 @@ namespace Content.Server.Administration
                 return ReturnForPlayerRecord(record);
 
             // If all else fails, ask the auth server.
-            var authServer = _configurationManager.GetCVar(CVars.AuthServer);
+            var authServer = AuthServer.FromStringList(_configurationManager.GetCVar(CVars.AuthServers)).First().AuthUrl; //EE multiauth
             var requestUri = $"{authServer}api/query/userid?userid={WebUtility.UrlEncode(userId.UserId.ToString())}";
             using var resp = await _httpClient.GetAsync(requestUri, cancel);
 
