@@ -136,19 +136,15 @@ public sealed partial class PlayerListControl : BoxContainer
         _sortedPlayerList.Clear();
         foreach (var info in _playerList)
         {
-            //EE multiauth begin
-            if (!_playerManager.TryGetSessionById(info.SessionId, out var session))
+            // EE multiauth begin
+            if (!_playerManager.TryGetSessionById(info.SessionId, out var session) ||
+                session.Channel?.UserData?.AuthServer == null) // Главное изменение: проверка цепочки
             {
-                _sawmill.Warning($"Player {info.Username} (ID: {info.SessionId}) doesn't have active session!");
+                _sawmill.Warning($"Skipping player {info.Username} (invalid session data)");
                 continue;
             }
 
-            if (session.Channel?.UserData?.AuthServer is not { } authServer)
-            {
-                _sawmill.Warning($"Player {info.Username} (ID: {info.SessionId}) has invalid session data (Channel/UserData/AuthServer is null)!");
-                continue;
-            }
-
+            var authServer = session.Channel.UserData.AuthServer;
             var displayName = $"{info.CharacterName} ({info.Username}@{AuthServer.GetServerFromCVarListByUrl(_config, authServer)?.Id})";
             //EE multiauth end
             if (info.IdentityName != info.CharacterName)
