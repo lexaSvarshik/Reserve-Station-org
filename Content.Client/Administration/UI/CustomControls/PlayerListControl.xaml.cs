@@ -142,7 +142,13 @@ public sealed partial class PlayerListControl : BoxContainer
                 _sawmill.Warning($"Player {info.Username} (ID: {info.SessionId}) doesn't have active session!");
                 continue;
             }
-            var authServer = session.Channel.UserData.AuthServer;
+
+            if (session.Channel?.UserData?.AuthServer is not { } authServer)
+            {
+                _sawmill.Warning($"Player {info.Username} (ID: {info.SessionId}) has invalid session data (Channel/UserData/AuthServer is null)!");
+                continue;
+            }
+
             var displayName = $"{info.CharacterName} ({info.Username}@{AuthServer.GetServerFromCVarListByUrl(_config, authServer)?.Id})";
             //EE multiauth end
             if (info.IdentityName != info.CharacterName)
