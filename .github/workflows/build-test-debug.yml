@@ -55,7 +55,7 @@ jobs:
 
     - name: Update Engine Submodules
       run: |
-        cd RobustToolbox/
+        cd SupermatterEngine/
         git submodule update --init --recursive
 
     - name: Setup .NET Core

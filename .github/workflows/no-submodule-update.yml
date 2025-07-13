@@ -8,7 +8,7 @@ name: No submodule update checker
 on:
   pull_request:
     paths:
-      - 'RobustToolbox'
+      - 'SupermatterEngine'  # Reserve edit
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

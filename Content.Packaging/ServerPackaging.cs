@@ -289,7 +289,7 @@ public static class ServerPackaging
                 $"/p:TargetOs={targetOs}",
                 "/p:FullRelease=True",
                 "/m",
-                "RobustToolbox/Robust.Server/Robust.Server.csproj"
+                "SupermatterEngine/Robust.Server/Robust.Server.csproj"
             }
         });
     }
@@ -332,7 +332,7 @@ public static class ServerPackaging
         }
 
         await RobustSharedPackaging.DoResourceCopy(
-            Path.Combine("RobustToolbox", "bin", "Server",
+            Path.Combine("SupermatterEngine", "bin", "Server",
             platform.Rid,
             "publish"),
             inputPassCore,

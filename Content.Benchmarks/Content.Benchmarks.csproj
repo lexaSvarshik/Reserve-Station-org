@@ -13,7 +13,7 @@ SPDX-License-Identifier: MIT
 -->
 
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\RobustToolbox\MSBuild\Robust.Properties.targets" />
+  <Import Project="..\SupermatterEngine\MSBuild\Robust.Properties.targets" />
   <PropertyGroup>
     <!-- Work around https://github.com/dotnet/project-system/issues/4314 -->
     <TargetFramework>$(TargetFramework)</TargetFramework>
@@ -33,10 +33,10 @@ SPDX-License-Identifier: MIT
     <ProjectReference Include="..\Content.Shared\Content.Shared.csproj" />
     <ProjectReference Include="..\Content.Tests\Content.Tests.csproj" />
     <ProjectReference Include="..\Content.IntegrationTests\Content.IntegrationTests.csproj" />
-    <ProjectReference Include="..\RobustToolbox\Robust.Benchmarks\Robust.Benchmarks.csproj" />
-    <ProjectReference Include="..\RobustToolbox\Robust.Client\Robust.Client.csproj" />
-    <ProjectReference Include="..\RobustToolbox\Robust.Server\Robust.Server.csproj" />
-    <ProjectReference Include="..\RobustToolbox\Robust.Shared.Maths\Robust.Shared.Maths.csproj" />
-    <ProjectReference Include="..\RobustToolbox\Robust.Shared\Robust.Shared.csproj" />
+    <ProjectReference Include="..\SupermatterEngine\Robust.Benchmarks\Robust.Benchmarks.csproj" />
+    <ProjectReference Include="..\SupermatterEngine\Robust.Client\Robust.Client.csproj" />
+    <ProjectReference Include="..\SupermatterEngine\Robust.Server\Robust.Server.csproj" />
+    <ProjectReference Include="..\SupermatterEngine\Robust.Shared.Maths\Robust.Shared.Maths.csproj" />
+    <ProjectReference Include="..\SupermatterEngine\Robust.Shared\Robust.Shared.csproj" />
   </ItemGroup>
 </Project>

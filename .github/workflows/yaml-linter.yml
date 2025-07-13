@@ -40,7 +40,7 @@ jobs:
         uses: space-wizards/submodule-dependency@v0.1.5
       - name: Update Engine Submodules
         run: |
-          cd RobustToolbox/
+          cd SupermatterEngine/
           git submodule update --init --recursive
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v4.1.0
