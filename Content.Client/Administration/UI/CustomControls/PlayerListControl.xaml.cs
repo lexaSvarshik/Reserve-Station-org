@@ -22,10 +22,6 @@
 // SPDX-FileCopyrightText: 2024 ShadowCommander <10494922+ShadowCommander@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2024 metalgearsloth <comedian_vs_clown@hotmail.com>
 // SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 ReserveBot <211949879+ReserveBot@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 SX-7 <sn1.test.preria.2002@gmail.com>
-// SPDX-FileCopyrightText: 2025 Svarshik <96281939+lexaSvarshik@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 nazrin <tikufaev@outlook.com>
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -39,11 +35,7 @@ using Robust.Client.Graphics;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
-using Robust.Shared.Configuration;
-using Robust.Shared.Network;
-using Robust.Shared.Player;
 using Robust.Shared.Input;
-using Robust.Shared.Log;
 
 namespace Content.Client.Administration.UI.CustomControls;
 
@@ -54,9 +46,6 @@ public sealed partial class PlayerListControl : BoxContainer
 
     private readonly IEntityManager _entManager;
     private readonly IUserInterfaceManager _uiManager;
-    private ISawmill _sawmill; //EE multiauth
-    private readonly ISharedPlayerManager _playerManager; //EE multiauth
-    private readonly IConfigurationManager _config; //EE multiauth
 
     private PlayerInfo? _selectedPlayer;
 
@@ -70,9 +59,6 @@ public sealed partial class PlayerListControl : BoxContainer
     {
         _entManager = IoCManager.Resolve<IEntityManager>();
         _uiManager = IoCManager.Resolve<IUserInterfaceManager>();
-        _playerManager = IoCManager.Resolve<ISharedPlayerManager>(); //EE multiauth
-        _config = IoCManager.Resolve<IConfigurationManager>(); //EE multiauth
-        _sawmill = Logger.GetSawmill("PlayerList"); //EE multiauth
         _adminSystem = _entManager.System<AdminSystem>();
         RobustXamlLoader.Load(this);
         // Fill the Option data
@@ -140,15 +126,14 @@ public sealed partial class PlayerListControl : BoxContainer
             var displayName = $"{info.CharacterName} ({info.Username})";
             if (info.IdentityName != info.CharacterName)
                 displayName += $" [{info.IdentityName}]";
-
-            if (!string.IsNullOrEmpty(FilterLineEdit.Text) &&
-                !displayName.ToLowerInvariant().Contains(FilterLineEdit.Text.Trim().ToLowerInvariant()))
+            if (!string.IsNullOrEmpty(FilterLineEdit.Text)
+                && !displayName.ToLowerInvariant().Contains(FilterLineEdit.Text.Trim().ToLowerInvariant()))
                 continue;
             _sortedPlayerList.Add(info);
         }
 
         if (Comparison != null)
-            _sortedPlayerList.Sort(Comparison);
+            _sortedPlayerList.Sort((a, b) => Comparison(a, b));
 
         PlayerListContainer.PopulateList(_sortedPlayerList.Select(info => new PlayerListData(info)).ToList());
         if (_selectedPlayer != null)
@@ -157,28 +142,28 @@ public sealed partial class PlayerListControl : BoxContainer
 
 
     public void PopulateList(IReadOnlyList<PlayerInfo>? players = null)
-                {
-                    // Maintain existing pin statuses
-                    var pinnedPlayers = _playerList.Where(p => p.IsPinned).ToDictionary(p => p.SessionId);
+    {
+        // Maintain existing pin statuses
+        var pinnedPlayers = _playerList.Where(p => p.IsPinned).ToDictionary(p => p.SessionId);
 
-                    players ??= _adminSystem.PlayerList;
+        players ??= _adminSystem.PlayerList;
 
-                    _playerList = players.ToList();
+        _playerList = players.ToList();
 
-                    // Restore pin statuses
-                    foreach (var player in _playerList)
-                    {
-                        if (pinnedPlayers.TryGetValue(player.SessionId, out var pinnedPlayer))
-                        {
-                            player.IsPinned = pinnedPlayer.IsPinned;
-                        }
-                    }
+        // Restore pin statuses
+        foreach (var player in _playerList)
+        {
+            if (pinnedPlayers.TryGetValue(player.SessionId, out var pinnedPlayer))
+            {
+                player.IsPinned = pinnedPlayer.IsPinned;
+            }
+        }
 
-                    if (_selectedPlayer != null && !_playerList.Contains(_selectedPlayer))
-                        _selectedPlayer = null;
+        if (_selectedPlayer != null && !_playerList.Contains(_selectedPlayer))
+            _selectedPlayer = null;
 
-                    FilterList();
-                }
+        FilterList();
+    }
 
 
     private string GetText(PlayerInfo info)
