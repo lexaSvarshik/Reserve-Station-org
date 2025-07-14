@@ -136,21 +136,26 @@ public sealed partial class PlayerListControl : BoxContainer
         _sortedPlayerList.Clear();
         foreach (var info in _playerList)
         {
-            // EE multiauth begin
-            if (!_playerManager.TryGetSessionById(info.SessionId, out var session) ||
-                session.Channel?.UserData?.AuthServer == null) // Главное изменение: проверка цепочки
+            // EE multiauth start
+            string displayName;
+            if (_playerManager.TryGetSessionById(info.SessionId, out var session) &&
+                session.Channel?.UserData?.AuthServer is { } authServer)
             {
-                _sawmill.Warning($"Skipping player {info.Username} (invalid session data)");
-                continue;
+                displayName = $"{info.CharacterName} ({info.Username}@" +
+                             $"{AuthServer.GetServerFromCVarListByUrl(_config, authServer)?.Id})";
             }
+            else
+            {
+                displayName = $"{info.CharacterName} ({info.Username})";
+                _sawmill.Error($"Fallback name for {info.Username}: session data incomplete");
+            }
+            // EE multiauth end
 
-            var authServer = session.Channel.UserData.AuthServer;
-            var displayName = $"{info.CharacterName} ({info.Username}@{AuthServer.GetServerFromCVarListByUrl(_config, authServer)?.Id})";
-            //EE multiauth end
             if (info.IdentityName != info.CharacterName)
                 displayName += $" [{info.IdentityName}]";
-            if (!string.IsNullOrEmpty(FilterLineEdit.Text)
-                && !displayName.ToLowerInvariant().Contains(FilterLineEdit.Text.Trim().ToLowerInvariant()))
+
+            if (!string.IsNullOrEmpty(FilterLineEdit.Text) &&
+                !displayName.ToLowerInvariant().Contains(FilterLineEdit.Text.Trim().ToLowerInvariant()))
                 continue;
             _sortedPlayerList.Add(info);
         }
