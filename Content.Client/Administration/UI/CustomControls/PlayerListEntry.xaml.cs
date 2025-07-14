@@ -61,10 +61,17 @@ public sealed partial class PlayerListEntry : BoxContainer
             return;
         }
 
-        var authServer = session.Channel.UserData.AuthServer;
-        PlayerEntryLabel.Text = overrideText?.Invoke(info,
-            $"{info.CharacterName} ({info.Username})@{AuthServer.GetServerFromCVarListByUrl(_config, authServer)?.Id}"
-        ) ?? $"{info.CharacterName} ({info.Username})";
+        var authUrl = session.Channel?.UserData?.AuthServer;
+        var serverRecord = authUrl != null
+            ? AuthServer.GetServerFromCVarListByUrl(_config, authUrl)
+            : null;
+
+        var baseText = serverRecord?.Id is { } id
+            ? $"{info.CharacterName} ({info.Username})@{id}"
+            : $"{info.CharacterName} ({info.Username})";
+
+        PlayerEntryLabel.Text = overrideText?.Invoke(info, baseText)
+                               ?? baseText;
         //EE multiauth end
 
         UpdatePinButtonTexture(info.IsPinned);
