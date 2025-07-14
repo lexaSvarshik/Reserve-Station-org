@@ -54,7 +54,7 @@ public sealed partial class PlayerListControl : BoxContainer
 
     private readonly IEntityManager _entManager;
     private readonly IUserInterfaceManager _uiManager;
-    private ISawmill _sawmill = default!;
+    private ISawmill _sawmill; //EE multiauth
     private readonly ISharedPlayerManager _playerManager; //EE multiauth
     private readonly IConfigurationManager _config; //EE multiauth
 
@@ -72,6 +72,7 @@ public sealed partial class PlayerListControl : BoxContainer
         _uiManager = IoCManager.Resolve<IUserInterfaceManager>();
         _playerManager = IoCManager.Resolve<ISharedPlayerManager>(); //EE multiauth
         _config = IoCManager.Resolve<IConfigurationManager>(); //EE multiauth
+        _sawmill = Logger.GetSawmill("PlayerList"); //EE multiauth
         _adminSystem = _entManager.System<AdminSystem>();
         RobustXamlLoader.Load(this);
         // Fill the Option data
