@@ -138,16 +138,24 @@ public sealed partial class PlayerListControl : BoxContainer
         {
             // EE multiauth start
             string displayName;
-            if (_playerManager.TryGetSessionById(info.SessionId, out var session) &&
-                session.Channel?.UserData?.AuthServer is { } authServer)
+            if (_playerManager.TryGetSessionById(info.SessionId, out var session))
             {
-                displayName = $"{info.CharacterName} ({info.Username}@" +
-                             $"{AuthServer.GetServerFromCVarListByUrl(_config, authServer)?.Id})";
+                if (session?.Channel?.UserData?.AuthServer is { } authServer)
+                {
+                    var server = AuthServer.GetServerFromCVarListByUrl(_config, authServer);
+                    displayName = $"{info.CharacterName} ({info.Username}＠" +
+                                  $"{server?.Id})";
+                }
+                else
+                {
+                    displayName = $"{info.CharacterName} ({info.Username})";
+                    _sawmill.Error($"Fallback name for {info.Username}: session data incomplete");
+                }
             }
             else
             {
                 displayName = $"{info.CharacterName} ({info.Username})";
-                _sawmill.Error($"Fallback name for {info.Username}: session data incomplete");
+                _sawmill.Error($"Fallback name for {info.Username}: session not found");
             }
             // EE multiauth end
 
@@ -170,28 +178,28 @@ public sealed partial class PlayerListControl : BoxContainer
 
 
     public void PopulateList(IReadOnlyList<PlayerInfo>? players = null)
-    {
-        // Maintain existing pin statuses
-        var pinnedPlayers = _playerList.Where(p => p.IsPinned).ToDictionary(p => p.SessionId);
+                {
+                    // Maintain existing pin statuses
+                    var pinnedPlayers = _playerList.Where(p => p.IsPinned).ToDictionary(p => p.SessionId);
 
-        players ??= _adminSystem.PlayerList;
+                    players ??= _adminSystem.PlayerList;
 
-        _playerList = players.ToList();
+                    _playerList = players.ToList();
 
-        // Restore pin statuses
-        foreach (var player in _playerList)
-        {
-            if (pinnedPlayers.TryGetValue(player.SessionId, out var pinnedPlayer))
-            {
-                player.IsPinned = pinnedPlayer.IsPinned;
-            }
-        }
+                    // Restore pin statuses
+                    foreach (var player in _playerList)
+                    {
+                        if (pinnedPlayers.TryGetValue(player.SessionId, out var pinnedPlayer))
+                        {
+                            player.IsPinned = pinnedPlayer.IsPinned;
+                        }
+                    }
 
-        if (_selectedPlayer != null && !_playerList.Contains(_selectedPlayer))
-            _selectedPlayer = null;
+                    if (_selectedPlayer != null && !_playerList.Contains(_selectedPlayer))
+                        _selectedPlayer = null;
 
-        FilterList();
-    }
+                    FilterList();
+                }
 
 
     private string GetText(PlayerInfo info)
