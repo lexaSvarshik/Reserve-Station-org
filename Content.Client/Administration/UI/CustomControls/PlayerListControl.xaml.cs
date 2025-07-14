@@ -137,29 +137,7 @@ public sealed partial class PlayerListControl : BoxContainer
         _sortedPlayerList.Clear();
         foreach (var info in _playerList)
         {
-            // EE multiauth start
-            string displayName;
-            if (_playerManager.TryGetSessionById(info.SessionId, out var session))
-            {
-                if (session?.Channel?.UserData?.AuthServer is { } authServer)
-                {
-                    var server = AuthServer.GetServerFromCVarListByUrl(_config, authServer);
-                    displayName = $"{info.CharacterName} ({info.Username}＠" +
-                                  $"{server?.Id})";
-                }
-                else
-                {
-                    displayName = $"{info.CharacterName} ({info.Username})";
-                    _sawmill.Error($"Fallback name for {info.Username}: session data incomplete");
-                }
-            }
-            else
-            {
-                displayName = $"{info.CharacterName} ({info.Username})";
-                _sawmill.Error($"Fallback name for {info.Username}: session not found");
-            }
-            // EE multiauth end
-
+            var displayName = $"{info.CharacterName} ({info.Username})";
             if (info.IdentityName != info.CharacterName)
                 displayName += $" [{info.IdentityName}]";
 
