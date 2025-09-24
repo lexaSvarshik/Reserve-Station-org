@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Armor
+
 - type: entityTable
   id: RoyaleArmorTable
   table: !type:GroupSelector

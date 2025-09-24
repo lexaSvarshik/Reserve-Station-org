@@ -14,8 +14,14 @@
 // SPDX-FileCopyrightText: 2023 metalgearsloth <comedian_vs_clown@hotmail.com>
 // SPDX-FileCopyrightText: 2024 Flesh <62557990+PolterTzi@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2024 MODERN <87994977+modern-nm@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 GoobBot <uristmchands@proton.me>
+// SPDX-FileCopyrightText: 2025 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 ReserveBot <211949879+ReserveBot@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 SX-7 <sn1.test.preria.2002@gmail.com>
+// SPDX-FileCopyrightText: 2025 Svarshik <96281939+lexaSvarshik@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 nazrin <tikufaev@outlook.com>
+// SPDX-FileCopyrightText: 2025 pathetic meowmeow <uhhadd@gmail.com>
 //
 // SPDX-License-Identifier: MIT
 
@@ -60,6 +66,8 @@ namespace Content.Client.Cargo.UI
 
         private readonly List<string> _categoryStrings = new();
         private string? _category;
+
+        public List<ProtoId<CargoProductPrototype>> ProductCatalogue = new();
 
         public CargoConsoleMenu(EntityUid owner, IEntityManager entMan, IPrototypeManager protoManager, SpriteSystem spriteSystem)
         {
@@ -134,14 +142,16 @@ namespace Content.Client.Cargo.UI
             Categories.SelectId(id);
         }
 
-        public IEnumerable<CargoProductPrototype> ProductPrototypes
+        private IEnumerable<CargoProductPrototype> ProductPrototypes
         {
             get
             {
                 var allowedGroups = _entityManager.GetComponentOrNull<CargoOrderConsoleComponent>(_owner)?.AllowedGroups;
 
-                foreach (var cargoPrototype in _protoManager.EnumeratePrototypes<CargoProductPrototype>())
+                foreach (var cargoPrototypeId in ProductCatalogue)
                 {
+                    var cargoPrototype = _protoManager.Index(cargoPrototypeId);
+
                     if (!allowedGroups?.Contains(cargoPrototype.Group) ?? false)
                         continue;
 
@@ -220,6 +230,9 @@ namespace Content.Client.Cargo.UI
         /// </summary>
         public void PopulateOrders(IEnumerable<CargoOrderData> orders)
         {
+            if (!_orderConsoleQuery.TryComp(_owner, out var orderConsole))
+                return;
+
             Requests.DisposeAllChildren();
 
             foreach (var order in orders)
@@ -229,6 +242,7 @@ namespace Content.Client.Cargo.UI
 
                 var product = _protoManager.Index<EntityPrototype>(order.ProductId);
                 var productName = product.Name;
+                var account = _protoManager.Index(order.Account);
 
                 var row = new CargoOrderRow
                 {
@@ -240,7 +254,9 @@ namespace Content.Client.Cargo.UI
                             "cargo-console-menu-populate-orders-cargo-order-row-product-name-text",
                             ("productName", productName),
                             ("orderAmount", order.OrderQuantity),
-                            ("orderRequester", order.Requester))
+                            ("orderRequester", order.Requester),
+                            ("accountColor", account.Color),
+                            ("account", Loc.GetString(account.Code)))
                     },
                     Description =
                     {
@@ -251,6 +267,7 @@ namespace Content.Client.Cargo.UI
                 row.Cancel.OnPressed += (args) => { OnOrderCanceled?.Invoke(args); };
 
                 // TODO: Disable based on access.
+                row.SetApproveVisible(orderConsole.Mode != CargoOrderConsoleMode.SendToPrimary);
                 row.Approve.OnPressed += (args) => { OnOrderApproved?.Invoke(args); };
                 Requests.AddChild(row);
             }
@@ -303,6 +320,9 @@ namespace Content.Client.Cargo.UI
             AccountActionButton.Disabled = TransferSpinBox.Value <= 0 ||
                                            TransferSpinBox.Value > bankAccount.Accounts[orderConsole.Account] * orderConsole.TransferLimit ||
                                            _timing.CurTime < orderConsole.NextAccountActionTime;
+
+            OrdersSpacer.Visible = orderConsole.Mode != CargoOrderConsoleMode.PrintSlip;
+            Orders.Visible = orderConsole.Mode != CargoOrderConsoleMode.PrintSlip;
         }
     }
 }

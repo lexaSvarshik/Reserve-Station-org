@@ -72,6 +72,7 @@ using Robust.Shared.Random;
 using Robust.Shared.Spawners;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
+using Content.Shared.Actions.Components;
 
 namespace Content.Server._Goobstation.Wizard.Systems;
 
@@ -338,8 +339,6 @@ public sealed class SpellsSystem : SharedSpellsSystem
         soulBound.Sex = sex;
         AddComp(mind, soulBound, true);
 
-        DelayedSpeech(ev.Speech, newEntity, ev.Performer, MagicSchool.Necromancy);
-
         _inventory.TransferEntityInventories(ev.Performer, newEntity);
         foreach (var hand in Hands.EnumerateHeld(ev.Performer))
         {
@@ -381,14 +380,11 @@ public sealed class SpellsSystem : SharedSpellsSystem
         if (TryComp(ev.Action.Owner, out MagicComponent? magic))
             school = magic.School;
 
-        DelayedSpeech(ev.Speech, newEnt.Value, ev.Performer, school);
-
         if (ev.LoadActions)
             RaiseNetworkEvent(new LoadActionsEvent(GetNetEntity(ev.Performer)), newEnt.Value);
 
         return true;
     }
-
     private void DelayedSpeech(string? speech, EntityUid speaker, EntityUid caster, MagicSchool school)
     {
         Timer.Spawn(200,
@@ -408,12 +404,10 @@ public sealed class SpellsSystem : SharedSpellsSystem
 
         MapCoordinates targetMap;
 
-        if (ev.Coords != null)
-            targetMap = TransformSystem.ToMapCoordinates(ev.Coords.Value);
-        else if (TryComp(ev.Entity, out TransformComponent? xform))
+        targetMap = TransformSystem.ToMapCoordinates(ev.Target);
+
+        if (TryComp(ev.Entity, out TransformComponent? xform))
             targetMap = TransformSystem.GetMapCoordinates(ev.Entity.Value, xform);
-        else
-            return;
 
         var (_, mapCoords, spawnCoords, velocity) = GetProjectileData(ev.Performer);
 

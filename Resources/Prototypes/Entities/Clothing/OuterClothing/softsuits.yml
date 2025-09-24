@@ -113,7 +113,7 @@
 #Syndicate EVA
 - type: entity
   parent: [ ClothingOuterEVASuitBase, BaseSyndicateContraband ]
-  id: ClothingOuterHardsuitSyndicate # TODO: rename to ClothingOuterEVASuitSyndicate
+  id: ClothingOuterEVASuitSyndicate
   name: syndicate EVA suit
   description: "Has a tag on the back that reads: 'Totally not property of an enemy corporation, honest!'"
   components:
@@ -127,6 +127,8 @@
     - MonkeyWearable
     - WhitelistChameleon
     - Softsuit # OuterSlotClothingPenalty
+  - type: StaticPrice
+    price: 1000 # Helmet is 500
 
 #Emergency EVA
 - type: entity

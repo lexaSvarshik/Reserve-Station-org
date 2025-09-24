@@ -32,16 +32,27 @@
 // SPDX-FileCopyrightText: 2024 Vasilis <vasilis@pikachu.systems>
 // SPDX-FileCopyrightText: 2024 deltanedas <39013340+deltanedas@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2024 deltanedas <@deltanedas:kde.org>
-// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2024 metalgearsloth <comedian_vs_clown@hotmail.com>
 // SPDX-FileCopyrightText: 2024 plykiya <plykiya@protonmail.com>
 // SPDX-FileCopyrightText: 2024 username <113782077+whateverusername0@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2024 whateverusername0 <whateveremail>
 // SPDX-FileCopyrightText: 2024 Łukasz Mędrek <lukasz@lukaszm.xyz>
 // SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Ethan_k <eknowles27@dtechhs.org>
+// SPDX-FileCopyrightText: 2025 GoobBot <uristmchands@proton.me>
+// SPDX-FileCopyrightText: 2025 J <billsmith116@gmail.com>
+// SPDX-FileCopyrightText: 2025 Kyle Tyo <36606155+VerinSenpai@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Milon <milonpl.git@proton.me>
 // SPDX-FileCopyrightText: 2025 Misandry <mary@thughunt.ing>
 // SPDX-FileCopyrightText: 2025 SX-7 <92227810+SX-7@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 SX-7 <sn1.test.preria.2002@gmail.com>
+// SPDX-FileCopyrightText: 2025 UpAndLeaves <92269094+Alpha-Two@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 gluesniffler <159397573+gluesniffler@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 gluesniffler <linebarrelerenthusiast@gmail.com>
 // SPDX-FileCopyrightText: 2025 gus <august.eymann@gmail.com>
+// SPDX-FileCopyrightText: 2025 keronshb <54602815+keronshb@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -88,6 +99,8 @@ using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Content.Shared.Roles;
 using Content.Server.Animals.Components;
+using Content.Shared.Rejuvenate; // Shitmed Change
+using Content.Shared.NPC.Prototypes;
 
 namespace Content.Server.Zombies;
 
@@ -114,6 +127,9 @@ public sealed partial class ZombieSystem
     [Dependency] private readonly TagSystem _tag = default!;
     [Dependency] private readonly SharedRoleSystem _roles = default!;
     [Dependency] private readonly ISharedPlayerManager _player = default!;
+
+    private static readonly ProtoId<TagPrototype> CannotSuicideTag = "CannotSuicide";
+    private static readonly ProtoId<NpcFactionPrototype> ZombieFaction = "Zombie";
 
     /// <summary>
     /// Handles an entity turning into a zombie when they die or go into crit
@@ -149,6 +165,7 @@ public sealed partial class ZombieSystem
             return;
 
         //you're a real zombie now, son.
+        RaiseLocalEvent(target, new RejuvenateEvent(false, false)); // Shitmed Change
         var zombiecomp = AddComp<ZombieComponent>(target);
 
         //we need to basically remove all of these because zombies shouldn't
@@ -272,7 +289,7 @@ public sealed partial class ZombieSystem
         _mobState.ChangeMobState(target, MobState.Alive);
 
         _faction.ClearFactions(target, dirty: false);
-        _faction.AddFaction(target, "Zombie");
+        _faction.AddFaction(target, ZombieFaction);
 
         //gives it the funny "Zombie ___" name.
         _nameMod.RefreshNameModifiers(target);

@@ -1,6 +1,11 @@
 // SPDX-FileCopyrightText: 2025 ReserveBot <211949879+ReserveBot@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 Svarshik <96281939+lexaSvarshik@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 BombasterDS <deniskaporoshok@gmail.com>
+// SPDX-FileCopyrightText: 2025 BombasterDS2 <shvalovdenis.workmail@gmail.com>
+// SPDX-FileCopyrightText: 2025 GoobBot <uristmchands@proton.me>
+// SPDX-FileCopyrightText: 2025 Marcus F <199992874+thebiggestbruh@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 the biggest bruh <199992874+thebiggestbruh@users.noreply.github.com>
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -86,9 +91,10 @@ public sealed class PickObjectiveTargetSystem : EntitySystem
 
         // Begin DeltaV Additions: Only target people with jobs
 
-        var allHumans = _mind.GetAliveHumans(args.MindId).Where(mindId =>
+        var allHumans = _mind.GetAliveHumans(args.MindId,
+            ent.Comp.NeedsOrganic, ent.Comp.ExcludeChangeling).Where(mindId => // Goob edit - exclude IPCs and/or changelings
         _role.MindHasRole<JobRoleComponent>((mindId.Owner, mindId.Comp), out var role) &&
-        role?.Comp1.JobPrototype is {} jobId &&
+        role?.Comp1.JobPrototype is { } jobId &&
         _proto.Index(jobId).SetPreference).ToHashSet();
 
         // End DeltaV Additions
@@ -140,8 +146,12 @@ public sealed class PickObjectiveTargetSystem : EntitySystem
                 allHeads.Add(person);
         }
 
+        // Goobstation - Cancel if there is no command staff
         if (allHeads.Count == 0)
-            allHeads = allHumans; // fallback to non-head target
+        {
+            args.Cancelled = true;
+            return;
+        }
 
         _target.SetTarget(ent.Owner, _random.Pick(allHeads), target);
     }

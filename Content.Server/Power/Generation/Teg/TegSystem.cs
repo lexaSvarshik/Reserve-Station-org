@@ -62,6 +62,7 @@ using Content.Shared.Atmos;
 using Content.Shared.DeviceNetwork;
 using Content.Shared.DeviceNetwork.Events;
 using Content.Shared.Examine;
+using Content.Shared.NodeContainer;
 using Content.Shared.Power;
 using Content.Shared.Power.EntitySystems;
 using Content.Shared.Power.Generation.Teg;
@@ -151,7 +152,12 @@ public sealed class TegSystem : EntitySystem
         else
         {
             var supplier = Comp<PowerSupplierComponent>(uid);
-            args.PushMarkup(Loc.GetString("teg-generator-examine-power", ("power", supplier.CurrentSupply)));
+
+            using (args.PushGroup(nameof(TegGeneratorComponent)))
+            {
+                args.PushMarkup(Loc.GetString("teg-generator-examine-power", ("power", supplier.CurrentSupply)));
+                args.PushMarkup(Loc.GetString("teg-generator-examine-power-max-output", ("power", supplier.MaxSupply)));
+            }
         }
     }
 

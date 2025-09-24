@@ -138,7 +138,7 @@ ghost-role-information-kobold-description = Be the little gremlin you are, yell 
 
 ghost-role-information-rat-king-name = Rat King
 
-ghost-role-information-rat-king-description = You are the Rat King, your interests are food, food, and more food. Cooperate with or fight against the station for food. Did I say food interests you?
+ghost-role-information-rat-king-description = You are the Rat King, your interests are food, food, and more food. Fight against the station for food. Did I say food interests you?
 
 ghost-role-information-rat-servant-name = Rat Servant
 ghost-role-information-rat-servant-description = You are a Rat Servant. You must follow your king's orders.
@@ -148,6 +148,9 @@ ghost-role-information-salvage-carp-description = Defend the loot inside the sal
 
 ghost-role-information-sentient-carp-name = Sentient Carp
 ghost-role-information-sentient-carp-description = Help the dragon flood the station with carps!
+
+ghost-role-information-space-goldfish-name = Space Goldfish
+ghost-role-information-space-goldfish-description = Swim aimlessly through the air and nibble at anyone foolish enough to incur your wrath.
 
 ghost-role-information-willow-name = Willow the Kangaroo
 ghost-role-information-willow-description = You're a kangaroo named Willow! Willow likes to box.
@@ -342,7 +345,7 @@ ghost-role-information-disaster-victim-name = Disaster Victim
 ghost-role-information-disaster-victim-description = You were rescued in an escape pod from another station that suffered a terrible fate. Perhaps you will be found and rescued.
 
 ghost-role-information-syndie-disaster-victim-name = Syndicate Disaster Victim
-ghost-role-information-syndie-disaster-victim-description = You're a regular passenger from a syndicate station. Unfortunately, an evacuation pod has thrown you into an enemy sector...
+ghost-role-information-syndie-disaster-victim-description = You're a regular passenger from a syndicate station. You have defected from your home station and found yourself in unfamiliar territory...
 
 ghost-role-information-syndie-soldier-name = Syndicate Soldier
 ghost-role-information-syndie-soldier-description = You are a soldier from the Syndicate.

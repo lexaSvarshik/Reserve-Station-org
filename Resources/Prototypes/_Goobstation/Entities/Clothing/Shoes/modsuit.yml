@@ -4,10 +4,34 @@
 # SPDX-FileCopyrightText: 2025 BombasterDS <deniskaporoshok@gmail.com>
 # SPDX-FileCopyrightText: 2025 BombasterDS2 <shvalovdenis.workmail@gmail.com>
 # SPDX-FileCopyrightText: 2025 GoobBot <uristmchands@proton.me>
+# SPDX-FileCopyrightText: 2025 Marty <martynashagriefer@gmail.com>
+# SPDX-FileCopyrightText: 2025 NotActuallyMarty <martynashagriefer@gmail.com>
 # SPDX-FileCopyrightText: 2025 PunishedJoe <PunishedJoeseph@proton.me>
 # SPDX-FileCopyrightText: 2025 Ted Lukin <66275205+pheenty@users.noreply.github.com>
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
+
+## Parent File to easily add more attributes, here it's used for plasmaman mostly
+- type: entity
+  parent: ClothingShoesBase
+  id: ClothingShoesModsuitBase
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Appearance
+  - type: Sprite
+    sprite: _Goobstation/Clothing/Shoes/Modsuits/standard.rsi
+    layers:
+    - state: boots
+    - state: boots-sealed
+      map: [ "sealed" ]
+  - type: Tag
+    tags:
+    - PlasmamanSafe
+    - WhitelistChameleon
+  - type: IgniteFromGasImmunity
+    parts:
+    - LeftFoot
+    - RightFoot
 
 - type: entity
   parent: ClothingShoesBase
@@ -34,10 +58,10 @@
     sealUpPopup: sealable-clothing-seal-up-boots
     sealDownPopup: sealable-clothing-seal-down-boots
   - type: SealableClothingVisuals
-    visualLayers:
+    spriteLayer: sealed
+    clothingVisuals:
       shoes:
       - state: equipped-FEET-sealed
-        shader: unshaded
 
 - type: entity
   parent: ClothingShoesBase
@@ -64,7 +88,8 @@
     sealUpPopup: sealable-clothing-seal-up-boots
     sealDownPopup: sealable-clothing-seal-down-boots
   - type: SealableClothingVisuals
-    visualLayers:
+    spriteLayer: sealed
+    clothingVisuals:
       shoes:
       - state: equipped-FEET-sealed
   - type: ClothingSlowOnDamageModifier
@@ -109,7 +134,8 @@
     sealUpPopup: sealable-clothing-seal-up-boots
     sealDownPopup: sealable-clothing-seal-down-boots
   - type: SealableClothingVisuals
-    visualLayers:
+    spriteLayer: sealed
+    clothingVisuals:
       shoes:
       - state: equipped-FEET-sealed
   - type: ClothingSlowOnDamageModifier
@@ -154,7 +180,8 @@
     sealUpPopup: sealable-clothing-seal-up-boots
     sealDownPopup: sealable-clothing-seal-down-boots
   - type: SealableClothingVisuals
-    visualLayers:
+    spriteLayer: sealed
+    clothingVisuals:
       shoes:
       - state: equipped-FEET-sealed
 
@@ -183,7 +210,8 @@
     sealUpPopup: sealable-clothing-seal-up-boots
     sealDownPopup: sealable-clothing-seal-down-boots
   - type: SealableClothingVisuals
-    visualLayers:
+    spriteLayer: sealed
+    clothingVisuals:
       shoes:
       - state: equipped-FEET-sealed
   - type: ItemToggle
@@ -223,7 +251,8 @@
     sealUpPopup: sealable-clothing-seal-up-boots
     sealDownPopup: sealable-clothing-seal-down-boots
   - type: SealableClothingVisuals
-    visualLayers:
+    spriteLayer: sealed
+    clothingVisuals:
       shoes:
       - state: equipped-FEET-sealed
   - type: FireProtection # lmao
@@ -254,7 +283,8 @@
     sealUpPopup: sealable-clothing-seal-up-boots
     sealDownPopup: sealable-clothing-seal-down-boots
   - type: SealableClothingVisuals
-    visualLayers:
+    spriteLayer: sealed
+    clothingVisuals:
       shoes:
       - state: equipped-FEET-sealed
 
@@ -283,6 +313,7 @@
     sealUpPopup: sealable-clothing-seal-up-boots
     sealDownPopup: sealable-clothing-seal-down-boots
   - type: SealableClothingVisuals
-    visualLayers:
+    spriteLayer: sealed
+    clothingVisuals:
       shoes:
       - state: equipped-FEET-sealed
