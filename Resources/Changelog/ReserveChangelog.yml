@@ -240,3 +240,27 @@ Entries:
       message: IC передача резервкоинов
   id: 35
   time: '2025-09-28T19:29:13.0000000+00:00'
+- author: Hero_010
+  changes:
+    - type: Add
+      message: Добавлен реагент карпозин, позволяющий выживать в космосе.
+  id: 36
+  time: '2025-11-09T13:17:11.0000000+00:00'
+- author: Kutosss
+  changes:
+    - type: Tweak
+      message: Анализаторы растений обновлены.
+  id: 37
+  time: '2025-11-23T21:17:18.0000000+00:00'
+- author: thxmqninq
+  changes:
+    - type: Add
+      message: Конспираторы!
+  id: 38
+  time: '2025-11-27T20:59:08.0000000+00:00'
+- author: Kutosss
+  changes:
+    - type: Add
+      message: Добавлена красивая и удобная меню для телепортации призраков
+  id: 39
+  time: '2025-12-06T11:38:17.0000000+00:00'

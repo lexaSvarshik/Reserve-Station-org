@@ -2,6 +2,7 @@ hud-chatbox-info = { $talk-key } чтобы говорить, { $cycle-key } д�
 hud-chatbox-info-talk = { $talk-key } чтобы говорить.
 hud-chatbox-info-cycle = Нажмите здесь чтобы говорить, { $cycle-key } для переключения каналов.
 hud-chatbox-info-unbound = Нажмите здесь чтобы говорить.
+
 hud-chatbox-select-name-prefixed = { $prefix } { $name }
 hud-chatbox-select-channel-Admin = Админ
 hud-chatbox-select-channel-Console = Консоль
@@ -12,8 +13,11 @@ hud-chatbox-select-channel-Whisper = Шёпот
 hud-chatbox-select-channel-LOOC = LOOC
 hud-chatbox-select-channel-OOC = OOC
 hud-chatbox-select-channel-Damage = Повреждения
+# Goobstation - Starlight collective mind port
+hud-chatbox-select-channel-CollectiveMind = Коллективный разум
 hud-chatbox-select-channel-Visual = Действия
 hud-chatbox-select-channel-Radio = Рация
+
 hud-chatbox-channel-Admin = Админ Разное
 hud-chatbox-channel-AdminAlert = Админ Уведомления
 hud-chatbox-channel-AdminChat = Админ Чат
@@ -26,6 +30,8 @@ hud-chatbox-channel-OOC = OOC
 hud-chatbox-channel-Radio = Рация
 hud-chatbox-channel-Notifications = Уведомления
 hud-chatbox-channel-Server = Сервер
+# Goobstation - Starlight collective mind port
+hud-chatbox-channel-CollectiveMind = Коллективный разум
 hud-chatbox-channel-Visual = Визуальный
 hud-chatbox-channel-Damage = Повреждения
 hud-chatbox-channel-Unspecified = Неопределённый

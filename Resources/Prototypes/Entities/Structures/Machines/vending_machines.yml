@@ -2646,8 +2646,8 @@
     access: [["Chemistry"]]
   - type: GuideHelp
     guides:
-    - Chemicals
-    - Chemist
+    - ChemicalsReserve # Reserve edit
+    - ChemistReserve # Reserve edit
 
 - type: entity
   parent: VendingMachineChemicals

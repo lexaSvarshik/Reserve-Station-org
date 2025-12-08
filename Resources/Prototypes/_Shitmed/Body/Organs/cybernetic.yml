@@ -19,6 +19,8 @@
   - type: Tag
     tags:
     - Organ
+  - type: Food
+    requiresSpecialDigestion: true # Reserve add
 
 # Eyes
 

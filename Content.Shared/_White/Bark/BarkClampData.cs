@@ -1,0 +1,34 @@
+// SPDX-FileCopyrightText: 2025 Cinkafox <70429757+Cinkafox@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 ReserveBot <211949879+ReserveBot@users.noreply.github.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+namespace Content.Shared._White.Bark;
+
+[DataDefinition]
+public sealed partial class BarkClampData
+{
+    [DataField]
+    public float PauseMin { get; set; } = 0.05f;
+
+    [DataField]
+    public float PauseMax { get; set; } = 0.1f;
+
+    [DataField]
+    public float VolumeMin { get; set; } = 0f;
+
+    [DataField]
+    public float VolumeMax { get; set; } = 0f;
+
+    [DataField]
+    public float PitchMin { get; set; } = 0.8f;
+
+    [DataField]
+    public float PitchMax { get; set; } = 1.2f;
+
+    [DataField]
+    public float PitchVarianceMin { get; set; } = 0f;
+
+    [DataField]
+    public float PitchVarianceMax { get; set; } = 0.2f;
+}

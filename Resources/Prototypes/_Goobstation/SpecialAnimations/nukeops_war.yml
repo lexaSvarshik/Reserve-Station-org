@@ -13,7 +13,7 @@
     fadeOutDuration: 1.6
     startPosition: -300,-100
     endPosition: -300,200
-    text: "WAR DECLARATION"
+    text: "ОБЬЯВЛЕНИЕ ВОЙНЫ" # Reserve edit
     textPosition: -200,150
     textOverrideColor: Red
     textFontPath: "/Fonts/NotoSans/NotoSans-Bold.ttf"

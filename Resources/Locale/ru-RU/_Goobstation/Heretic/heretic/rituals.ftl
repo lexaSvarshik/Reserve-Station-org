@@ -18,7 +18,7 @@ heretic-ritual-basic-reminiscence-desc = Преобразите стул, что
 heretic-ritual-basic-owls = Праздник сов
 heretic-ritual-basic-owls-desc =
     Под мягким сиянием неразумия скрывается зверь, крадущийся в ночи. Я выведу его на свет и позволю ему предстать передо мной. Он будет наслаждаться моими ощущениями и оставит после себя знания.
-    
+
     Позволяет вам пройти ритуал, который дает вам 5 очков знаний, но не дает возможности совершить вознесение. Это можно сделать только один раз и отменить его нельзя.
 heretic-ritual-fail-sacrifice-ineligible = Руна отказывается принимать эту жертву.
 heretic-ritual-fail-reagentpuddle = Здесь нет { $reagentname }.
@@ -35,9 +35,9 @@ heretic-ritual-fail-no-lost-blades = Потерянные лезвия не мо
 heretic-ritual-fail-already-ascended = Вы уже вознесены.
 heretic-ritual-fail-cannot-ascend = Вы не можете вознестись.
 heretic-ritual-side-knowledge = Ритуал знания
-heretic-ritual-side-shark = Палящая акула ## Не готовая хернь
+heretic-ritual-side-shark = Палящая акула
 heretic-ritual-side-cloak = Плащ Пустоты
-heretic-ritual-side-ghoul = Ритуал разрушения ## Угадай что с этим не так
+heretic-ritual-side-ghoul = Ритуал разрушения
 heretic-ritual-side-armor = Ритуал оружейника
 heretic-ritual-side-water = Ритуал священника
 heretic-ritual-side-knife = Нож для резьбы

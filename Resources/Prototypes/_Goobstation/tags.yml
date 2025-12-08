@@ -314,6 +314,9 @@
   id: HEVSuit
 
 - type: Tag
+  id: Holosign
+
+- type: Tag
   id: HolyClaymore
 
 - type: Tag
@@ -327,6 +330,9 @@
 
 - type: Tag
   id: IgnoreImmovableRod
+
+- type: Tag
+  id: IPCDrinkBlacklist
 
 - type: Tag
   id: ItemPickaxe
@@ -397,6 +403,9 @@
 
 - type: Tag
   id: MechThruster
+
+- type: Tag
+  id: MechUnGrabbable
 
 - type: Tag
   id: MedicalPatch
@@ -507,6 +516,9 @@
   id: ShadowCloakAction
 
 - type: Tag
+  id: SheetPlasma
+
+- type: Tag
   id: ShowWizardIcons
 
 - type: Tag
@@ -547,6 +559,9 @@
 
 - type: Tag
   id: ShellShotgunHeavier
+
+- type: Tag
+  id: SheetGlass
 
 - type: Tag
   id: ShellShotgunHeavy
@@ -591,6 +606,9 @@
   id: Undead
 
 - type: Tag
+  id: Unedible
+
+- type: Tag
   id: UristHand
 
 - type: Tag
@@ -604,6 +622,9 @@
 
 - type: Tag
   id: Vial
+
+- type: Tag
+  id: WallLight
 
 - type: Tag
   id: WaterTank
@@ -624,6 +645,9 @@
   id: WeaponEnergyGunLawbringer
 
 - type: Tag
+  id: WideSwingIgnore
+
+- type: Tag
   id: WeaponPistolCasul
 
 - type: Tag
@@ -637,6 +661,9 @@
 
 - type: Tag
   id: WizardHat
+
+- type: Tag
+  id: Wonderprod
 
 - type: Tag # These tags are NOT alphabetical!!
   id: Xenomorph
@@ -672,4 +699,22 @@
   id: MidroundAntag
 
 - type: Tag
+  id: FoodTinMRE
+
+- type: Tag
+  id: EmergencyWaterVaporTank
+
+- type: Tag
   id: DisposableBattery
+
+- type: Tag
+  id: HolyChainsaw
+
+- type: Tag
+  id: ChaplainsHolster
+
+- type: Tag
+  id: ForkliftKeys
+
+- type: Tag
+  id: Crate

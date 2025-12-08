@@ -1,3 +1,5 @@
+ent-BaseAntagSpawner = спавнер роли призрак
+    .desc = { ent-MarkerBase.desc }
 ent-SpawnPointGhostRatKing = спавнер роли призрак
     .suffix = Крысиный король
     .desc = { ent-MarkerBase.desc }
@@ -26,6 +28,5 @@ ent-SpawnPointGhostParadoxClone = { ent-BaseAntagSpawner }
     .desc = { ent-BaseAntagSpawner.desc }
 ent-SpawnPointGhostDerelictCyborg = { ent-BaseAntagSpawner }
     .desc = { ent-BaseAntagSpawner.desc }
-ent-SpawnPointGhostWizard = спавнер роли призрак
-    .suffix = волшебник
+ent-SpawnPointGhostAncientRogueKing = { ent-BaseAntagSpawner }
     .desc = { ent-BaseAntagSpawner.desc }

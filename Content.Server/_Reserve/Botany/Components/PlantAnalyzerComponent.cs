@@ -1,33 +1,51 @@
-using Content.Shared.DoAfter;
+// SPDX-FileCopyrightText: 2025 Kirill <kirill@example.com>
+// SPDX-FileCopyrightText: 2025 ReserveBot <211949879+ReserveBot@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tim <timfalken@hotmail.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+// based on https://github.com/space-wizards/space-station-14/pull/34600
+using Content.Server._Reserve.AbstractAnalyzer;
+using Content.Server._Reserve.Botany.Systems;
 using Robust.Shared.Audio;
+using Robust.Shared.Prototypes;
+using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
+using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 
-namespace Content.Server.Botany.Components; // This is how it supposed to be
+namespace Content.Server._Reserve.Botany.Components;
 
-/// <summary>
-///    After scanning, retrieves the target Uid to use with its related UI.
-/// </summary>
-[RegisterComponent]
-public sealed partial class PlantAnalyzerComponent : Component
+/// <inheritdoc/>
+[RegisterComponent, AutoGenerateComponentPause]
+[Access(typeof(PlantAnalyzerSystem))]
+public sealed partial class PlantAnalyzerComponent : AbstractAnalyzerComponent
 {
-    [DataDefinition]
-    public partial struct PlantAnalyzerSettings
-    {
-        [DataField]
-        public bool AdvancedScan;
+    /// <inheritdoc/>
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [AutoPausedField]
+    public override TimeSpan NextUpdate { get; set; } = TimeSpan.Zero;
 
-        [DataField]
-        public float ScanDelay;
+    /// <summary>
+    /// When will the analyzer be ready to print again?
+    /// </summary>
+    [ViewVariables(VVAccess.ReadOnly)]
+    public TimeSpan PrintReadyAt = TimeSpan.Zero;
 
-        [DataField]
-        public float AdvScanDelay;
-    }
+    /// <summary>
+    /// How often can the analyzer print?
+    /// </summary>
+    [DataField("printCooldown")]
+    public TimeSpan PrintCooldown = TimeSpan.FromSeconds(5);
 
-    [DataField, ViewVariables]
-    public PlantAnalyzerSettings Settings = new();
+    /// <summary>
+    /// The sound that's played when the analyzer prints off a report.
+    /// </summary>
+    [DataField("soundPrint")]
+    public SoundSpecifier SoundPrint = new SoundPathSpecifier("/Audio/Machines/short_print_and_rip.ogg");
 
-    [DataField, ViewVariables(VVAccess.ReadOnly)]
-    public DoAfterId? DoAfter;
-
-    [DataField]
-    public SoundSpecifier? ScanningEndSound;
+    /// <summary>
+    /// What the machine will print.
+    /// </summary>
+    [DataField("machineOutput", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+    public string MachineOutput = "PlantAnalyzerReportPaper";
 }
+

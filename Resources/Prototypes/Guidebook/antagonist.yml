@@ -49,6 +49,7 @@
   - NuclearOperatives
   - Zombies
   - Revolutionaries
+  - Conspirators # Harmony - Conspirators
   - MinorAntagonists
   - SpaceNinja
   - Thieves
@@ -58,6 +59,8 @@
   - Shadowlings # Einstein Engines - Shadowlings
   - SlaughterDemon # Goob content
   - Xenomorphs # WD - Xenomorphs
+  - Wraith
+  - Slasher # Goob content
 
 - type: guideEntry
   id: Traitors

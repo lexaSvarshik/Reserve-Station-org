@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Numerics;
 using Content.Server._White.Spawners.Components;
 using Content.Server.Atmos.Components;
@@ -28,17 +27,14 @@ public sealed class AreaSpawnerSystem : EntitySystem
 
     public override void Initialize()
     {
+        base.Initialize();
         SubscribeLocalEvent<AreaSpawnerComponent, ComponentShutdown>(OnShutdown);
     }
 
     private void OnShutdown(EntityUid uid, AreaSpawnerComponent component, ComponentShutdown args)
     {
-        foreach (var spawned in component.Spawneds.ToList())
+        foreach (var spawned in component.Spawneds)
         {
-            // Reserve add start
-            if (MetaData(spawned).EntityLifeStage >= EntityLifeStage.Terminating)
-                continue;
-            // Reserve add end //the fuck is that
             // <Goobstation> rewrote to be non goida
             if (TerminatingOrDeleted(spawned))
                 continue;

@@ -5,20 +5,24 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Content.Goobstation.Common.Changeling;
 using Content.Goobstation.Shared.LightDetection.Components;
 using Content.Goobstation.Shared.LightDetection.Systems;
 using Content.Goobstation.Shared.Mindcontrol;
 using Content.Goobstation.Shared.Shadowling.Components;
+using Content.Shared._Starlight.CollectiveMind;
 using Content.Shared.Actions;
 using Content.Shared.Damage;
 using Content.Shared.DoAfter;
 using Content.Shared.Examine;
+using Content.Shared.Heretic;
 using Content.Shared.Humanoid;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
+using Content.Shared.Projectiles;
 using Content.Shared.Stunnable;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
@@ -70,6 +74,10 @@ public abstract class SharedShadowlingSystem : EntitySystem
 
     private void OnDamageModify(EntityUid uid, ShadowlingComponent component, DamageModifyEvent args)
     {
+        if (args.Origin is not {} origin
+            || !HasComp<ProjectileComponent>(origin))
+            return;
+
         foreach (var (key,_) in args.Damage.DamageDict)
         {
             if (key == "Heat")
@@ -85,9 +93,12 @@ public abstract class SharedShadowlingSystem : EntitySystem
         _lightDamage.AddResistance((ent.Owner, lightDet), -ent.Comp.LightResistanceModifier);
     }
 
+    public ProtoId<CollectiveMindPrototype> ShadowMind = "Shadowmind";
     private void OnInit(EntityUid uid, ShadowlingComponent component, ref MapInitEvent args)
     {
         _actions.AddAction(uid, ref component.ActionHatchEntity, component.ActionHatch);
+
+        EnsureComp<CollectiveMindComponent>(uid).Channels.Add(ShadowMind);
     }
 
     private void OnHatch(Entity<ShadowlingComponent> ent, ref HatchEvent args)
@@ -207,7 +218,9 @@ public abstract class SharedShadowlingSystem : EntitySystem
     {
         return HasComp<MobStateComponent>(target)
                && !HasComp<ShadowlingComponent>(target)
-               && !HasComp<ThrallComponent>(target);
+               && !HasComp<ThrallComponent>(target)
+               && !HasComp<HereticComponent>(target)
+               && !HasComp<ChangelingComponent>(target);
     }
 
     public void DoEnthrall(EntityUid uid, EntProtoId components, SimpleDoAfterEvent args)
@@ -225,12 +238,7 @@ public abstract class SharedShadowlingSystem : EntitySystem
         EntityManager.AddComponents(target, comps);
 
         if (TryComp<ShadowlingComponent>(uid, out var sling))
-        {
             sling.Thralls.Add(target);
-
-            if (TryComp<LightDetectionDamageComponent>(uid, out var lightDet))
-                _lightDamage.AddResistance((uid, lightDet), sling.LightResistanceModifier);
-        }
 
         _audio.PlayPredicted(
             new SoundPathSpecifier("/Audio/Items/Defib/defib_zap.ogg"),

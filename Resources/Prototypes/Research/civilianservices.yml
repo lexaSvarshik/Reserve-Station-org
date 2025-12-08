@@ -25,18 +25,26 @@
 # SPDX-FileCopyrightText: 2025 ArtisticRoomba <145879011+ArtisticRoomba@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2025 FaDeOkno <143940725+FaDeOkno@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2025 FaDeOkno <logkedr18@gmail.com>
+# SPDX-FileCopyrightText: 2025 GNUtopia <93669372+GNUtopia@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2025 GoobBot <uristmchands@proton.me>
+# SPDX-FileCopyrightText: 2025 Khundo <141230574+korguzenok@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Kirill <kirill@example.com>
+# SPDX-FileCopyrightText: 2025 Kutosss <k65952443@gmail.com>
 # SPDX-FileCopyrightText: 2025 Nox <nebulousnox38@gmail.com>
+# SPDX-FileCopyrightText: 2025 ReserveBot <211949879+ReserveBot@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2025 SX-7 <sn1.test.preria.2002@gmail.com>
 # SPDX-FileCopyrightText: 2025 Solstice <solsticeofthewinter@gmail.com>
 # SPDX-FileCopyrightText: 2025 SolsticeOfTheWinter <solsticeofthewinter@gmail.com>
 # SPDX-FileCopyrightText: 2025 Southbridge <7013162+southbridge-fur@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Svarshik <96281939+lexaSvarshik@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2025 Ted Lukin <66275205+pheenty@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2025 Thinbug <101073555+Thinbug0@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2025 Thomas <87614336+Aeshus@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2025 TurboTracker <130304754+TurboTrackerss14@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2025 coderabbitai[bot] <136622811+coderabbitai[bot]@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 echotry <xippl1@mail.ru>
 # SPDX-FileCopyrightText: 2025 gluesniffler <159397573+gluesniffler@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 nazrin <tikufaev@outlook.com>
 # SPDX-FileCopyrightText: 2025 pheenty <fedorlukin2006@gmail.com>
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
@@ -56,7 +64,7 @@
   - SeedExtractorMachineCircuitboard
   - HydroponicsTrayMachineCircuitboard
   - ReagentGrinderIndustrialMachineCircuitboard
-  - PlantAnalyzer # Reserve-PlantAnalyzer
+  - PlantAnalyzer # Reserve add
   # Goobstation R&D Console rework start
   position: -3,4
   technologyPrerequisites:
@@ -185,6 +193,7 @@
   cost: 7500
   recipeUnlocks:
   - StasisBedMachineCircuitboard
+  - StasisOperatingTableCircuitboard # Corvax-Goob-StasisOperatingTable
   - CryoPodMachineCircuitboard
   - CryostasisBeaker
   - SyringeCryostasis
@@ -194,23 +203,24 @@
   - AccessibilityTech
   # Goobstation R&D Console rework end
 
-- type: technology # Merge with other T2 medical research if possible!
-  id: MechanizedTreatment
-  name: research-technology-mechanized-treatment
-  icon:
-    sprite: Mobs/Silicon/chassis.rsi
-    state: medical
-  discipline: CivilianServices
-  tier: 2
-  cost: 5000
-  recipeUnlocks:
-  - BorgModuleAdvancedChemical
-  # Goobstation R&D Console rework start
-  position: -1, 4
-  technologyPrerequisites:
-  - AdvancedEntertainment
-  - BasicRobotics
-  # Goobstation R&D Console rework end
+# Goob edit
+#- type: technology # Merge with other T2 medical research if possible!
+#  id: MechanizedTreatment
+#  name: research-technology-mechanized-treatment
+#  icon:
+#    sprite: Mobs/Silicon/chassis.rsi
+#    state: medical
+#  discipline: CivilianServices
+#  tier: 2
+#  cost: 5000
+#  recipeUnlocks:
+#  - BorgModuleAdvancedChemical
+#  # Goobstation R&D Console rework start
+#  position: -1, 4
+#  technologyPrerequisites:
+#  - AdvancedEntertainment
+#  - BasicRobotics
+#  # Goobstation R&D Console rework end
 
 
 - type: technology
@@ -227,9 +237,10 @@
   - MegaSprayBottle
   - BorgModuleAdvancedCleaning
   # Goobstation R&D Console rework start
-  position: -1,6
+  position: -1,4
   technologyPrerequisites:
-  - MechanizedTreatment
+  - AdvancedEntertainment
+  - BasicRobotics
   # Goobstation R&D Console rework end
 
 - type: technology
@@ -271,7 +282,7 @@
   - WeaponSprayNozzle
   - ClothingBackpackWaterTank
   # Goobstation R&D Console rework start
-  position: -1,7
+  position: -1,6
   technologyPrerequisites:
   - AdvancedCleaning
   # Goobstation R&D Console rework end

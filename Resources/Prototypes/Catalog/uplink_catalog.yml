@@ -801,25 +801,26 @@
   - UplinkChemicals
 
 
-- type: listing
-  id: UplinkZombieBundle
-  name: uplink-zombie-bundle-name
-  description: uplink-zombie-bundle-desc
-  icon: { sprite: /Textures/Structures/Wallmounts/signs.rsi, state: bio }
-  productEntity: ClothingBackpackDuffelZombieBundle
-  cost:
-    Telecrystal: 200 # goob
-  categories:
-  - UplinkChemicals
-  conditions:
-  - !type:StoreWhitelistCondition
-    whitelist:
-      tags:
-      - NukeOpsUplink
-  - !type:BuyerWhitelistCondition
-    blacklist:
-      components:
-      - SurplusBundle
+# Goobstaiton - Disable Zombie Kit
+#- type: listing
+#  id: UplinkZombieBundle
+#  name: uplink-zombie-bundle-name
+#  description: uplink-zombie-bundle-desc
+#  icon: { sprite: /Textures/Structures/Wallmounts/signs.rsi, state: bio }
+#  productEntity: ClothingBackpackDuffelZombieBundle
+#  cost:
+#    Telecrystal: 200 # goob
+#  categories:
+#  - UplinkChemicals
+#  conditions:
+#  - !type:StoreWhitelistCondition
+#    whitelist:
+#      tags:
+#      - NukeOpsUplink
+#  - !type:BuyerWhitelistCondition
+#    blacklist:
+#      components:
+#      - SurplusBundle
 
 - type: listing
   id: UplinkNocturineChemistryBottle
@@ -1179,16 +1180,16 @@
         components:
           - SurplusBundle
 
-
-- type: listing
-  id: UplinkAntimovCircuitBoard
-  name: uplink-antimov-law-name
-  description: uplink-antimov-law-desc
-  productEntity: AntimovCircuitBoard
-  cost:
-    Telecrystal: 50 # goob
-  categories:
-  - UplinkDisruption
+# Goob - Not buyable anymore in favor of the custom lawboard.
+#- type: listing
+#  id: UplinkAntimovCircuitBoard
+#  name: uplink-antimov-law-name
+#  description: uplink-antimov-law-desc
+#  productEntity: AntimovCircuitBoard
+#  cost:
+#    Telecrystal: 50 # goob
+#  categories:
+#  - UplinkDisruption
 # Goob - Antimov was given the same price for traitors and nukies
 #  conditions:
 #  - !type:StoreWhitelistCondition
@@ -1254,24 +1255,24 @@
       components:
       - SurplusBundle
 
-- type: listing
-  id: UplinkStarterKit
-  name: uplink-starter-kit-name
-  description: uplink-starter-kit-desc
-  productEntity: ClothingBackpackDuffelSyndicateFilledStarterKit
-  cost:
-    Telecrystal: 200
-  categories:
-  - UplinkDisruption
-  conditions:
-    - !type:StoreWhitelistCondition
-      whitelist:
-        tags:
-        - NukeOpsUplink
-    - !type:BuyerWhitelistCondition
-      blacklist:
-        components:
-        - SurplusBundle
+#- type: listing
+#  id: UplinkStarterKit
+#  name: uplink-starter-kit-name
+#  description: uplink-starter-kit-desc
+#  productEntity: ClothingBackpackDuffelSyndicateFilledStarterKit
+#  cost:
+#    Telecrystal: 200
+#  categories:
+#  - UplinkDisruption
+#  conditions:
+#    - !type:StoreWhitelistCondition
+#      whitelist:
+#        tags:
+#        - NukeOpsUplink
+#    - !type:BuyerWhitelistCondition
+#      blacklist:
+#        components:
+#        - SurplusBundle
 
 
 - type: listing
@@ -1755,7 +1756,7 @@
   description: uplink-clothing-outer-vest-web-desc
   productEntity: ClothingOuterVestWeb
   cost:
-    Telecrystal: 15 # goob
+    Telecrystal: 10 # goob
   categories:
   - UplinkWearables
 
@@ -1766,7 +1767,7 @@
   description: uplink-clothing-outer-vest-web-elite-desc
   productEntity: ClothingOuterVestWebElite
   cost:
-    Telecrystal: 25 # goob
+    Telecrystal: 15 # goob
   categories:
   - UplinkWearables
 
