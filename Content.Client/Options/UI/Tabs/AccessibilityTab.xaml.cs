@@ -88,6 +88,9 @@ public sealed partial class AccessibilityTab : Control
         // Goobstation - Highight chat ping sounds!
         Control.AddOptionCheckBox(CCVars.ChatHighlightSound, HighlightSoundCheckBox);
 
+        Control.AddOptionCheckBox(CCVars.TransliterationEnToRu, TranslitEnToRuCheckBox); // ganimed->reserve port - Transliteration
+        Control.AddOptionCheckBox(CCVars.TransliterationRuToEn, TranslitRuToEnCheckBox); // ganimed->reserve port - Transliteration
+
         Control.Initialize();
     }
 }
