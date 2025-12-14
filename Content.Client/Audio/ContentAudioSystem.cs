@@ -49,6 +49,8 @@ public sealed partial class ContentAudioSystem : SharedContentAudioSystem
     public const float InterfaceMultiplier = 2f;
     public const float VoiceChatMultiplier = 5f;
     public const float BarkMultiplier = 1.5f; // Reserve edit
+    public const float BarksMultiplier = 3f; // Goob Station - Barks
+    public const float AdminNotificationsMultiplier = 1f; // Goobstation - Admin Notifications
 
     public override void Initialize()
     {
