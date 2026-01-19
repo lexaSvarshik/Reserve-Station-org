@@ -114,7 +114,7 @@
   - APECircuitboard
   - ArtifactAnalyzerMachineCircuitboard
   - ArtifactCrusherMachineCircuitboard
-  - ReverseEngineeringMachineCircuitboard #nyano
+  - ReverseEngineeringMachineCircuitboard #reserve: nyano port
 
 - type: latheRecipePack
   id: CameraBoards
