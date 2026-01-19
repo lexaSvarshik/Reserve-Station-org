@@ -92,7 +92,7 @@
       tags:
         - MailingUnitElectronics
         - DroneUsable # Goobstation
-    - type: ReverseEngineering # Nyano
+    - type: ReverseEngineering # reserve: nyano port
       recipes:
         - MailingUnitElectronics
     - type: StaticPrice

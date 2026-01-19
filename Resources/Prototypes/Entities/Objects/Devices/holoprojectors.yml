@@ -111,7 +111,7 @@
       - HolofanProjector
   - type: StaticPrice
     price: 80
-  - type: ReverseEngineering # Nyano
+  - type: ReverseEngineering # reserve: nyano port
     difficulty: 3
     recipes:
     - HolofanProjector
@@ -154,7 +154,7 @@
         - HolofanProjector
     - type: StaticPrice
       price: 130
-    - type: ReverseEngineering # Nyano
+    - type: ReverseEngineering # reserve: nyano port
       difficulty: 3
       recipes:
       - HoloprojectorField

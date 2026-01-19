@@ -85,7 +85,7 @@ public sealed class ResearchTest
                 if (pair.IsTestPrototype(proto))
                     continue;
 
-                if (proto.TryGetComponent<ReverseEngineeringComponent>(out var reverseEngineering, compFact) && reverseEngineering.Recipes != null)
+                if (proto.TryGetComponent<ReverseEngineeringComponent>(out var reverseEngineering, compFact) && reverseEngineering.Recipes != null) //reserve: nyano port
                     unlockedTechs.UnionWith(reverseEngineering.Recipes);
 
                 if (!proto.TryGetComponent<LatheComponent>(out var lathe, compFact))

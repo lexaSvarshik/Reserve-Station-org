@@ -79,6 +79,6 @@
   text: "/ServerInfo/Guidebook/Science/Cyborgs.xml"
 
 - type: guideEntry
-  id: ReverseEngineering
+  id: ReverseEngineering # reserve: nyano port
   name: guide-entry-reverse-engineering
   text: "/ServerInfo/Guidebook/Science/ReverseEngineering.xml"

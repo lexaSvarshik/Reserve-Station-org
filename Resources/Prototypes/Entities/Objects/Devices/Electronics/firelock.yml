@@ -36,7 +36,7 @@
       tags:
       - DroneUsable # Goobstation
       - FirelockElectronics
-    - type: ReverseEngineering # Nyano
+    - type: ReverseEngineering # reserve: nyano port
       recipes:
         - FirelockElectronics
     - type: StaticPrice

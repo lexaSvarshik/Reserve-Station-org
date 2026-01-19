@@ -33,7 +33,7 @@
   - type: Tag
     tags:
     - QuantumSpinInverter
-  - type: ReverseEngineering # Delta
+  - type: ReverseEngineering # reserve: nyano port
     difficulty: 4
     recipes:
       - DeviceQuantumSpinInverter

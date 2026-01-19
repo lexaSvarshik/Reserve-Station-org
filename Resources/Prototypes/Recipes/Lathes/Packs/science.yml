@@ -49,11 +49,11 @@
   - DeviceQuantumSpinInverter
   - DeviceDesynchronizer
   - ClothingBackpackHarmpack
-  #nyanotrasen port start
+  #reserve: nyanotrasen port start
   - EncryptionKeySyndie
   - JetpackBlue
   - JetpackMini
-  #nyanotrasen port end
+  #reserve: nyanotrasen port end
 
 - type: latheRecipePack
   id: ScienceClothing

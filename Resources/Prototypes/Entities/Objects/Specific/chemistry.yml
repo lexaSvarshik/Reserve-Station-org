@@ -479,7 +479,7 @@
     materialComposition:
       Steel: 62
       Plastic: 12
-  - type: ReverseEngineering # Delta
+  - type: ReverseEngineering # reserve: nyano port
     difficulty: 3
     recipes:
       - CryostasisBeaker
@@ -510,7 +510,7 @@
       Silver: 12
   - type: StaticPrice #Goobstation - Recycle update
     price: 65
-  - type: ReverseEngineering
+  - type: ReverseEngineering # reserve: nyano port
     difficulty: 4
     recipes:
       - BluespaceBeaker

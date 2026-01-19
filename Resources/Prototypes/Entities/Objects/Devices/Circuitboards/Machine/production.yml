@@ -204,7 +204,7 @@
     stackRequirements:
       Manipulator: 4
       Glass: 1
-  - type: ReverseEngineering # Delta
+  - type: ReverseEngineering # reserve: nyano port
     difficulty: 2
     recipes:
     - BiofabricatorMachineCircuitboard
@@ -309,7 +309,7 @@
   - type: GuideHelp
     guides:
     - Robotics
-  - type: ReverseEngineering # Nyano
+  - type: ReverseEngineering # reserve: nyano port
     difficulty: 2
     recipes:
     - ExosuitFabricatorMachineCircuitboard

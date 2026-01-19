@@ -90,7 +90,7 @@
     tags:
       - DroneUsable # Goobstation
       - IntercomElectronics
-  - type: ReverseEngineering # Nyano
+  - type: ReverseEngineering # reserve: nyano port
     recipes:
       - IntercomElectronics
   - type: StaticPrice

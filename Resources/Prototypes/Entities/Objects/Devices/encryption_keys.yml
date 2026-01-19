@@ -330,7 +330,7 @@
     - state: synd_label
   - type: StaticPrice
     price: 500 # 1000 for 2
-  - type: ReverseEngineering # Nyano
+  - type: ReverseEngineering # reserve: nyano port
     difficulty: 5
     recipes:
       - EncryptionKeySyndie
