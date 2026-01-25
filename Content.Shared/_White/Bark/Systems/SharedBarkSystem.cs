@@ -1,6 +1,11 @@
+// SPDX-FileCopyrightText: 2025 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Linq;
 using Content.Shared._White.Bark.Components;
 using Content.Shared.Humanoid;
+using Content.Shared.Inventory;
 using Content.Shared.Preferences;
 using Content.Shared.Roles;
 using Robust.Shared.Audio;
@@ -134,8 +139,20 @@ public abstract class SharedBarkSystem : EntitySystem
         return currBark;
     }
 
-    public void Bark(Entity<BarkComponent> entity, string text, bool isWhisper) =>
-        Bark(entity, GenBarkData(entity.Comp.VoiceData, text, isWhisper));
+    public void Bark(Entity<BarkComponent> entity, string text, bool isWhisper)
+    {
+        var ev = new TransformSpeakerBarkEvent(entity, entity.Comp.VoiceData);
+        RaiseLocalEvent(entity, ev);
+        Bark(entity, GenBarkData(ev.VoiceData, text, isWhisper));
+    }
 
     public abstract void Bark(Entity<BarkComponent> entity, List<BarkData> barks);
+}
+
+public sealed class TransformSpeakerBarkEvent(EntityUid sender, BarkVoiceData voiceData) : EntityEventArgs, IInventoryRelayEvent
+{
+    public SlotFlags TargetSlots => SlotFlags.WITHOUT_POCKET;
+
+    public EntityUid Sender = sender;
+    public BarkVoiceData VoiceData = voiceData;
 }

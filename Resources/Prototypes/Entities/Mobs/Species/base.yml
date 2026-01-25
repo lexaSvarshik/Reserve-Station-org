@@ -399,6 +399,11 @@
   - type: Body
     prototype: Human
     requiredLegs: 2
+  - type: MobThresholdSounds # Reserve edit: Port from WD
+    deathSound:
+      collection: DeathSound
+    critSound:
+      collection: CritSound
   - type: Identity
   - type: IdExaminable
   - type: Hands
@@ -490,7 +495,7 @@
     - FootstepSound
     - DoorBumpOpener
     - AnomalyHost
-  - type: LayingDown # WD EDIT
+  - type: LayingDown # Reserve edit: Port from WD
   - type: Targeting # Shitmed Change
   - type: CanEscapeInventory # GoobStation - Escape being picked up by players
   - type: Consciousness
@@ -574,13 +579,21 @@
         Asphyxiation: -1.0
   - type: FireVisuals
     alternateState: Standing
+  # <Goobstation>
+  - type: Carriable
   - type: FootprintOwner # Corvax-Next-Footprints
-  - type: Carriable # Goobstation
   - type: CPRTraining # Goobstation - Just give to everyone! This ain't MRP.
   - type: BloodstreamAffectedByMass # Goobstation: port EE height/width sliders. Also, lol at the comment above.
     power: 0.6
   - type: FlightAffectedByScale # Goobstation: port EE height/width sliders.
   - type: StunVisuals
+  - type: DiseaseCarrier
+  - type: Immunity
+    affectedTypes:
+    - Viral
+    - Bacterial
+    - Parasite
+  # </Goobstation>
 
 - type: entity
   save: false

@@ -1,11 +1,4 @@
-// SPDX-FileCopyrightText: 2025 BombasterDS2 <bombasterds.github@mail.ru>
-// SPDX-FileCopyrightText: 2025 Lumminal <81829924+Lumminal@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 ReserveBot <211949879+ReserveBot@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 Rouden <149893554+Roudenn@users.noreply.github.com>
-//
-// SPDX-License-Identifier: AGPL-3.0-or-later
-
-using Content.Goobstation.Common.Changeling;
+using Content.Goobstation.Shared.Changeling.Components;
 using Content.Goobstation.Shared.LightDetection.Components;
 using Content.Goobstation.Shared.LightDetection.Systems;
 using Content.Goobstation.Shared.Mindcontrol;
@@ -220,7 +213,7 @@ public abstract class SharedShadowlingSystem : EntitySystem
                && !HasComp<ShadowlingComponent>(target)
                && !HasComp<ThrallComponent>(target)
                && !HasComp<HereticComponent>(target)
-               && !HasComp<ChangelingComponent>(target);
+               && !HasComp<ChangelingIdentityComponent>(target);
     }
 
     public void DoEnthrall(EntityUid uid, EntProtoId components, SimpleDoAfterEvent args)

@@ -124,6 +124,7 @@ using Content.Shared.Database;
 using Content.Shared._EinsteinEngines.Flight;
 using Content.Shared._Goobstation.Wizard.Mutate; // Goobstation
 using Content.Shared.DoAfter;
+using Content.Shared.Examine;
 using Content.Shared.Hands;
 using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
@@ -209,6 +210,7 @@ namespace Content.Shared.Cuffs
             SubscribeLocalEvent<HandcuffComponent, AddCuffDoAfterEvent>(OnAddCuffDoAfter);
             SubscribeLocalEvent<HandcuffComponent, VirtualItemDeletedEvent>(OnCuffVirtualItemDeleted);
             SubscribeLocalEvent<HandcuffComponent, UserActivateInWorldEvent>(OnCuffInteract);
+            SubscribeLocalEvent<CuffableComponent, ExaminedEvent>(OnExamined); // Reserve edit: Port from WD
         }
 
         private void CheckInteract(Entity<CuffableComponent> ent, ref InteractionAttemptEvent args)
@@ -475,8 +477,8 @@ namespace Content.Shared.Cuffs
                 _audio.PlayPredicted(component.EndCuffSound, uid, user);
 
                 var popupText = (user == target)
-                    ? Loc.GetString("handcuff-component-cuff-self-observer-success-message") // reserve edit - fix this shit
-                    : Loc.GetString("handcuff-component-cuff-observer-success-message"); // reserve edit - fix this shit
+                    ? "handcuff-component-cuff-self-observer-success-message"
+                    : "handcuff-component-cuff-observer-success-message";
                 _popup.PopupEntity(Loc.GetString(popupText,
                         ("user", Identity.Name(user, EntityManager)), ("target", Identity.Name(target, EntityManager))),
                     target, Filter.Pvs(target, entityManager: EntityManager)
@@ -940,6 +942,20 @@ namespace Content.Shared.Cuffs
                 }
             }
             cuff.Removing = false;
+        }
+
+        // Reserve edit: Port from WD
+        private void OnExamined(Entity<CuffableComponent> ent, ref ExaminedEvent args)
+        {
+            if (ent.Comp.CanStillInteract)
+                return;
+
+            var locId = "examine-handcuffed";
+
+            if (args.Examiner == args.Examined)
+                locId += "-selfaware";
+
+            args.PushMarkup(Loc.GetString(locId, ("ent", ent.Owner)));
         }
 
         #region ActionBlocker

@@ -17,6 +17,8 @@ using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
+using Robust.Shared.Prototypes;
+using Content.Shared.Speech;
 
 namespace Content.Client._White.Bark;
 
@@ -26,6 +28,7 @@ public sealed class BarkSystem : SharedBarkSystem
     [Dependency] private readonly IGameTiming _gameTiming = default!;
     [Dependency] private readonly AudioSystem _sharedAudio = default!;
     [Dependency] private readonly IUserInterfaceManager _uiManager = default!;
+    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
 
     private bool _clientSideEnabled;
     private float _volume;
@@ -79,8 +82,13 @@ public sealed class BarkSystem : SharedBarkSystem
 
     public override void Bark(Entity<BarkComponent> entity, List<BarkData> barks)
     {
+        // Reserve edit start - If barks are disabled, play regular speech sounds instead
         if (!_clientSideEnabled)
+        {
+            PlayFallbackSpeechSound(entity);
             return;
+        }
+        // Reserve edit end
 
         if (TryComp<BarkSourceComponent>(entity, out var sourceComponent))
             RemComp(entity, sourceComponent);
@@ -92,6 +100,34 @@ public sealed class BarkSystem : SharedBarkSystem
         sourceComponent.Barks = new(barks);
         sourceComponent.ResolvedSound = entity.Comp.VoiceData.BarkSound;
     }
+
+    // Reserve edit start - Fallback to speech sounds when bark is disabled
+    private void PlayFallbackSpeechSound(EntityUid entity)
+    {
+        // Play a simple speech sound when bark is disabled
+        // This uses the entity's speech sound if available
+        if (!TryComp<SpeechComponent>(entity, out var speechComp))
+            return;
+
+        // Get speech sound prototype
+        if (speechComp.SpeechSounds == null)
+            return;
+
+        if (!_prototypeManager.TryIndex<SpeechSoundsPrototype>(speechComp.SpeechSounds, out var prototype))
+            return;
+
+        // Play the say sound (default speech sound)
+        if (prototype.SaySound != null)
+        {
+            _sharedAudio.PlayEntity(
+                prototype.SaySound,
+                Filter.Local(),
+                entity,
+                true,
+                prototype.SaySound.Params);
+        }
+    }
+    // Reserve edit end
 
     private void Bark(EntityUid entity, SoundSpecifier soundSpecifier, BarkData currentBark)
     {

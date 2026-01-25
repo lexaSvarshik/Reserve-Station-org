@@ -128,3 +128,6 @@ comp-hands-examine-empty-selfaware = You are not holding anything.
 comp-hands-examine-selfaware = You are holding { $items }.
 
 humanoid-appearance-component-examine-selfaware = You are { INDEFINITE($age) } { $age } { $species }.
+
+examine-handcuffed = [color=orange]{CAPITALIZE(POSS-ADJ($ent))} hands are tied![/color]
+examine-handcuffed-selfaware = [color=orange]Your hands are tied![/color]

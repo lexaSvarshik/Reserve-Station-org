@@ -15,6 +15,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Content.Goobstation.Common.Flammability;
 using Content.Goobstation.Shared.Clothing.Components;
 using Content.Shared.Atmos;
 using Content.Shared.Clothing.Components;
@@ -69,10 +70,9 @@ public sealed class MadnessMaskSystem : EntitySystem
             args.Args.TemperatureDelta = 0;
     }
 
-    private void OnGetProtection(Entity<MadnessMaskComponent> ent,
-        ref InventoryRelayedEvent<GetFireProtectionEvent> args)
+    private void OnGetProtection(Entity<MadnessMaskComponent> ent, ref InventoryRelayedEvent<GetFireProtectionEvent> args)
     {
-        if (!IsHereticOrGhoul(args.Args.Target))
+        if (!IsHereticOrGhoul(args.Args.Target) || HasComp<VeryFlammableComponent>(args.Args.Target))
             return;
 
         args.Args.Multiplier = -10f; // Basically ignore fire AP

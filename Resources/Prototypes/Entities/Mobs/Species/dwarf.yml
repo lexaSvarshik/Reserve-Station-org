@@ -93,8 +93,8 @@
       Male: UnisexDwarf
       Female: FemaleDwarf
       Unsexed: UnisexDwarf
-  - type: ReplacementAccent
-    accent: dwarf
+#  - type: ReplacementAccent Reserve edit
+#    accent: dwarf
   - type: Speech
     # speechSounds: Bass Reserve edit
   - type: LanguageKnowledge # Einstein Engines - Languages

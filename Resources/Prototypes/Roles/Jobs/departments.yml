@@ -225,6 +225,7 @@
   - MedicalIntern
   - Psychologist
   - Paramedic
+  - Virologist # Gooby goob ba gooby goob ba
 
 - type: department
   id: Security
@@ -274,6 +275,7 @@
   weight: 10
   buttonStyle: ButtonColorSpecificDepartment # Reserve-Edit
   roles:
+  - RadioHost # Goobstation
   - Boxer
   - Reporter
   - Zookeeper

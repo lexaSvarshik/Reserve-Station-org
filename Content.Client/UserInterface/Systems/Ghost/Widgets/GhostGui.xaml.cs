@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+﻿// SPDX-FileCopyrightText: 2022 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2022 Jacob Tong <10494922+ShadowCommander@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2022 Jezithyr <Jezithyr.@gmail.com>
 // SPDX-FileCopyrightText: 2022 Jezithyr <Jezithyr@gmail.com>
@@ -29,13 +29,10 @@ namespace Content.Client.UserInterface.Systems.Ghost.Widgets;
 public sealed partial class GhostGui : UIWidget
 {
     public GhostTargetWindow TargetWindow { get; }
-    public _Shitcode.UserInterface.Systems.Ghost.Controls.GhostBarRulesWindow GhostBarWindow { get; }
 
     public event Action? RequestWarpsPressed;
     public event Action? ReturnToBodyPressed;
     public event Action? GhostRolesPressed;
-    public event Action? GhostBarPressed; // Goobstation - Ghost Bar
-    public event Action? ReturnToRoundPressed; // Reserve - Respawn
     private int _prevNumberRoles;
 
     public GhostGui()
@@ -44,30 +41,25 @@ public sealed partial class GhostGui : UIWidget
 
         TargetWindow = new GhostTargetWindow();
 
-        GhostBarWindow = new _Shitcode.UserInterface.Systems.Ghost.Controls.GhostBarRulesWindow();
-
         MouseFilter = MouseFilterMode.Ignore;
 
         GhostWarpButton.OnPressed += _ => RequestWarpsPressed?.Invoke();
         ReturnToBodyButton.OnPressed += _ => ReturnToBodyPressed?.Invoke();
         GhostRolesButton.OnPressed += _ => GhostRolesPressed?.Invoke();
-        // GhostBarButton.OnPressed += _ => GhostBarPressed?.Invoke(); // Goobstation - Ghost Bar // Reserve - Respawn
-        ReturnToRound.OnPressed += _ => ReturnToRoundPressed?.Invoke(); // Reserve - Respawn
+        GhostRolesButton.OnPressed += _ => GhostRolesButton.StyleClasses.Remove(StyleBase.ButtonCaution);
     }
 
     public void Hide()
     {
         TargetWindow.Close();
-        GhostBarWindow.Close(); // Goobstation - Ghost Bar
         Visible = false;
     }
 
     // Ghoob edit
-    public void Update(int? roles, bool? canReturnToBody, bool? canEnterGhostBar = true, bool? canTakeGhostRoles = true)
+    public void Update(int? roles, bool? canReturnToBody, bool? canTakeGhostRoles = true)
     {
         ReturnToBodyButton.Disabled = !canReturnToBody ?? true;
         // Goobstation start
-        // GhostBarButton.Disabled = !canEnterGhostBar ?? true; // Reserve - Respawn
         GhostRolesButton.Disabled = !canTakeGhostRoles ?? true;
         // Goobstation end
 
@@ -93,7 +85,6 @@ public sealed partial class GhostGui : UIWidget
         if (disposing)
         {
             TargetWindow.Dispose();
-            GhostBarWindow.Dispose(); // Goobstation - Ghost Bar
         }
     }
 }

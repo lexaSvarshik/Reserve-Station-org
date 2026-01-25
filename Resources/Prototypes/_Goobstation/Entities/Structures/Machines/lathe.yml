@@ -226,6 +226,8 @@
     - MechBoardsScience
     - Pinpointers
     - Genetics
+    - XenobioPack
+    - XenobagHoldingPack
     # Einstein Engines Packs
     - Translators
     - TranslatorImplanters
@@ -269,6 +271,7 @@
     unlitRunningState: unlit-building # DeltaV - added animation sprite layers
     staticPacks:
     - ServiceBoardsStatic
+    - ServiceBoardsStaticGoob
     - MaterialsStatic
     - LightsStatic
     - ServiceStatic
@@ -289,6 +292,7 @@
     - SharedBoards
     - CameraBoards
     - ServiceTools
+    - ServiceBoardsGoob # goob
     # Einstein Engines Packs
     - Translators
   - type: EmagLatheRecipes

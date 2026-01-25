@@ -48,7 +48,7 @@
   components:
   - type: ChangelingRule
   - type: GameRule
-    minPlayers: 15
+    minPlayers: 35 # Reserve edit 15 -> 35
   - type: AntagRandomObjectives
     sets:
     - groups: ChangelingObjectiveGroups
@@ -133,7 +133,7 @@
   id: CalmLing # For Dual Antag Gamemodes
   components:
   - type: GameRule
-    minPlayers: 30
+    minPlayers: 40 # Reserve edit 30 -> 40
   - type: AntagSelection
     selectionTime: IntraPlayerSpawn
     agentName: changeling-roundend-name

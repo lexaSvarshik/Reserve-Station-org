@@ -21,6 +21,7 @@
   - Drinks
   - FoodRecipes
   - Writing
+  - Enchanting # Goob - Enchanting guidebook
 
 - type: guideEntry
   id: Drinks
@@ -28,6 +29,9 @@
   name: guide-entry-drinks
   text: "/ServerInfo/Guidebook/ReferenceTables/Drinks.xml"
   filterEnabled: True
+  children: # Goob - Drinks guidebook split
+  - AlcoholicDrinks
+  - NonAlcoholicDrinks
 
 - type: guideEntry
   id: FoodRecipes
@@ -162,4 +166,3 @@
   abstract: true #Reserve guidebook
   name: guide-entry-writing
   text: "/ServerInfo/Guidebook/Writing.xml"
-

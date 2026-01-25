@@ -45,3 +45,6 @@ comp-hands-examine-empty-selfaware = Вы ничего не держите.
 comp-hands-examine-selfaware = Вы держите { $items }.
 
 humanoid-appearance-component-examine-selfaware = Вы - { $species } { $age }.
+
+examine-handcuffed = [color=orange]{CAPITALIZE(POSS-ADJ($ent))} руки связаны![/color]
+examine-handcuffed-selfaware = [color=orange]Ваши руки связаны![/color]

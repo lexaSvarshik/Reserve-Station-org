@@ -15,6 +15,7 @@
 using Content.Goobstation.Common.Speech;
 using Content.Server.Actions;
 using Content.Server.Chat.Systems;
+using Content.Shared._White.Bark.Components;
 using Content.Shared.Chat.Prototypes;
 using Content.Shared.Humanoid;
 using Content.Shared.Speech;
@@ -76,7 +77,6 @@ public sealed class VocalSystem : EntitySystem
             args.Handled = TryPlayScreamSound(uid, component);
             return;
         }
-
         // Goobstation start
         var getSoundEv = new GetEmoteSoundsEvent();
         RaiseLocalEvent(uid, ref getSoundEv);

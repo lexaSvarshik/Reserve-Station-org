@@ -178,6 +178,8 @@
     - id: DerelictCyborgSyndicateSpawn # Goobstation - usually calm
     - id: MalignRiftSpawn # DeltaV
     - id: FloorGoblinMidRound # Goobstation
+    - id: ClownGoblinMigration # Goobstation - New Midrounds
+    - id: SantaClausSpawn # Goobstation, remove after new year
 
 - type: entityTable
   id: BasicAntagEventsTable
@@ -190,6 +192,8 @@
     - id: ParadoxCloneSpawn
     #- id: RevenantSpawn  # GoobStation - removed till rework
     - id: SleeperAgents
+    - id: HereticMidround # Goob
+    - id: ChangelingMidround # Goob
     - id: ZombieOutbreak
     - id: LoneOpsSpawn
     - id: DerelictCyborgSpawn
@@ -199,8 +203,16 @@
     - id: BingleSpawn #Goobstation - Bingle
     - id: SlaughterDemonMidround # Goobstation - Slaughter Demon
     - id: XenomorphsInfestation # WD EDIT
+    #- id: GreyTideAntagMidround # Goobstation - New Midrounds
+    #- id: SingulothKnightsMidround # Goobstation - New Midrounds
+    #- id: DarkLordMidround # Goobstation - New Midrounds
+    #- id: MimeAssassinMidround # Goobstation - New Midrounds
+    #- id: DarkPriestMidround # Goobstation - New Midrounds
+    #- id: VoxRaidersMidround # Goobstation - New Midrounds
+    #- id: TunnelClownMidround # Goobstation
     #- id: WraithMidround # Goobstation - Wraith
-    #TODO When Slasher is ready- id: SlasherSpawn # Goobstation - The Slasher
+    #TODO when midrounds are "reviewed" by the chudmins add them back
+    #TODO When Slasher is Ready - id: SlasherSpawn # Goobstation - The Slasher
 
 - type: entity
   id: BaseStationEvent
@@ -239,7 +251,7 @@
   - type: StationEvent
     startAnnouncementColor: "#18abf5"
     startAudio:
-      path: /Audio/Corvax/Announcements/flux.ogg # Reserve new sounds
+      path: /Audio/Announcements/announce.ogg
     weight: 8
     duration: 35
     chaos: # Goobstation
@@ -262,9 +274,7 @@
   - type: StationEvent
     startAnnouncementColor: "#18abf5"
     startAudio:
-      path: /Audio/Corvax/Announcements/blusp_anomalies.ogg # Reserve new sounds
-      params:
-        volume: -4
+      path: /Audio/Announcements/announce.ogg
     weight: 8
     duration: 35
     chaos: # Goobstation
@@ -294,12 +304,6 @@
   parent: BaseGameRule
   components:
   - type: StationEvent
-  # Reserve new sounds bgn
-    startAudio:
-      path: /Audio/Announcements/attention.ogg
-      params:
-        volume: -4
-  # Reserve new sounds end
     weight: 7
     duration: 1
     minimumPlayers: 15
@@ -316,13 +320,6 @@
   parent: BaseGameRule
   components:
   - type: StationEvent
-  # Reserve new sounds bgn
-    startAnnouncementColor: "#18abf5"
-    startAudio:
-      path: /Audio/Announcements/attention.ogg
-      params:
-        volume: -4
-  # Reserve new sounds end
     startAnnouncement: station-event-bureaucratic-error-announcement
     minimumPlayers: 25
     weight: 3
@@ -341,13 +338,6 @@
   components:
   - type: StationEvent
     startAnnouncement: station-event-clerical-error-announcement
-  # Reserve new sounds bgn
-    startAnnouncementColor: "#18abf5"
-    startAudio:
-      path: /Audio/Announcements/attention.ogg
-      params:
-        volume: -4
-  # Reserve new sounds end
     minimumPlayers: 15
     weight: 5
     duration: 1
@@ -529,27 +519,27 @@
       mindRoles:
       - MindRoleParadoxClone
 
-- type: entity
-  parent: BaseGameRule
-  id: RevenantSpawn
-  components:
-  - type: StationEvent
-    weight: 2 # DeltaV - was 7.5, lowered because of GlimmerRevenantSpawn event
-    duration: 1
-    earliestStart: 30
-    minimumPlayers: 20
-    chaos: # Goobstation
-      Hostile: 20
-      Friend: 20
-      Combat: 40
-      Death: 100
-      Medical: 100
-    eventType: HostilesSpawn # Goobstation
-  # Goobstation
-  - type: GameRule
-    chaosScore: 450
-  - type: RandomSpawnRule
-    prototype: MobRevenant
+#- type: entity   Goobstaion start - disabled until rework
+#  parent: BaseGameRule
+#  id: RevenantSpawn
+#  components:
+#  - type: StationEvent
+#    weight: 3.5
+#    duration: 1
+#    earliestStart: 30
+#    minimumPlayers: 20
+#    chaos: # Goobstation
+#      Hostile: 20
+#      Friend: 20
+#      Combat: 40
+#      Death: 100
+#      Medical: 100
+#    eventType: HostilesSpawn # Goobstation
+#  # Goobstation
+#  - type: GameRule
+#    chaosScore: 450
+#  - type: RandomSpawnRule
+#    prototype: MobRevenant      goobstation end
 
 # Goob - wiz of our own
 #- type: entity
@@ -607,14 +597,8 @@
   - type: StationEvent
     startAnnouncement: station-event-gas-leak-start-announcement
     startAudio:
-      path: /Audio/Announcements/gasleak_start.ogg # Reserve new sounds
-      params:
-        volume: -4
+      path: /Audio/Announcements/attention.ogg
     endAnnouncement: station-event-gas-leak-end-announcement
-    endAudio:
-      path: /Audio/Announcements/gasleak_end.ogg # Reserve new sounds
-      params:
-        volume: -4
     weight: 8
     chaos:
       Atmos: 100
@@ -653,7 +637,7 @@
     startAnnouncement: station-event-power-grid-check-start-announcement
     endAnnouncement: station-event-power-grid-check-end-announcement
     startAudio:
-      path: /Audio/_Reserve/Announcements/poweroff.ogg # Reserve new sounds
+      path: /Audio/Announcements/power_off.ogg
       params:
         volume: -4
     duration: 60
@@ -673,9 +657,7 @@
     startAnnouncement: station-event-solar-flare-start-announcement
     endAnnouncement: station-event-solar-flare-end-announcement
     startAudio:
-      path: /Audio/Corvax/Announcements/comms_blackout.ogg # Reserve new sounds
-      params:
-        volume: -4
+      path: /Audio/Announcements/attention.ogg
     duration: 120
     maxDuration: 240
     chaos: # Goobstation
@@ -707,9 +689,7 @@
   - type: StationEvent
     startAnnouncement: station-event-vent-clog-start-announcement
     startAudio:
-      path: /Audio/Announcements/ventclog.ogg # Reserve new sounds
-      params:
-        volume: -4
+      path: /Audio/Announcements/attention.ogg
     earliestStart: 15
     minimumPlayers: 15
     weight: 5
@@ -728,12 +708,8 @@
   components:
   - type: StationEvent
     startAnnouncement: station-event-vent-creatures-start-announcement
-  # Reserve new sounds begin
     startAudio:
-      path: /Audio/_Reserve/Announcements/lifesigns.ogg
-      params:
-        volume: -4
-  # Reserve new sounds end
+      path: /Audio/Announcements/aliens.ogg
     earliestStart: 20
     minimumPlayers: 15
     weight: 7 # Goobstation - was 5
@@ -748,9 +724,7 @@
   - type: VentCrittersRule
     table: !type:GroupSelector # DeltaV: EntityTable instead of spawn entries
       children:
-      - id: MobAdultSlimesBlueAngry
-      - id: MobAdultSlimesGreenAngry
-      - id: MobAdultSlimesYellowAngry
+      - id: XenobioSlimeBabySpawner # goob edit - nuke wizden slimes in favor of xenobio
 
 - type: entity
   id: SnakeSpawn
@@ -758,12 +732,8 @@
   components:
   - type: StationEvent
     startAnnouncement: station-event-vent-creatures-start-announcement
-  # Reserve new sounds bgn
     startAudio:
-      path: /Audio/_Reserve/Announcements/lifesigns.ogg
-      params:
-        volume: -4
-  # Reserve new sounds end
+      path: /Audio/Announcements/attention.ogg
     earliestStart: 20
     minimumPlayers: 15
     weight: 7 # Goobstation - was 5
@@ -788,12 +758,8 @@
   components:
   - type: StationEvent
     startAnnouncement: station-event-vent-creatures-start-announcement
-  # Reserve new sounds bgn
     startAudio:
-      path: /Audio/_Reserve/Announcements/lifesigns.ogg
-      params:
-        volume: -4
-  # Reserve new sounds end
+      path: /Audio/Announcements/aliens.ogg
     earliestStart: 20
     minimumPlayers: 15
     weight: 7 # Goobstation - was 5
@@ -816,9 +782,7 @@
   - type: StationEvent
     startAnnouncement: station-event-vent-creatures-start-announcement
     startAudio:
-      path: /Audio/_Reserve/Announcements/lifesigns.ogg
-      params:
-        volume: -4
+      path: /Audio/Announcements/attention.ogg
     earliestStart: 45 # DeltaV - was 20
     minimumPlayers: 30 # DeltaV - was 20
     weight: 3 # Goobstation - was 1.5
@@ -913,7 +877,7 @@
       - type: NukeOperative
       - type: RandomMetadata
         nameSegments:
-        - NamesSyndicatePrefix #Reserve datasets fix
+        - NamesSyndicatePrefix
         - NamesSyndicateNormal
         nameFormat: name-format-nukie-generic
       - type: NpcFactionMember
@@ -985,14 +949,6 @@
   id: IonStorm
   components:
   - type: StationEvent
-  # Reserve new sounds bgn
-    startAnnouncementColor: "#18abf5"
-    startAnnouncement: station-event-ion-storm-start-announcement
-    startAudio:
-      path: /Audio/_Reserve/Announcements/i-storm1.ogg
-      params:
-        volume: -4
-  # Reserve new sounds end
     weight: 8
     reoccurrenceDelay: 20
     duration: 1
@@ -1030,12 +986,9 @@
   parent: BaseStationEventShortDelay
   components:
   - type: StationEvent
-  # Reserve new sounds bgn
     startAudio:
-      path: /Audio/_Reserve/Announcements/greytide.ogg
-      params:
-        volume: -4
-  # Reserve new sounds end
+      path: /Audio/Announcements/attention.ogg
+    weight: 5
     minimumPlayers: 25
     reoccurrenceDelay: 20
     chaos: # Goobstation

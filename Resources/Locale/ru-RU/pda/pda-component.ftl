@@ -16,7 +16,7 @@ comp-pda-ui-menu-title = КПК
 comp-pda-ui-footer = Карманный Персональный Компьютер
 comp-pda-ui-station = Станция: [color=white]{ $station }[/color]
 comp-pda-ui-station-time = Продолжительность смены: [color=white]{ $time }[/color]
-comp-pda-ui-reserve-coins = Баланс: [color=gold]{ $balance }[/color] Кредитов
+comp-pda-ui-reserve-coins = Баланс: [color=gold]{ $balance }[/color] Криптокредитов
 comp-pda-ui-reserve-coins-unknown = Баланс: [color=gray]Неизвестно[/color]
 comp-pda-ui-station-alert-level = Уровень угрозы: [color={ $color }]{ $level }[/color]
 comp-pda-ui-station-alert-level-instructions = Инструкции: [color=white]{ $instructions }[/color]
@@ -33,16 +33,16 @@ pda-notification-message = [font size=12][bold]КПК[/bold] { $header }: [/font
     "{ $message }"
 
 # Coin transfer localization
-nano-chat-coin-transfer-title = Отправить кредиты
-nano-chat-coin-transfer-prompt = Введите количество кредитов для отправки:
+nano-chat-coin-transfer-title = Отправить криптокредиты
+nano-chat-coin-transfer-prompt = Введите количество криптокредитов для отправки:
 nano-chat-coin-transfer-send = Отправить
 nano-chat-coin-transfer-cancel = Отмена
 nano-chat-coin-transfer-amount-placeholder = Введите сумму
-nano-chat-send-coin = Отправить кредиты
+nano-chat-send-coin = Отправить криптокредиты
 
 # Success messages
-nano-chat-coin-transfer-success-sender = Отправлено { $amount } кредитов
-nano-chat-coin-transfer-success-recipient = Получено { $amount } кредитов
+nano-chat-coin-transfer-success-sender = Отправлено { $amount } криптокредитов
+nano-chat-coin-transfer-success-recipient = Получено { $amount } криптокредитов
 
 # Error details - specific error descriptions
 nano-chat-coin-transfer-insufficient-funds = Недостаточно средств

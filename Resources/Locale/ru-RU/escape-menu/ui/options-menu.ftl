@@ -102,6 +102,7 @@ ui-options-vp-vertical-fit-tooltip =
 ui-options-vp-low-res = Изображение низкого разрешения
 ui-options-parallax-low-quality = Низкокачественный параллакс (фон)
 ui-options-ambient-occlusion = Показывать Ambient Occlusion
+ui-options-light-glow = Включить шейдеры свечения света
 ui-options-fps-counter = Показать счётчик FPS
 ui-options-vp-width = Ширина окна игры:
 ui-options-hud-layout = Тип HUD:
