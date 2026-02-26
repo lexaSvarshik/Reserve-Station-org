@@ -9,10 +9,10 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Content.Goobstation.Common.Effects;
 using Content.Server._Goobstation.Wizard.Components;
 using Content.Server.Electrocution;
 using Content.Shared._Goobstation.Wizard.Projectiles;
-using Content.Shared._Goobstation.Wizard.Traps;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Magic.Components;
 using Content.Shared.StatusEffect;
@@ -23,7 +23,6 @@ namespace Content.Server._Goobstation.Wizard.Systems;
 public sealed class ThrownLightningSystem : EntitySystem
 {
     [Dependency] private readonly ElectrocutionSystem _electrocution = default!;
-    [Dependency] private readonly SharedStaminaSystem _stamina = default!;
     [Dependency] private readonly SpellsSystem _spells = default!;
     [Dependency] private readonly SparksSystem _sparks = default!;
 
@@ -76,8 +75,7 @@ public sealed class ThrownLightningSystem : EntitySystem
         if (!TryComp(args.Target, out StatusEffectsComponent? status))
             return;
 
-        _electrocution.TryDoElectrocution(args.Target, ent, 2, TimeSpan.Zero, true, 0.5f, 1f, status, true); //Reserve electrocutionChance
-        _stamina.TakeStaminaDamage(args.Target, ent.Comp.StaminaDamage);
+        _electrocution.TryDoElectrocution(args.Target, ent, 2, ent.Comp.StunTime, true, 0.5f, 1f, status, true); //Reserve electrocutionChance
         _sparks.DoSparks(Transform(ent).Coordinates);
     }
 

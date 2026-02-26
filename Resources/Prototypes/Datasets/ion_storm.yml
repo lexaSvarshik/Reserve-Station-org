@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023 LankLTE <135308300+LankLTE@users.noreply.github.com>
+﻿# SPDX-FileCopyrightText: 2023 LankLTE <135308300+LankLTE@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2023 deltanedas <39013340+deltanedas@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
 # SPDX-FileCopyrightText: 2024 Mr. 27 <45323883+Dutch-VanDerLinde@users.noreply.github.com>
@@ -429,25 +429,28 @@
   - ДЕТЕКТИВЫ
   - ДРОНЫ
   # - GENETICISTS
-  - ГЛАВЫ ПЕРСОНАЛА
-  - ГЛАВЫ СЛУЖБЫ БЕЗОПАСНОСТИ
-  - ГЛАВЫ ОТДЕЛОВ
-  - УБОРЩИКИ
-  - АГЕНТЫ ВНУТРЕННЫХ ДЕЛ
-  - БИБЛИОТЕКАРИ
-  - ВРАЧИ
-  - МИМЫ
-  - ПАРАМЕДИКИ
-  - ПАССАЖИРЫ
-  - КВАРТИРМЕЙСТЕРЫ
-  - НАУЧНЫЕ РУКОВОДИТЕЛИ
-  - РОБОТОТЕХНИКИ
-  - УТИЛИЗАТОРЫ
-  - УЧЁНЫЕ
-  - ОФИЦЕРЫ БЕЗОПАСНОСТИ
-  - ИНЖЕНЕРЫ
-  # - VIROLOGISTS
-  - СМОТРИТЕЛИ
+  - HEADS OF PERSONNEL
+  - HEADS OF SECURITY
+  - HEADS OF STAFF
+  - JANITORS
+  - LAWYERS
+  - LIBRARIANS
+  - MEDICAL DOCTORS
+  - MIMES
+  - MUSICIANS
+  - NON-CREW
+  - PARAMEDICS
+  - PASSENGERS
+  - QUARTERMASTERS
+  - RESEARCH DIRECTORS
+  - ROBOTICISTS
+  - RODENTS
+  - SALVAGE SPECIALISTS
+  - SCIENTISTS
+  - SECURITY OFFICERS
+  - STATION ENGINEERS
+  - VIROLOGISTS
+  - WARDENS
 
 # only including complex dangerous or funny drinks no water allowed
 - type: dataset

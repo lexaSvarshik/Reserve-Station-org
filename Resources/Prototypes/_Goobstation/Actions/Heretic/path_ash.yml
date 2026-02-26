@@ -17,6 +17,7 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
+    raiseOnUser: true
     checkCanInteract: false
     useDelay: 15
     itemIconStyle: NoItem
@@ -30,15 +31,27 @@
     messageLoc: heretic-speech-ash-jaunt
 
 - type: entity
+  parent: ActionHereticJaunt
+  id: ActionHereticJauntLong
+  name: Ashen Passage
+  description: A long range spell that allows you to pass unimpeded through walls.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    event: !type:EventHereticAshenShift
+      jaunt: AshJauntLong
+
+- type: entity
   parent: BaseAction
   id: ActionHereticVolcanoBlast
-  name: Volcanic Blast
-  description: Charge up a blast of fire that chains between nearby targets, setting them ablaze.
+  name: Volcano Blast
+  description: Charge up a blast of fire that chains between nearby targets, setting them ablaze. Targets already on fire will take priority. If the target fails to catch ablaze, or extinguishes themselves before it bounces, the chain will stop.
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
+    raiseOnUser: true
     checkCanInteract: false
-    useDelay: 10
+    useDelay: 45
     itemIconStyle: NoItem
     icon:
       sprite: _Goobstation/Heretic/abilities_heretic.rsi
@@ -48,6 +61,9 @@
   - type: HereticAction
     requireMagicItem: true
     messageLoc: heretic-speech-ash-volcano
+  - type: ChangeUseDelayOnAscension
+    newUseDelay: 30
+    requiredPath: Ash
 
 - type: entity
   parent: BaseAction
@@ -57,8 +73,9 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
+    raiseOnUser: true
     checkCanInteract: false
-    useDelay: 15
+    useDelay: 60
     itemIconStyle: NoItem
     icon:
       sprite: _Goobstation/Heretic/abilities_heretic.rsi
@@ -68,6 +85,9 @@
   - type: HereticAction
     requireMagicItem: true
     messageLoc: heretic-speech-ash-rebirth
+  - type: ChangeUseDelayOnAscension
+    newUseDelay: 10
+    requiredPath: Ash
 
 - type: entity
   parent: BaseAction
@@ -77,6 +97,7 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
+    raiseOnUser: true
     checkCanInteract: false
     useDelay: 90
     itemIconStyle: NoItem
@@ -97,6 +118,7 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
+    raiseOnUser: true
     checkCanInteract: false
     useDelay: 30
     itemIconStyle: NoItem

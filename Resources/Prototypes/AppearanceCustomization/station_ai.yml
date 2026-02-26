@@ -22,6 +22,9 @@
   - StationAiHologramFace
   - StationAiHologramCat
   - StationAiHologramDog
+  - StationAiHologramKobold
+  - StationAiHologramMonkey
+  - StationAiHologramScurret # goob
 
 # Iconography
 - type: stationAiCustomization

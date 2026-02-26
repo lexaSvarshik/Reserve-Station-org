@@ -5,6 +5,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Changeling
-store-ling-category-combat = Бой
-store-ling-category-sting = Укусы
-store-ling-category-utility = Польза
+store-ling-category-combat = Способности
+store-ling-category-sting = Жала
+store-ling-category-utility = Усиления

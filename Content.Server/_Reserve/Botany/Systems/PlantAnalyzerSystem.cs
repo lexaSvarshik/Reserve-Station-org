@@ -1,259 +1,215 @@
-using Content.Server.Botany.Components;
-using Content.Server.PowerCell;
-using Content.Shared.DoAfter;
-using Content.Shared.Interaction;
-using Content.Shared._Reserve.PlantAnalyzer;
-using Robust.Server.GameObjects;
-using Robust.Shared.Audio.Systems;
-using Robust.Shared.Player;
-using Robust.Shared.Prototypes;
+// SPDX-FileCopyrightText: 2025 Kirill <kirill@example.com>
+// SPDX-FileCopyrightText: 2025 ReserveBot <211949879+ReserveBot@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tim <timfalken@hotmail.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+// based on https://github.com/space-wizards/space-station-14/pull/34600
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
-using Content.Shared.Atmos;
+using Content.Server._Reserve.AbstractAnalyzer;
+using Content.Server._Reserve.Botany.Components;
+using Content.Server.Botany.Components;
+using Content.Server.Botany.Systems;
+using Content.Server.Popups;
+using Content.Shared._Reserve.Botany.PlantAnalyzer;
+using Content.Shared.Chemistry.EntitySystems;
+using Content.Shared.Hands.EntitySystems;
+using Content.Shared.Interaction;
+using Content.Shared.Labels.EntitySystems;
+using Content.Shared.Paper;
+using Robust.Server.GameObjects;
+using Robust.Shared.Audio;
+using Robust.Shared.Audio.Systems;
+using Robust.Shared.Prototypes;
+using Robust.Shared.Timing;
 
-namespace Content.Server.Botany.Systems; // This is how it supposed to be
+namespace Content.Server._Reserve.Botany.Systems;
 
-public sealed class PlantAnalyzerSystem : EntitySystem
+public sealed class PlantAnalyzerSystem : AbstractAnalyzerSystem<PlantAnalyzerComponent, PlantAnalyzerDoAfterEvent>
 {
+    [Dependency] private readonly IEntityManager _entityManager = default!;
+    [Dependency] private readonly IGameTiming _gameTiming = default!;
+    [Dependency] private readonly PopupSystem _popupSystem = default!;
+    [Dependency] private readonly SharedHandsSystem _handsSystem = default!;
+    [Dependency] private readonly SharedAudioSystem _audioSystem = default!;
+    [Dependency] private readonly PaperSystem _paperSystem = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly PowerCellSystem _cell = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly SharedDoAfterSystem _doAfterSystem = default!;
-    [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
+    [Dependency] private readonly LabelSystem _labelSystem = default!;
+    [Dependency] private readonly SharedSolutionContainerSystem _solutionContainerSystem = default!;
 
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<PlantAnalyzerComponent, AfterInteractEvent>(OnAfterInteract);
-        SubscribeLocalEvent<PlantAnalyzerComponent, PlantAnalyzerDoAfterEvent>(OnDoAfter);
-        SubscribeLocalEvent<PlantAnalyzerComponent, PlantAnalyzerSetMode>(OnModeSelected);
+
+        SubscribeLocalEvent<PlantAnalyzerComponent, PlantAnalyzerPrintMessage>(OnPrint);
     }
 
-    private void OnAfterInteract(Entity<PlantAnalyzerComponent> ent, ref AfterInteractEvent args)
+    /// <inheritdoc/>
+    public override void UpdateScannedUser(EntityUid analyzer, EntityUid target, bool scanMode)
     {
-        if (args.Target == null || !args.CanReach || !_cell.HasActivatableCharge(ent, user: args.User))
+        if (!_uiSystem.HasUi(analyzer, PlantAnalyzerUiKey.Key))
             return;
 
-        if (ent.Comp.DoAfter != null)
+        if (!ValidScanTarget(target))
             return;
 
-        if (HasComp<SeedComponent>(args.Target) || TryComp<PlantHolderComponent>(args.Target, out var plantHolder) && plantHolder.Seed != null)
-        {
-
-            if (ent.Comp.Settings.AdvancedScan)
-            {
-                var doAfterArgs = new DoAfterArgs(EntityManager, args.User, ent.Comp.Settings.AdvScanDelay, new PlantAnalyzerDoAfterEvent(), ent, target: args.Target, used: ent)
-                {
-                    NeedHand = true,
-                    BreakOnDamage = true,
-                    BreakOnMove = true,
-                    MovementThreshold = 0.01f
-                };
-                _doAfterSystem.TryStartDoAfter(doAfterArgs, out ent.Comp.DoAfter);
-            }
-            else
-            {
-                var doAfterArgs = new DoAfterArgs(EntityManager, args.User, ent.Comp.Settings.ScanDelay, new PlantAnalyzerDoAfterEvent(), ent, target: args.Target, used: ent)
-                {
-                    NeedHand = true,
-                    BreakOnDamage = true,
-                    BreakOnMove = true,
-                    MovementThreshold = 0.01f
-                };
-                _doAfterSystem.TryStartDoAfter(doAfterArgs, out ent.Comp.DoAfter);
-            }
-        }
-    }
-
-    private void OnDoAfter(Entity<PlantAnalyzerComponent> ent, ref PlantAnalyzerDoAfterEvent args)
-    {
-        ent.Comp.DoAfter = null;
-        // Double charge use for advanced scan.
-        if (ent.Comp.Settings.AdvancedScan)
-        {
-            if (!_cell.TryUseActivatableCharge(ent, user: args.User))
-                return;
-        }
-        if (args.Handled || args.Cancelled || args.Args.Target == null || !_cell.TryUseActivatableCharge(ent.Owner, user: args.User))
+        if (!_entityManager.TryGetComponent<PlantAnalyzerComponent>(analyzer, out var analyzerComponent))
             return;
 
-        _audio.PlayPvs(ent.Comp.ScanningEndSound, ent);
-
-        OpenUserInterface(args.User, ent);
-        UpdateScannedUser(ent, args.Args.Target.Value);
-
-        args.Handled = true;
+        _uiSystem.ServerSendUiMessage(analyzer, PlantAnalyzerUiKey.Key, GatherData(analyzerComponent, scanMode, target: target));
     }
 
-    private void OpenUserInterface(EntityUid user, EntityUid analyzer)
+    private PlantAnalyzerScannedUserMessage GatherData(PlantAnalyzerComponent analyzer, bool? scanMode = null, EntityUid? target = null)
     {
-        if (!TryComp<ActorComponent>(user, out var actor) || !_uiSystem.HasUi(analyzer, PlantAnalyzerUiKey.Key))
+        target ??= analyzer.ScannedEntity;
+        PlantAnalyzerPlantData? plantData = null;
+        PlantAnalyzerTrayData? trayData = null;
+        PlantAnalyzerTolerancesData? tolerancesData = null;
+        PlantAnalyzerProduceData? produceData = null;
+        if (_entityManager.TryGetComponent<PlantHolderComponent>(target, out var plantHolder))
+        {
+            if (plantHolder.Seed is not null)
+            {
+                plantData = new PlantAnalyzerPlantData(
+                    seedDisplayName: plantHolder.Seed.DisplayName,
+                    health: plantHolder.Health,
+                    endurance: plantHolder.Seed.Endurance,
+                    age: plantHolder.Age,
+                    lifespan: plantHolder.Seed.Lifespan,
+                    dead: plantHolder.Dead,
+                    viable: plantHolder.Seed.Viable,
+                    mutating: plantHolder.MutationLevel > 0f,
+                    kudzu: plantHolder.Seed.TurnIntoKudzu
+                );
+                tolerancesData = new PlantAnalyzerTolerancesData(
+                    waterConsumption: plantHolder.Seed.WaterConsumption,
+                    nutrientConsumption: plantHolder.Seed.NutrientConsumption,
+                    toxinsTolerance: plantHolder.Seed.ToxinsTolerance,
+                    pestTolerance: plantHolder.Seed.PestTolerance,
+                    weedTolerance: plantHolder.Seed.WeedTolerance,
+                    lowPressureTolerance: plantHolder.Seed.LowPressureTolerance,
+                    highPressureTolerance: plantHolder.Seed.HighPressureTolerance,
+                    idealHeat: plantHolder.Seed.IdealHeat,
+                    heatTolerance: plantHolder.Seed.HeatTolerance,
+                    idealLight: plantHolder.Seed.IdealLight,
+                    lightTolerance: plantHolder.Seed.LightTolerance,
+                    consumeGasses: [.. plantHolder.Seed.ConsumeGasses.Keys]
+                );
+                produceData = new PlantAnalyzerProduceData(
+                    yield: plantHolder.Seed.ProductPrototypes.Count == 0 ? 0 : BotanySystem.CalculateTotalYield(plantHolder.Seed.Yield, plantHolder.YieldMod),
+                    potency: plantHolder.Seed.Potency,
+                    chemicals: [.. plantHolder.Seed.Chemicals.Keys],
+                    produce: plantHolder.Seed.ProductPrototypes.Select(p => p.Id).ToList(),
+                    exudeGasses: [.. plantHolder.Seed.ExudeGasses.Keys],
+                    seedless: plantHolder.Seed.Seedless
+                );
+            }
+            trayData = new PlantAnalyzerTrayData(
+                waterLevel: plantHolder.WaterLevel,
+                nutritionLevel: plantHolder.NutritionLevel,
+                toxins: plantHolder.Toxins,
+                pestLevel: plantHolder.PestLevel,
+                weedLevel: plantHolder.WeedLevel,
+                chemicals: plantHolder.SoilSolution?.Comp.Solution.Contents.Select(r => r.Reagent.Prototype).ToList()
+            );
+        }
+
+        return new PlantAnalyzerScannedUserMessage(
+            GetNetEntity(target),
+            scanMode,
+            plantData,
+            trayData,
+            tolerancesData,
+            produceData,
+            analyzer.PrintReadyAt
+        );
+    }
+
+    private void OnPrint(EntityUid uid, PlantAnalyzerComponent component, PlantAnalyzerPrintMessage args)
+    {
+        var user = args.Actor;
+
+        if (_gameTiming.CurTime < component.PrintReadyAt)
+        {
+            // This shouldn't occur due to the UI guarding against it, but
+            // if it does, tell the user why nothing happened.
+            _popupSystem.PopupEntity(Loc.GetString("forensic-scanner-printer-not-ready"), uid, user);
             return;
+        }
 
-        _uiSystem.OpenUi(analyzer, PlantAnalyzerUiKey.Key, actor.PlayerSession);
-    }
+        // Spawn a piece of paper.
+        var printed = EntityManager.SpawnEntity(component.MachineOutput, Transform(uid).Coordinates);
+        _handsSystem.PickupOrDrop(args.Actor, printed, checkActionBlocker: false);
 
-    public void UpdateScannedUser(Entity<PlantAnalyzerComponent> ent, EntityUid target)
-    {
-        if (!_uiSystem.HasUi(ent, PlantAnalyzerUiKey.Key))
+        if (!TryComp<PaperComponent>(printed, out var paperComp))
+        {
+            Log.Error("Printed paper did not have PaperComponent.");
             return;
+        }
 
-        if (TryComp<SeedComponent>(target, out var seedComp))
-        {
-            if (seedComp.Seed != null)
-            {
-                var state = ObtainingGeneDataSeed(seedComp.Seed, target, false, ent.Comp.Settings.AdvancedScan);
-                _uiSystem.ServerSendUiMessage(ent.Owner, PlantAnalyzerUiKey.Key, state);
-            }
-            else if (seedComp.SeedId != null && _prototypeManager.TryIndex(seedComp.SeedId, out SeedPrototype? protoSeed))
-            {
-                var state = ObtainingGeneDataSeed(protoSeed, target, false, ent.Comp.Settings.AdvancedScan);
-                _uiSystem.ServerSendUiMessage(ent.Owner, PlantAnalyzerUiKey.Key, state);
-            }
-        }
-        else if (TryComp<PlantHolderComponent>(target, out var plantComp))
-        {
-            if (plantComp.Seed != null)
-            {
-                var state = ObtainingGeneDataSeed(plantComp.Seed, target, true, ent.Comp.Settings.AdvancedScan);
-                _uiSystem.ServerSendUiMessage(ent.Owner, PlantAnalyzerUiKey.Key, state);
-            }
-        }
+        var data = GatherData(component);
+        var missingData = Loc.GetString("plant-analyzer-printout-missing");
+
+        var seedName = data.PlantData is not null ? Loc.GetString(data.PlantData.SeedDisplayName) : null;
+        (string, object)[] parameters = [
+            ("seedName", seedName ?? missingData),
+            ("produce", data.ProduceData is not null ? PlantAnalyzerLocalizationHelper.ProduceToLocalizedStrings(data.ProduceData.Produce, _prototypeManager).Plural : missingData),
+            ("water", data.TolerancesData?.WaterConsumption.ToString("0.00") ?? missingData),
+            ("nutrients", data.TolerancesData?.NutrientConsumption.ToString("0.00") ?? missingData),
+            ("toxins", data.TolerancesData?.ToxinsTolerance.ToString("0.00") ?? missingData),
+            ("pests", data.TolerancesData?.PestTolerance.ToString("0.00") ?? missingData),
+            ("weeds", data.TolerancesData?.WeedTolerance.ToString("0.00") ?? missingData),
+            ("gasesIn", data.TolerancesData is not null ? PlantAnalyzerLocalizationHelper.GasesToLocalizedStrings(data.TolerancesData.ConsumeGasses, _prototypeManager) : missingData),
+            ("kpa", data.TolerancesData?.IdealPressure.ToString("0.00") ?? missingData),
+            ("kpaTolerance", data.TolerancesData?.PressureTolerance.ToString("0.00") ?? missingData),
+            ("temp", data.TolerancesData?.IdealHeat.ToString("0.00") ?? missingData),
+            ("tempTolerance", data.TolerancesData?.HeatTolerance.ToString("0.00") ?? missingData),
+            ("lightLevel", data.TolerancesData?.IdealLight.ToString("0.00") ?? missingData),
+            ("lightTolerance", data.TolerancesData?.LightTolerance.ToString("0.00") ?? missingData),
+            ("yield", data.ProduceData?.Yield ?? -1),
+            ("potency", data.ProduceData is not null ? Loc.GetString(data.ProduceData.Potency) : missingData),
+            ("chemicals", data.ProduceData is not null ? PlantAnalyzerLocalizationHelper.ChemicalsToLocalizedStrings(data.ProduceData.Chemicals, _prototypeManager) : missingData),
+            ("gasesOut", data.ProduceData is not null ? PlantAnalyzerLocalizationHelper.GasesToLocalizedStrings(data.ProduceData.ExudeGasses, _prototypeManager) : missingData),
+            ("endurance", data.PlantData?.Endurance.ToString("0.00") ?? missingData),
+            ("lifespan", data.PlantData?.Lifespan.ToString("0.00") ?? missingData),
+            ("seeds", data.ProduceData is not null ? (data.ProduceData.Seedless ? "no" : "yes") : "other"),
+            ("viable", data.PlantData is not null ? (data.PlantData.Viable ? "yes" : "no") : "other"),
+            ("kudzu", data.PlantData is not null ? (data.PlantData.Kudzu ? "yes" : "no") : "other"),
+            ("indent", "    "),
+            ("nl", "\n")
+        ];
+
+        _paperSystem.SetContent((printed, paperComp), Loc.GetString($"plant-analyzer-printout", [.. parameters]));
+        _labelSystem.Label(printed, seedName);
+        _audioSystem.PlayPvs(component.SoundPrint, uid,
+            AudioParams.Default
+            .WithVariation(0.25f)
+            .WithVolume(3f)
+            .WithRolloffFactor(2.8f)
+            .WithMaxDistance(4.5f));
+
+        component.PrintReadyAt = _gameTiming.CurTime + component.PrintCooldown;
     }
 
-    /// <summary>
-    ///     Analysis of seed from prototype.
-    /// </summary>
-    public PlantAnalyzerScannedSeedPlantInformation ObtainingGeneDataSeed(SeedData seedData, EntityUid target, bool isTray, bool scanIsAdvanced)
+    /// <inheritdoc/>
+    protected override Enum GetUiKey()
     {
-        // Get trickier fields first.
-        AnalyzerHarvestType harvestType = AnalyzerHarvestType.Unknown;
-        switch (seedData.HarvestRepeat)
-        {
-            case HarvestType.Repeat:
-                harvestType = AnalyzerHarvestType.Repeat;
-                break;
-            case HarvestType.NoRepeat:
-                harvestType = AnalyzerHarvestType.NoRepeat;
-                break;
-            case HarvestType.SelfHarvest:
-                harvestType = AnalyzerHarvestType.SelfHarvest;
-                break;
-            default:
-                break;
-        }
-
-        var mutationProtos = seedData.MutationPrototypes;
-        List<string> mutationStrings = new();
-        foreach (var mutationProto in mutationProtos)
-        {
-            if (_prototypeManager.TryIndex<SeedPrototype>(mutationProto, out var seed))
-            {
-                mutationStrings.Add(seed.DisplayName);
-            }
-        }
-
-        PlantAnalyzerScannedSeedPlantInformation ret = new()
-        {
-            TargetEntity = GetNetEntity(target),
-            IsTray = isTray,
-            SeedName = seedData.DisplayName,
-            SeedChem = seedData.Chemicals.Keys.ToArray(),
-            HarvestType = harvestType,
-            ExudeGases = GetGasFlags(seedData.ExudeGasses.Keys),
-            ConsumeGases = GetGasFlags(seedData.ConsumeGasses.Keys),
-            Endurance = seedData.Endurance,
-            SeedYield = seedData.Yield,
-            Lifespan = seedData.Lifespan,
-            Maturation = seedData.Maturation,
-            Production = seedData.Production,
-            GrowthStages = seedData.GrowthStages,
-            SeedPotency = seedData.Potency,
-            Speciation = mutationStrings.ToArray()
-        };
-
-        if (scanIsAdvanced)
-        {
-            AdvancedScanInfo advancedInfo = new()
-            {
-                NutrientConsumption = seedData.NutrientConsumption,
-                WaterConsumption = seedData.WaterConsumption,
-                IdealHeat = seedData.IdealHeat,
-                HeatTolerance = seedData.HeatTolerance,
-                IdealLight = seedData.IdealLight,
-                LightTolerance = seedData.LightTolerance,
-                ToxinsTolerance = seedData.ToxinsTolerance,
-                LowPressureTolerance = seedData.LowPressureTolerance,
-                HighPressureTolerance = seedData.HighPressureTolerance,
-                PestTolerance = seedData.PestTolerance,
-                WeedTolerance = seedData.WeedTolerance,
-                Mutations = GetMutationFlags(seedData)
-            };
-
-            ret.AdvancedInfo = advancedInfo;
-        }
-        return ret;
+        return PlantAnalyzerUiKey.Key;
     }
 
-    public MutationFlags GetMutationFlags(SeedData plant)
+    /// <inheritdoc/>
+    protected override bool ScanTargetPopupMessage(Entity<PlantAnalyzerComponent> uid, AfterInteractEvent args, [NotNullWhen(true)] out string? message)
     {
-        MutationFlags ret = MutationFlags.None;
-        if (plant.TurnIntoKudzu) ret |= MutationFlags.TurnIntoKudzu;
-        if (plant.Seedless) ret |= MutationFlags.Seedless;
-        if (plant.Ligneous) ret |= MutationFlags.Ligneous;
-        if (plant.CanScream) ret |= MutationFlags.CanScream;
-
-        return ret;
+        message = null;
+        return false;
     }
 
-    public GasFlags GetGasFlags(IEnumerable<Gas> gases)
+    /// <inheritdoc/>
+    protected override bool ValidScanTarget(EntityUid? target)
     {
-        var gasFlags = GasFlags.None;
-        foreach (var gas in gases)
-        {
-            switch (gas)
-            {
-                case Gas.Nitrogen:
-                    gasFlags |= GasFlags.Nitrogen;
-                    break;
-                case Gas.Oxygen:
-                    gasFlags |= GasFlags.Oxygen;
-                    break;
-                case Gas.CarbonDioxide:
-                    gasFlags |= GasFlags.CarbonDioxide;
-                    break;
-                case Gas.Plasma:
-                    gasFlags |= GasFlags.Plasma;
-                    break;
-                case Gas.Tritium:
-                    gasFlags |= GasFlags.Tritium;
-                    break;
-                case Gas.WaterVapor:
-                    gasFlags |= GasFlags.WaterVapor;
-                    break;
-                case Gas.Ammonia:
-                    gasFlags |= GasFlags.Ammonia;
-                    break;
-                case Gas.NitrousOxide:
-                    gasFlags |= GasFlags.NitrousOxide;
-                    break;
-                case Gas.Frezon:
-                    gasFlags |= GasFlags.Frezon;
-                    break;
-            }
-        }
-        return gasFlags;
-    }
-
-    private void OnModeSelected(Entity<PlantAnalyzerComponent> ent, ref PlantAnalyzerSetMode args)
-    {
-        SetMode(ent, args.AdvancedScan);
-    }
-
-    public void SetMode(Entity<PlantAnalyzerComponent> ent, bool isAdvMode)
-    {
-        if (ent.Comp.DoAfter != null)
-            return;
-        ent.Comp.Settings.AdvancedScan = isAdvMode;
+        return HasComp<PlantHolderComponent>(target);
     }
 }
+

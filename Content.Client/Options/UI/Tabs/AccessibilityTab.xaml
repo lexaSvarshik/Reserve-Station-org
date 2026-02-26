@@ -24,12 +24,16 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                 <ui:OptionSlider Name="SpeechBubbleSpeakerOpacitySlider" Title="{Loc 'ui-options-speech-bubble-speaker-opacity'}" />
                 <ui:OptionSlider Name="SpeechBubbleBackgroundOpacitySlider" Title="{Loc 'ui-options-speech-bubble-background-opacity'}" />
                 <CheckBox Name="AutoFillHighlightsCheckBox" Text="{Loc 'ui-options-auto-fill-highlights'}" />
-                <ui:OptionColorSlider Name="HighlightsColorSlider" 
-                    Title="{Loc 'ui-options-highlights-color'}" 
+                <CheckBox Name="HighlightSoundCheckBox" Text="{Loc 'ui-options-highlight-sound'}" /> <!-- Goobstation - Highlight chat sounds! -->
+                <ui:OptionColorSlider Name="HighlightsColorSlider"
+                    Title="{Loc 'ui-options-highlights-color'}"
                     Example="{Loc 'ui-options-highlights-color-example'}"/>
+
                 <Label Text="{Loc 'ui-options-accessability-header-content'}"
                        StyleClasses="LabelKeyText"/>
                 <CheckBox Name="CensorNudityCheckBox" Text="{Loc 'ui-options-censor-nudity'}" />
+                <CheckBox Name="TranslitEnToRuCheckBox" Text="{Loc 'ui-options-toggle-translit-en-to-ru'}" /> <!-- ganimed->reserve port - transliteration -->
+                <CheckBox Name="TranslitRuToEnCheckBox" Text="{Loc 'ui-options-toggle-translit-ru-to-en'}" /> <!-- ganimed->reserve port - transliteration -->
             </BoxContainer>
         </ScrollContainer>
         <ui:OptionsTabControlRow Name="Control" Access="Public" />

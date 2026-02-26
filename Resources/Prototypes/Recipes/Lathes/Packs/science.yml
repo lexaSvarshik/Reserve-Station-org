@@ -48,6 +48,12 @@
   #- SignallerAdvanced - Goobstation - Removed from there. Still in Equipment.
   - DeviceQuantumSpinInverter
   - DeviceDesynchronizer
+  - ClothingBackpackHarmpack
+  #reserve: nyanotrasen port start
+  - EncryptionKeySyndie
+  - JetpackBlue
+  - JetpackMini
+  #reserve: nyanotrasen port end
 
 - type: latheRecipePack
   id: ScienceClothing
@@ -55,6 +61,7 @@
   - ClothingShoesBootsMagSci
   - ClothingShoesBootsMoon
 #  - ClothingShoesBootsSpeed - Goobstation - Nuked due to sprinting.
+  - ClothingShoesBootsJump
   - ClothingBackpackHolding
   - ClothingBackpackSatchelHolding
   - ClothingBackpackDuffelHolding
@@ -107,6 +114,7 @@
   - APECircuitboard
   - ArtifactAnalyzerMachineCircuitboard
   - ArtifactCrusherMachineCircuitboard
+  - ReverseEngineeringMachineCircuitboard #reserve: nyano port
 
 - type: latheRecipePack
   id: CameraBoards

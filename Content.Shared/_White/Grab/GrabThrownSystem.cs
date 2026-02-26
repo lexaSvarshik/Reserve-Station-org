@@ -1,8 +1,15 @@
 // SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 Aidenkrz <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2025 Aviu00 <93730715+Aviu00@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 Misandry <mary@thughunt.ing>
+// SPDX-FileCopyrightText: 2025 NazrinNya <137837419+NazrinNya@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 ReserveBot <211949879+ReserveBot@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 SX-7 <sn1.test.preria.2002@gmail.com>
+// SPDX-FileCopyrightText: 2025 Svarshik <96281939+lexaSvarshik@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 VMSolidus <evilexecutive@gmail.com>
 // SPDX-FileCopyrightText: 2025 gus <august.eymann@gmail.com>
+// SPDX-FileCopyrightText: 2025 nazrin <tikufaev@outlook.com>
+// SPDX-FileCopyrightText: 2025 sa1nt7331 <202271576+sa1nt7331@users.noreply.github.com>
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -14,9 +21,9 @@ using Robust.Shared.Network;
 using Robust.Shared.Physics.Events;
 using Robust.Shared.Player;
 using System.Numerics;
-using Content.Goobstation.Common.Standing;
 using Content.Shared._White.Standing;
 using Content.Shared.Standing;
+using Content.Shared.Stunnable;
 using Robust.Shared.Physics.Components;
 
 namespace Content.Shared._White.Grab;
@@ -28,7 +35,7 @@ public sealed class GrabThrownSystem : EntitySystem
     [Dependency] private readonly SharedStaminaSystem _stamina = default!;
     [Dependency] private readonly ThrowingSystem _throwing = default!;
     [Dependency] private readonly INetManager _netMan = default!;
-    [Dependency] private readonly SharedLayingDownSystem _layingDown = default!;
+    [Dependency] private readonly SharedStunSystem _stun = default!;
 
     public override void Initialize()
     {
@@ -70,18 +77,19 @@ public sealed class GrabThrownSystem : EntitySystem
         _damageable.TryChangeDamage(args.OtherEntity, kineticEnergyDamage);
         _stamina.TakeStaminaDamage(ent, (float) Math.Floor(modNumber / 2));
 
-        _layingDown.TryLieDown(args.OtherEntity, behavior: DropHeldItemsBehavior.AlwaysDrop);
+        _stun.TryCrawling(args.OtherEntity);
 
         _color.RaiseEffect(Color.Red, new List<EntityUid>() { ent }, Filter.Pvs(ent, entityManager: EntityManager));
     }
 
     private void OnStopThrow(EntityUid uid, GrabThrownComponent comp, StopThrowEvent args)
     {
+        if (_netMan.IsClient) //Reserve edit
+            return;
         if (comp.DamageOnCollide != null)
             _damageable.TryChangeDamage(uid, comp.DamageOnCollide);
 
-        if (HasComp<GrabThrownComponent>(uid))
-            RemComp<GrabThrownComponent>(uid);
+        RemComp<GrabThrownComponent>(uid); //Reserve edit
     }
 
     /// <summary>
@@ -99,13 +107,13 @@ public sealed class GrabThrownSystem : EntitySystem
         Vector2 vector,
         float grabThrownSpeed,
         DamageSpecifier? damageToUid = null,
-        DropHeldItemsBehavior behavior = DropHeldItemsBehavior.AlwaysDrop)
+        bool behavior = false) // Goob edit
     {
         var comp = EnsureComp<GrabThrownComponent>(uid);
         comp.IgnoreEntity.Add(thrower);
         comp.DamageOnCollide = damageToUid;
 
-        _layingDown.TryLieDown(uid, behavior: behavior);
+        _stun.TryCrawling(uid);
         _throwing.TryThrow(uid, vector, grabThrownSpeed, animated: false);
     }
 }

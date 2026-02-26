@@ -109,8 +109,9 @@
     rules: ghost-role-information-laughter-demon-rules
 
 - type: entity
+  categories: [ HideSpawnMenu, Spawner ]
+  parent: SpawnPointGhostAncientRogueKing
   id: AncientRogueKingToken
-  parent: CMMobXenoRogueKingSentient
   components:
   - type: GhostRole
     name: ghost-role-information-ancient-rogue-king-name-token
@@ -118,3 +119,37 @@
     rules: ghost-role-information-ancient-rogue-king-rules
     raffle:
       settings: short
+
+- type: entity
+  categories: [ HideSpawnMenu, Spawner ]
+  parent: SpawnPointGhostWraith
+  id: WraithToken
+  components:
+  - type: GhostRole
+    name: ghost-role-information-wraith-name-token
+    description: ghost-role-information-description-token-generic
+    rules: ghost-role-information-wraith-rules
+    raffle:
+      settings: short
+
+- type: entity
+  categories: [ HideSpawnMenu, Spawner ]
+  parent: SpawnPointGhostHastur
+  id: HasturToken
+  components:
+  - type: GhostRole
+    name: ghost-role-information-hastur-name-token
+    description: ghost-role-information-description-token-generic
+    rules: ghost-role-information-hastur-rules
+    raffle:
+      settings: short
+
+- type: entity
+  categories: [ HideSpawnMenu, Spawner ]
+  parent: ContractorSpawner
+  id: ContractorTokenSpawner
+  components:
+  - type: GhostRole
+    name: ghost-role-information-contractor-token
+    description: ghost-role-information-description-token-generic
+    rules: ghost-role-information-antagonist-rules

@@ -263,8 +263,8 @@
   components:
   - type: Sprite
     layers:
-    - map: [ "enum.HumanoidVisualLayers.Chest" ]
     - map: [ "enum.HumanoidVisualLayers.Groin" ]
+    - map: [ "enum.HumanoidVisualLayers.Chest" ]
     - map: [ "enum.HumanoidVisualLayers.Head" ]
     - map: [ "enum.HumanoidVisualLayers.Snout" ]
     - map: [ "enum.HumanoidVisualLayers.Eyes" ]
@@ -272,20 +272,21 @@
     - map: [ "enum.HumanoidVisualLayers.LArm" ]
     - map: [ "enum.HumanoidVisualLayers.RLeg" ]
     - map: [ "enum.HumanoidVisualLayers.LLeg" ]
-    - map: [ "enum.HumanoidVisualLayers.Underwear" ]
-    - map: [ "enum.HumanoidVisualLayers.Undershirt" ]
+    - map: [ "enum.HumanoidVisualLayers.Underwear" ] # Goob 3370
+    - map: [ "enum.HumanoidVisualLayers.Undershirt" ] # Goob 3370
     - map: ["jumpsuit"]
     - map: ["enum.HumanoidVisualLayers.LFoot"]
     - map: ["enum.HumanoidVisualLayers.RFoot"]
     - map: ["enum.HumanoidVisualLayers.LHand"]
     - map: ["enum.HumanoidVisualLayers.RHand"]
+    - map: ["enum.HumanoidVisualLayers.Face"] #Goob 120 - why did we have face on dummy but not basespecies
     - map: [ "gloves" ]
     - map: [ "shoes" ]
     - map: [ "ears" ]
     - map: [ "eyes" ]
-    - map: [ "belt" ]
     - map: [ "id" ]
     - map: [ "outerClothing" ]
+    - map: [ "belt" ] #Goobedit - Belts over outerwear
     - map: [ "back" ]
     - map: [ "neck" ]
     - map: [ "enum.HumanoidVisualLayers.FacialHair" ]
@@ -337,6 +338,7 @@
     horizontalRotation: 90
   - type: HumanoidAppearance
     species: Human
+  - type: TypingIndicator
   - type: SlowOnDamage
     speedModifierThresholds:
       60: 0.7
@@ -375,24 +377,18 @@
       - !type:WashCreamPieReaction
   - type: StatusEffects
     allowed:
-    - Stun
-    - KnockedDown
-    - SlowedDown
     - Stutter
-    - SeeingRainbows
     - Electrocution
     - Drunk
     - SlurredSpeech
     - RatvarianLanguage
     - PressureImmunity
     - Muted
-    - ForcedSleep
     - TemporaryBlindness
     - Pacified
     - StaminaModifier
     - Flashed
     - RadiationProtection
-    - Drowsiness
     - Vulgarity # Goobstation - add Profanol
     - Brainrotted # Goobstation - skibidi rizz ohio update
     - Adrenaline
@@ -401,6 +397,11 @@
   - type: Body
     prototype: Human
     requiredLegs: 2
+  - type: MobThresholdSounds # Reserve edit: Port from WD
+    deathSound:
+      collection: DeathSound
+    critSound:
+      collection: CritSound
   - type: Identity
   - type: IdExaminable
   - type: Hands
@@ -428,6 +429,7 @@
   - type: SleepEmitSound
   - type: SSDIndicator
   - type: StandingState
+  - type: Crawler
   - type: Dna
   - type: Scent # Einstein Engines
   - type: MindContainer
@@ -462,6 +464,8 @@
       enum.WizardTeleportUiKey.Key: # Goobstation - wizard
         type: WizardTeleportBoundUserInterface
         requireInputValidation: false
+      enum.RadarConsoleUiKey.Key: #goob - contractor
+        type: RadarConsoleBoundUserInterface
   - type: Puller
   - type: Speech
     speechSounds: Alto
@@ -492,7 +496,6 @@
     - FootstepSound
     - DoorBumpOpener
     - AnomalyHost
-  - type: LayingDown # WD EDIT
   - type: Targeting # Shitmed Change
   - type: CanEscapeInventory # GoobStation - Escape being picked up by players
   - type: Consciousness
@@ -503,7 +506,9 @@
     damagePenalty: 0.2
   - type: ExaminableCharacter # WWDP
   - type: Sprinter # Goobstation
-  - type: SprintingAffectedByScale # Goobstation: port EE height/width sliders
+  - type: MindControllable # Goobstation
+  - type: VisibleContraband # Goobstation
+  - type: MomentumSteering # Goobstation - No steer
 
 - type: entity
   save: false
@@ -513,24 +518,26 @@
   - MobAtmosStandard
   - MobFlammable
   - BaseMobSpecies
+  - BaseMobDisgust
   id: BaseMobSpeciesOrganic
   abstract: true
   components:
   - type: Absorbable # Goobstation - changelings
+  - type: WraithAbsorbable # Goobstation - wraith
   - type: Barotrauma
     damage:
       types:
         Blunt: 0.50 #per second, scales with pressure and other constants.
         Heat: 0.1
-  #- type: PassiveDamage # Slight passive regen. Assuming one damage type, comes out to about 4 damage a minute.
-  #  allowedStates:
-  #   - Alive
-  #   damageCap: 20
-  #   damage:
-  #     types:
-  #       Heat: -0.07
-  #    groups:
-  #      Brute: -0.07
+  - type: PassiveDamage # Slight passive regen. Assuming one damage type, comes out to about 4 damage a minute.
+    allowedStates:
+     - Alive
+    damageCap: 20 #this looks at vital damage, not total damage, ideally it should look at damage/part but i dont care enough to fix it
+    damage:
+      types:
+        Heat: -0.07
+      groups:
+        Brute: -0.07
   - type: Fingerprint
   - type: Blindable
   # Other
@@ -544,12 +551,12 @@
         Cold: 0.1 #per second, scales with temperature & other constants
     heatDamage:
       types:
-        Heat: 1.5 #per second, scales with temperature & other constants
+        Heat: 1.0 # Goob edit #per second, scales with temperature & other constants
   - type: TemperatureSpeed
     thresholds:
-      293: 0.8
-      280: 0.6
-      260: 0.4
+      293: 0.9
+      280: 0.8
+      260: 0.7
   - type: ThermalRegulator
     metabolismHeat: 800
     radiatedHeat: 100
@@ -573,12 +580,21 @@
         Asphyxiation: -1.0
   - type: FireVisuals
     alternateState: Standing
+  # <Goobstation>
+  - type: Carriable
   - type: FootprintOwner # Corvax-Next-Footprints
-  - type: Carriable # Goobstation
   - type: CPRTraining # Goobstation - Just give to everyone! This ain't MRP.
   - type: BloodstreamAffectedByMass # Goobstation: port EE height/width sliders. Also, lol at the comment above.
     power: 0.6
   - type: FlightAffectedByScale # Goobstation: port EE height/width sliders.
+  - type: StunVisuals
+  - type: DiseaseCarrier
+  - type: Immunity
+    affectedTypes:
+    - Viral
+    - Bacterial
+    - Parasite
+  # </Goobstation>
 
 - type: entity
   save: false
@@ -597,8 +613,8 @@
     noRot: true
     # TODO BODY Turn these into individual body parts?
     layers:
-    - map: [ "enum.HumanoidVisualLayers.Chest" ]
     - map: [ "enum.HumanoidVisualLayers.Groin" ]
+    - map: [ "enum.HumanoidVisualLayers.Chest" ]
     - map: [ "enum.HumanoidVisualLayers.Head" ]
     - map: [ "enum.HumanoidVisualLayers.Snout" ]
     - map: [ "enum.HumanoidVisualLayers.Eyes" ]
@@ -606,8 +622,8 @@
     - map: [ "enum.HumanoidVisualLayers.LArm" ]
     - map: [ "enum.HumanoidVisualLayers.RLeg" ]
     - map: [ "enum.HumanoidVisualLayers.LLeg" ]
-    - map: [ "enum.HumanoidVisualLayers.Underwear" ]
-    - map: [ "enum.HumanoidVisualLayers.Undershirt" ]
+    - map: [ "enum.HumanoidVisualLayers.Underwear" ] # Goob 3370
+    - map: [ "enum.HumanoidVisualLayers.Undershirt" ] # Goob 3370
     - map: ["jumpsuit"]
     - map: ["enum.HumanoidVisualLayers.LFoot"]
     - map: ["enum.HumanoidVisualLayers.RFoot"]
@@ -618,14 +634,14 @@
       sprite: Objects/Misc/handcuffs.rsi
       state: body-overlay-2
       visible: false
-    - map: [ "enum.HumanoidVisualLayers.Face" ]
+    - map: [ "enum.HumanoidVisualLayers.Face" ] # Goob 3370
     - map: [ "gloves" ]
     - map: [ "shoes" ]
     - map: [ "ears" ]
     - map: [ "eyes" ]
-    - map: [ "belt" ]
     - map: [ "id" ]
     - map: [ "outerClothing" ]
+    - map: [ "belt" ] #Goobedit - Belts over outerwear
     - map: [ "back" ]
     - map: [ "neck" ]
     - map: [ "enum.HumanoidVisualLayers.FacialHair" ]

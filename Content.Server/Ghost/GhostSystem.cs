@@ -4,7 +4,7 @@
 // SPDX-FileCopyrightText: 2022 Illiux <newoutlook@gmail.com>
 // SPDX-FileCopyrightText: 2022 Jacob Tong <10494922+ShadowCommander@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2022 Júlio César Ueti <52474532+Mirino97@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2022 J�lio C�sar Ueti <52474532+Mirino97@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 J lio C sar Ueti <52474532+Mirino97@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2022 Vera Aguilera Puerto <6766154+Zumorica@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2022 mirrorcult <lunarautomaton6@gmail.com>
 // SPDX-FileCopyrightText: 2022 wrexbe <81056464+wrexbe@users.noreply.github.com>
@@ -97,7 +97,6 @@ using Content.Server.GameTicking;
 using Content.Server.Ghost.Components;
 using Content.Server.Mind;
 using Content.Server.Roles.Jobs;
-using Content.Server.Warps;
 using Content.Shared.Actions;
 using Content.Shared.CCVar;
 using Content.Shared.Damage;
@@ -119,8 +118,8 @@ using Content.Shared.NameModifier.EntitySystems;
 using Content.Shared.Popups;
 using Content.Shared.Storage.Components;
 using Content.Shared.Tag;
+using Content.Shared._White.Xenomorphs.Infection;
 using Robust.Server.GameObjects;
-using Robust.Server.Player;
 using Robust.Shared.Configuration;
 using Robust.Shared.Map;
 using Robust.Shared.Physics.Components;
@@ -137,6 +136,13 @@ using Content.Shared._Shitmed.Body;
 using Content.Shared._Shitmed.Damage;
 using Content.Shared._Shitmed.Targeting;
 using Content.Shared._EinsteinEngines.Silicon.Components;
+using Content.Shared._Reserve.Antag;
+using Content.Shared.Humanoid;
+using Content.Shared.Roles;
+using Content.Shared.Silicons.Borgs.Components;
+using Content.Shared.Silicons.Laws.Components;
+using Content.Shared.SSDIndicator;
+using Content.Shared.Warps;
 using Robust.Shared.Utility;
 
 namespace Content.Server.Ghost
@@ -170,6 +176,7 @@ namespace Content.Server.Ghost
         [Dependency] private readonly NameModifierSystem _nameMod = default!;
         [Dependency] private readonly GhostVisibilitySystem _ghostVisibility = default!;
         [Dependency] private readonly SharedBodySystem _bodySystem = default!; // Shitmed Change
+
         private EntityQuery<GhostComponent> _ghostQuery;
         private EntityQuery<PhysicsComponent> _physicsQuery;
 
@@ -337,7 +344,7 @@ namespace Content.Server.Ghost
 
         private void OnGhostExamine(EntityUid uid, GhostComponent component, ExaminedEvent args)
         {
-            var timeSinceDeath = _gameTiming.CurTime.Subtract(component.TimeOfDeath); // WD EDIT
+            var timeSinceDeath = _gameTiming.CurTime.Subtract(component.TimeOfDeath); // Reserve-Edit | RealTime > CurTime
             var deathTimeInfo = timeSinceDeath.Minutes > 0
                 ? Loc.GetString("comp-ghost-examine-time-minutes", ("minutes", timeSinceDeath.Minutes))
                 : Loc.GetString("comp-ghost-examine-time-seconds", ("seconds", timeSinceDeath.Seconds));
@@ -375,7 +382,7 @@ namespace Content.Server.Ghost
         private void OnGhostReturnToBodyRequest(GhostReturnToBodyRequest msg, EntitySessionEventArgs args)
         {
             if (args.SenderSession.AttachedEntity is not {Valid: true} attached
-                || !_ghostQuery.TryComp(attached, out var ghost)
+                || !TryComp(attached, out GhostComponent? ghost) // Reserve-Edit
                 || !ghost.CanReturnToBody
                 || !TryComp(attached, out ActorComponent? actor))
             {
@@ -391,20 +398,26 @@ namespace Content.Server.Ghost
         private void OnGhostWarpsRequest(GhostWarpsRequestEvent msg, EntitySessionEventArgs args)
         {
             if (args.SenderSession.AttachedEntity is not {Valid: true} entity
-                || !_ghostQuery.HasComp(entity))
+                || !HasComp<GhostComponent>(entity)) // Reserve-Edit
             {
                 Log.Warning($"User {args.SenderSession.Name} sent a {nameof(GhostWarpsRequestEvent)} without being a ghost.");
                 return;
             }
 
-            var response = new GhostWarpsResponseEvent(GetPlayerWarps(entity).Concat(GetLocationWarps()).ToList());
+            // Reserve-Start
+            var players = GetPlayerWarps();
+            var places = GetLocationWarps();
+            var antagonists = GetAntagonistWarps();
+
+            var response = new GhostWarpsResponseEvent(players, places, antagonists); // Reserve-Edit
+            // Reserve-End
             RaiseNetworkEvent(response, args.SenderSession.Channel);
         }
 
         private void OnGhostWarpToTargetRequest(GhostWarpToTargetRequestEvent msg, EntitySessionEventArgs args)
         {
             if (args.SenderSession.AttachedEntity is not {Valid: true} attached
-                || !_ghostQuery.HasComp(attached))
+                || !TryComp(attached, out GhostComponent? _)) // Reserve-Edit
             {
                 Log.Warning($"User {args.SenderSession.Name} tried to warp to {msg.Target} without being a ghost.");
                 return;
@@ -418,25 +431,37 @@ namespace Content.Server.Ghost
                 return;
             }
 
-            WarpTo(attached, target);
+            _adminLog.Add(LogType.GhostWarp, $"{ToPrettyString(attached)} ghost warped to {ToPrettyString(target)}");
+
+            if ((TryComp(target, out WarpPointComponent? warp) && warp.Follow) || HasComp<MobStateComponent>(target))
+            {
+                _followerSystem.StartFollowingEntity(attached, target);
+                return;
+            }
+
+            var xform = Transform(attached);
+            _transformSystem.SetCoordinates(attached, xform, Transform(target).Coordinates);
+            _transformSystem.AttachToGridOrMap(attached, xform);
+            if (TryComp(attached, out PhysicsComponent? physics))
+                _physics.SetLinearVelocity(attached, Vector2.Zero, body: physics);
         }
 
         private void OnGhostnadoRequest(GhostnadoRequestEvent msg, EntitySessionEventArgs args)
         {
-            if (args.SenderSession.AttachedEntity is not {} uid
-                || !_ghostQuery.HasComp(uid))
+            if (args.SenderSession.AttachedEntity is not { Valid: true } uid ||
+                !_ghostQuery.HasComp(uid))
             {
                 Log.Warning($"User {args.SenderSession.Name} tried to ghostnado without being a ghost.");
                 return;
             }
 
-            if (_followerSystem.GetMostGhostFollowed() is not {} target)
+            if (_followerSystem.GetMostGhostFollowed() is not { } target)
                 return;
 
             WarpTo(uid, target);
         }
 
-        private void WarpTo(EntityUid uid, EntityUid target)
+        private void WarpTo(EntityUid uid, EntityUid target) // Reserve-Edit
         {
             _adminLog.Add(LogType.GhostWarp, $"{ToPrettyString(uid)} ghost warped to {ToPrettyString(target)}");
 
@@ -453,34 +478,129 @@ namespace Content.Server.Ghost
                 _physics.SetLinearVelocity(uid, Vector2.Zero, body: physics);
         }
 
-        private IEnumerable<GhostWarp> GetLocationWarps()
+        // Reserve-Start
+        private List<GhostWarpPlace> GetLocationWarps()
         {
+            var warps = new List<GhostWarpPlace>();
             var allQuery = AllEntityQuery<WarpPointComponent>();
 
             while (allQuery.MoveNext(out var uid, out var warp))
             {
-                yield return new GhostWarp(GetNetEntity(uid), warp.Location ?? Name(uid), true);
+                var newWarp =  new GhostWarpPlace(GetNetEntity(uid), warp.Location ?? Name(uid), warp.Location ?? Description(uid));
+                warps.Add(newWarp);
             }
-        }
 
-        private IEnumerable<GhostWarp> GetPlayerWarps(EntityUid except)
+            return warps;
+        }
+        // Reserve-End
+
+        private List<GhostWarpPlayer> GetPlayerWarps() // Reserve-Edit | GetLocationWarps > GetPlayerWarps
         {
-            foreach (var player in _player.Sessions)
+            // Reserve-Start
+            var warps = new List<GhostWarpPlayer>();
+            foreach (var mindContainer in EntityQuery<MindContainerComponent>())
             {
-                if (player.AttachedEntity is not {Valid: true} attached)
+                var entity = mindContainer.Owner;
+                var meta = Comp<MetaDataComponent>(entity);
+
+                if (HasComp<GlobalAntagonistComponent>(entity) || IsShitEntity(meta.EntityPrototype?.ID))
                     continue;
 
-                if (attached == except) continue;
+                if (!HasComp<HumanoidAppearanceComponent>(entity) &&
+                    !HasComp<GhostComponent>(entity) &&
+                    !HasComp<BorgBrainComponent>(entity) &&
+                    !HasComp<SiliconLawProviderComponent>(entity) && // Drone detection
+                    !HasComp<BorgChassisComponent>(entity))
+                    continue;
 
-                TryComp<MindContainerComponent>(attached, out var mind);
+                var playerDepartmentId = _prototypeManager.Index<DepartmentPrototype>("Specific").ID;
+                var playerJobName = Loc.GetString("generic-unknown-title");
 
-                var jobName = _jobs.MindTryGetJobName(mind?.Mind);
-                var playerInfo = $"{Comp<MetaDataComponent>(attached).EntityName} ({jobName})";
+                if (_jobs.MindTryGetJob(mindContainer.Mind ?? mindContainer.LastMindStored,
+                        out var jobPrototype))
+                {
+                    playerJobName = Loc.GetString(jobPrototype.Name);
 
-                if (_mobState.IsAlive(attached) || _mobState.IsCritical(attached))
-                    yield return new GhostWarp(GetNetEntity(attached), playerInfo, false);
+                    if (_jobs.TryGetDepartment(jobPrototype.ID, out var departmentPrototype))
+                    {
+                        playerDepartmentId = departmentPrototype.ID;
+                    }
+                }
+
+                var hasAnyMind = (mindContainer.Mind ?? mindContainer.LastMindStored) != null;
+                var isDead = _mobState.IsDead(entity);
+                var isLeft = TryComp<SSDIndicatorComponent>(entity, out var indicator) && indicator.IsSSD && !isDead &&
+                             hasAnyMind;
+
+                var warp = new GhostWarpPlayer(
+                    GetNetEntity(entity),
+                    Comp<MetaDataComponent>(entity).EntityName,
+                    playerJobName,
+                    playerDepartmentId,
+                    HasComp<GhostComponent>(entity),
+                    isLeft,
+                    isDead,
+                    _mobState.IsAlive(entity)
+                );
+
+                warps.Add(warp);
             }
+
+            return warps;
+            // Reserve-End
         }
+
+        // Reserve-Start
+        private bool IsShitEntity(string? entityId)
+        {
+            if (entityId == null)
+                return false;
+
+            return entityId switch
+            {
+                "SalvageHumanCorpse" => true,
+                "MobRandomServiceCorpse" => true,
+                "MobRandomEngineerCorpse" => true,
+                "MobRandomCargoCorpse" => true,
+                "MobRandomMedicCorpse" => true,
+                "MobRandomScienceCorpse" => true,
+                "MobRandomSecurityCorpse" => true,
+                "MobRandomCommandCorpse" => true,
+                // TODO: Consider filtering mice and cockroaches if they create too much noise in ghost menu
+                // "MobMouse" => true,
+                // "MobMouse1" => true,
+                // "MobMouse2" => true,
+                // "MobMouseDead" => true,
+                // "MobCockroach" => true,
+                _ => false,
+            };
+        }
+
+        private List<GhostWarpGlobalAntagonist> GetAntagonistWarps()
+        {
+            var warps = new List<GhostWarpGlobalAntagonist>();
+
+            foreach (var antagonist in EntityQuery<GlobalAntagonistComponent>())
+            {
+                var entity = antagonist.Owner;
+
+                if (!_prototypeManager.TryIndex<AntagonistPrototype>(antagonist.AntagonistPrototype ?? "globalAntagonistUnknown", out var prototype))
+                    continue;
+
+                var warp = new GhostWarpGlobalAntagonist(
+                    GetNetEntity(entity),
+                    Comp<MetaDataComponent>(entity).EntityName,
+                    prototype.Name,
+                    prototype.Description,
+                    prototype.ID
+                );
+
+                warps.Add(warp);
+            }
+
+            return warps;
+        }
+        // Reserve-End
 
         #endregion
 
@@ -584,9 +704,9 @@ namespace Content.Server.Ghost
             // If all else fails, it'll default to the default entity prototype name, "observer".
             // However, that should rarely happen.
             if (!string.IsNullOrWhiteSpace(mind.Comp.CharacterName))
-                _metaData.SetEntityName(ghost, mind.Comp.CharacterName);
+                _metaData.SetEntityName(ghost, FormattedMessage.EscapeText(mind.Comp.CharacterName)); // Goob Sanitize Text
             else if (mind.Comp.UserId is { } userId && _player.TryGetSessionById(userId, out var session))
-                _metaData.SetEntityName(ghost, session.Name);
+                _metaData.SetEntityName(ghost, FormattedMessage.EscapeText(session.Name)); // Goob Sanitize Text
 
             if (mind.Comp.TimeOfDeath.HasValue)
             {
@@ -617,9 +737,9 @@ namespace Content.Server.Ghost
             if (playerEntity != null && viaCommand)
             {
                 if (forced)
-                    _adminLog.Add(LogType.Mind, $"{EntityManager.ToPrettyString(playerEntity.Value):player} was forced to ghost via command");
+                    _adminLog.Add(LogType.Mind, $"{ToPrettyString(playerEntity.Value):player} was forced to ghost via command");
                 else
-                    _adminLog.Add(LogType.Mind, $"{EntityManager.ToPrettyString(playerEntity.Value):player} is attempting to ghost via command");
+                    _adminLog.Add(LogType.Mind, $"{ToPrettyString(playerEntity.Value):player} is attempting to ghost via command");
             }
 
             var handleEv = new GhostAttemptHandleEvent(mind, canReturnGlobal);
@@ -673,36 +793,39 @@ namespace Content.Server.Ghost
                 {
                     canReturn = true;
 
-                    FixedPoint2 dealtDamage = 200;
-
-                    if (TryComp<DamageableComponent>(playerEntity, out var damageable)
-                        && TryComp<MobThresholdsComponent>(playerEntity, out var thresholds))
+                    if (!HasComp<XenomorphPreventSuicideComponent>(playerEntity.Value))
                     {
-                        var playerDeadThreshold = _mobThresholdSystem.GetThresholdForState(playerEntity.Value, MobState.Dead, thresholds);
-                        dealtDamage = playerDeadThreshold - damageable.TotalDamage;
+                        FixedPoint2 dealtDamage = 200;
+
+                        if (TryComp<DamageableComponent>(playerEntity, out var damageable)
+                            && TryComp<MobThresholdsComponent>(playerEntity, out var thresholds))
+                        {
+                            var playerDeadThreshold = _mobThresholdSystem.GetThresholdForState(playerEntity.Value, MobState.Dead, thresholds);
+                            dealtDamage = playerDeadThreshold - damageable.TotalDamage;
+                        }
+
+                        // Shitmed Change Start
+                        var damageType = HasComp<SiliconComponent>(playerEntity)
+                            ? "Ion"
+                            : "Asphyxiation";
+                        DamageSpecifier damage = new(_prototypeManager.Index<DamageTypePrototype>(damageType), dealtDamage);
+
+                        if (TryComp<BodyComponent>(playerEntity, out var body)
+                            && body.BodyType == BodyType.Complex
+                            && body.RootContainer.ContainedEntities.FirstOrNull() is { } root)
+                            _damageable.TryChangeDamage(playerEntity,
+                                damage,
+                                true,
+                                targetPart: TargetBodyPart.All);
+                        else
+                            _damageable.TryChangeDamage(playerEntity, damage, true);
+                        // Shitmed Change End
                     }
-
-                    // Shitmed Change Start
-                    var damageType = HasComp<SiliconComponent>(playerEntity)
-                        ? "Ion"
-                        : "Asphyxiation";
-                    DamageSpecifier damage = new(_prototypeManager.Index<DamageTypePrototype>(damageType), dealtDamage);
-
-                    if (TryComp<BodyComponent>(playerEntity, out var body)
-                        && body.BodyType == BodyType.Complex
-                        && body.RootContainer.ContainedEntities.FirstOrNull() is { } root)
-                        _damageable.TryChangeDamage(playerEntity,
-                            damage,
-                            true,
-                            targetPart: _bodySystem.GetTargetBodyPart(root));
-                    else
-                        _damageable.TryChangeDamage(playerEntity, damage, true);
-                    // Shitmed Change End
                 }
             }
 
             if (playerEntity != null)
-                _adminLog.Add(LogType.Mind, $"{EntityManager.ToPrettyString(playerEntity.Value):player} ghosted{(!canReturn ? " (non-returnable)" : "")}");
+                _adminLog.Add(LogType.Mind, $"{ToPrettyString(playerEntity.Value):player} ghosted{(!canReturn ? " (non-returnable)" : "")}");
 
             var ghost = SpawnGhost((mindId, mind), position, canReturn);
 

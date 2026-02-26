@@ -6,6 +6,7 @@
 using Content.Shared.Speech;
 using Robust.Shared.Prototypes;
 using Content.Shared.Inventory;
+using Content.Shared.Radio;
 
 namespace Content.Shared.Chat;
 
@@ -19,11 +20,13 @@ public sealed class TransformSpeakerNameEvent : EntityEventArgs, IInventoryRelay
     public EntityUid Sender;
     public string VoiceName;
     public ProtoId<SpeechVerbPrototype>? SpeechVerb;
+    public readonly RadioChannelPrototype? Channel; // Reserve edit: Port from WD
 
-    public TransformSpeakerNameEvent(EntityUid sender, string name)
+    public TransformSpeakerNameEvent(EntityUid sender, string name, RadioChannelPrototype? channel = null) // Reserve edit: Port from WD
     {
         Sender = sender;
         VoiceName = name;
         SpeechVerb = null;
+        Channel = channel;
     }
 }

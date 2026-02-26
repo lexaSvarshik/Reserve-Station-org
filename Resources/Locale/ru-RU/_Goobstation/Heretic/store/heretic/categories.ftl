@@ -4,4 +4,5 @@ store-heretic-path-flesh = Путь плоти
 store-heretic-path-void = Путь пустоты
 store-heretic-path-rust = Путь ржавчины
 store-heretic-path-blade = Путь клинка
+store-heretic-path-cosmos = Путь космоса
 store-heretic-path-side = Побочное знание

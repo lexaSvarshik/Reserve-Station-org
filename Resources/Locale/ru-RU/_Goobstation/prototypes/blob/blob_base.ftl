@@ -1,2 +1,2 @@
-ent-MobObserverBlobController = Игрок блоба
+ent-MobObserverBlobController = наблюдатель блоба
     .desc = { "" }

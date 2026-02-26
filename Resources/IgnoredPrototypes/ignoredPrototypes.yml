@@ -10,3 +10,39 @@
 #
 # - /Prototypes/Guidebook
 # - /Prototypes/Catalog/uplink_catalog.yml
+
+# Reserve edit - Reserve guidebook begin
+# Prototypes below are translated and replaced by copies. We ignore them so they won't appear in guidebook
+# If you do translate some pages further - consider adding original version here.
+- /Prototypes/Guidebook/station.yml
+- /Prototypes/Guidebook/species.yml
+- /Prototypes/Guidebook/shiftandcrew.yml
+- /Prototypes/Guidebook/service.yml
+- /Prototypes/Guidebook/security.yml
+- /Prototypes/Guidebook/science.yml
+- /Prototypes/Guidebook/rules.yml
+- /Prototypes/Guidebook/references.yml
+- /Prototypes/Guidebook/newplayer.yml
+- /Prototypes/Guidebook/medical.yml
+- /Prototypes/Guidebook/engineering.yml
+- /Prototypes/Guidebook/command.yml
+- /Prototypes/Guidebook/chemicals.yml
+- /Prototypes/Guidebook/cargo.yml
+- /Prototypes/Guidebook/antagonist.yml
+
+- /Prototypes/_Shitmed/Guidebook/medical.yml
+- /Prototypes/_Shitmed/Guidebook/antagonist.yml
+
+- /Prototypes/_Goobstation/Wizard/guidebook.yml
+- /Prototypes/_Goobstation/Heretic/Guidebook/antagonist.yml
+- /Prototypes/_Goobstation/Guidebook/medical.yml
+- /Prototypes/_Goobstation/Guidebook/engineering.yml
+- /Prototypes/_Goobstation/Guidebook/devil.yml
+- /Prototypes/_Goobstation/Guidebook/chaplain.yml
+- /Prototypes/_Goobstation/Guidebook/changeling.yml
+- /Prototypes/_Goobstation/Guidebook/blob.yml
+- /Prototypes/_Goobstation/Guidebook/bingle.yml
+
+- Prototypes/_DV/CosmicCult/Guidebook/antagonist.yml
+- Prototypes/_DV/Guidebook/species.yml
+# Reserve edit - Reserve guidebook end

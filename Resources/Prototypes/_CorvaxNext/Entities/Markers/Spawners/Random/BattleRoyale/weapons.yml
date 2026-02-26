@@ -880,6 +880,8 @@
       - id: BananiumSword
       - id: CQCManual #robust em all
       - id: Wonderprod
+      - id: Mjollnir
+      - id: SingularityHammer
 
 - type: entity
   name: BR Melee Spawner

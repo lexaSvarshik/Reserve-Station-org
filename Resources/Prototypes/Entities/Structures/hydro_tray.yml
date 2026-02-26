@@ -187,12 +187,7 @@
   - type: GuideHelp
     guides:
     - Botany
-    - Chemicals
-  #EE spray paint port begin
-  - type: Tag
-    tags:
-      - NoPaint
-  #EE spray paint port end
+    - ChemicalsReserve # Reserve edit
 
 - type: entity
   parent: hydroponicsTray

@@ -237,14 +237,9 @@
           type: MeleeSpeechBoundUserInterface
     - type: Actions
     - type: Guardian
-    - type: InteractionPopup
-      interactSuccessString: petting-success-holo
-      interactFailureString: petting-failure-holo
-      successChance: 0.7
     - type: Tag
       tags:
         - CannotSuicide
-        - NoPaint #EE spray paint port
     # <Goobstation>
     - type: MovementIgnoreGravity
     - type: ActionGrant
@@ -379,7 +374,6 @@
       tags:
         - CannotSuicide
         - FootstepSound
-        - NoPaint
     - type: Inventory
       templateId: holoclown
     - type: Hands
@@ -391,6 +385,9 @@
           Piercing: 4
         groups:
           Burn: 3
+      catchingFailDamage:
+        types:
+          Blunt: 1
     - type: MeleeWeapon
       angle: 30
       animation: WeaponArcFist

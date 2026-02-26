@@ -258,11 +258,6 @@
       - !type:GroupSelector
         children:
         - !type:EntSelector
-          id: CrateFunSprayPaints
-          weight: 1
-      - !type:GroupSelector
-        children:
-        - !type:EntSelector
           id: CrateFunParty
           weight: 1
       - !type:GroupSelector
@@ -634,7 +629,7 @@
       - !type:GroupSelector
         children:
         - !type:EntSelector
-          id: LavalandCrateNecropolisCultArmor #bruh
+          id: CrateSecurityArmor
           weight: 1
         # Cargo - Medical
       - !type:GroupSelector

@@ -109,8 +109,18 @@
 # SPDX-FileCopyrightText: 2024 to4no_fix <156101927+chavonadelal@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2024 voidnull000 <18663194+voidnull000@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 AwareFoxy <vgstecker@gmail.com>
+# SPDX-FileCopyrightText: 2025 Cygnye <gilen.prett@outlook.com>
 # SPDX-FileCopyrightText: 2025 GoobBot <uristmchands@proton.me>
+# SPDX-FileCopyrightText: 2025 Hannah Giovanna Dawson <karakkaraz@gmail.com>
+# SPDX-FileCopyrightText: 2025 Kirill <kirill@example.com>
+# SPDX-FileCopyrightText: 2025 ReserveBot <211949879+ReserveBot@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Rouden <149893554+Roudenn@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Svarshik <96281939+lexaSvarshik@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Ted Lukin <66275205+pheenty@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2025 Timfa <timfalken@hotmail.com>
+# SPDX-FileCopyrightText: 2025 echotry <48294642+echotry-ss14@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 nazrin <tikufaev@outlook.com>
 # SPDX-FileCopyrightText: 2025 pheenty <fedorlukin2006@gmail.com>
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
@@ -235,6 +245,18 @@
     jumpsuit: ClothingUniformJumpsuitJacketMonkey
     id: PunPunIDCard
 
+- type: startingGear
+  id: MobPollyGear
+  equipment:
+    ears: ClothingHeadsetEngineering
+
+# Emotional Support Scurret
+
+- type: startingGear
+  id: EmotionalSupportScurretGear
+  equipment:
+    id: ScurretPDA
+
 # DeathMatch Gear
 
 - type: startingGear
@@ -252,11 +274,12 @@
 - type: startingGear
   id: BrigmedicGear
   equipment: # Heavily goob edited
-    eyes: ClothingEyesGlassesMed
+    eyes: ClothingEyesGlassesMedSec
     id: BrigmedicPDA
-    ears: ClothingHeadsetAltSecurityRegular # Intentionally no medical channel
+    ears: ClothingHeadsetBrigmedic # EE parity like i was told to do
     belt: ClothingBeltMedicalEMTFilled
-    pocket1: WeaponDisabler
+    pocket1: WeaponPistolMk58 # EE parity, make corpsman able to carry weapons like the rest of security
+    pocket2: WeaponDisabler # Goob
   storage:
     back:
     - Flash
@@ -266,7 +289,7 @@
 - type: startingGear
   id: MobAghostGear
   equipment:
-    back: ClothingBackpackSatchelHolding
+    back: ClothingBackpackSatchelAdmin
     eyes: ClothingEyesHudMultiversal #Reserve
     id: AdminPDA
   storage:
@@ -291,7 +314,7 @@
     - PenCentcom
     - HandheldFaxOfficial
     - OmnimedTool
-    - PlantAnalyzerDebug
+    - PlantAnalyzer
     - WeaponMeleeKnockbackStick
     - DoorRemoteAllCC
     - SuperSynthesizerInstrument

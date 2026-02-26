@@ -33,13 +33,27 @@
 // SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 Aidenkrz <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2025 Aviu00 <93730715+Aviu00@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 BombasterDS <deniskaporoshok@gmail.com>
+// SPDX-FileCopyrightText: 2025 Evelyn Gordon <evelyn.gordon20@gmail.com>
 // SPDX-FileCopyrightText: 2025 Ilya246 <57039557+Ilya246@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 J <billsmith116@gmail.com>
 // SPDX-FileCopyrightText: 2025 Misandry <mary@thughunt.ing>
+// SPDX-FileCopyrightText: 2025 NazrinNya <137837419+NazrinNya@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 Piras314 <p1r4s@proton.me>
+// SPDX-FileCopyrightText: 2025 ReserveBot <211949879+ReserveBot@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Richard Blonski <48651647+RichardBlonski@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 Rinary <72972221+Rinary1@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Rouden <149893554+Roudenn@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 SX-7 <sn1.test.preria.2002@gmail.com>
+// SPDX-FileCopyrightText: 2025 ScarKy0 <106310278+ScarKy0@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Svarshik <96281939+lexaSvarshik@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 Ted Lukin <66275205+pheenty@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 gluesniffler <159397573+gluesniffler@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 gus <august.eymann@gmail.com>
+// SPDX-FileCopyrightText: 2025 lzk <124214523+lzk228@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 nazrin <tikufaev@outlook.com>
+// SPDX-FileCopyrightText: 2025 vitopigno <103512727+VitusVeit@users.noreply.github.com>
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -86,9 +100,6 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Replays;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
-using Content.Client.CharacterInfo;
-using Content.Goobstation.Common.CCVar; // Goob - start
-using static Content.Client.CharacterInfo.CharacterInfoSystem;
 
 
 namespace Content.Client.UserInterface.Systems.Chat;
@@ -118,10 +129,13 @@ public sealed partial class ChatUIController : UIController
     [UISystemDependency] private readonly MindSystem? _mindSystem = default!;
     [UISystemDependency] private readonly RoleCodewordSystem? _roleCodewordSystem = default!;
 
-    [ValidatePrototypeId<ColorPalettePrototype>]
-    private const string ChatNamePalette = "ChatNames";
+    private static readonly ProtoId<ColorPalettePrototype> ChatNamePalette = "ChatNames";
     private string[] _chatNameColors = default!;
     private bool _chatNameColorsEnabled;
+    // Start - ganimed->reserve port transliteration
+    private bool _translitEnToRuEnabled;
+    private bool _translitRuToEnEnabled;
+    // End - ganimed->reserve port transliteration
 
     private ISawmill _sawmill = default!;
 
@@ -205,6 +219,13 @@ public sealed partial class ChatUIController : UIController
     /// </summary>
     private readonly Dictionary<ChatChannel, int> _unreadMessages = new();
 
+
+    // Goobstation - Chat Pings
+    /// <summary>
+    /// Used for Goobstation's - Chat Pings
+    /// </summary>
+    private TimeSpan LastHighlightTime = TimeSpan.Zero;
+
     // TODO add a cap for this for non-replays
     public readonly List<(GameTick Tick, ChatMessage Msg)> History = new();
 
@@ -243,6 +264,12 @@ public sealed partial class ChatUIController : UIController
         SubscribeNetworkEvent<DamageForceSayEvent>(OnDamageForceSay);
         _config.OnValueChanged(CCVars.ChatEnableColorName, (value) => { _chatNameColorsEnabled = value; });
         _chatNameColorsEnabled = _config.GetCVar(CCVars.ChatEnableColorName);
+        // Start - ganimed->reserve port transliteration
+        _config.OnValueChanged(CCVars.TransliterationEnToRu, (value) => { _translitEnToRuEnabled = value; });
+        _config.OnValueChanged(CCVars.TransliterationRuToEn, (value) => { _translitRuToEnEnabled = value; });
+        _translitEnToRuEnabled = _config.GetCVar(CCVars.TransliterationEnToRu);
+        _translitRuToEnEnabled = _config.GetCVar(CCVars.TransliterationRuToEn);
+        // End - ganimed->reserve port transliteration
 
         _speechBubbleRoot = new LayoutContainer();
 
@@ -292,7 +319,7 @@ public sealed partial class ChatUIController : UIController
         gameplayStateLoad.OnScreenLoad += OnScreenLoad;
         gameplayStateLoad.OnScreenUnload += OnScreenUnload;
 
-        var nameColors = _prototypeManager.Index<ColorPalettePrototype>(ChatNamePalette).Colors.Values.ToArray();
+        var nameColors = _prototypeManager.Index(ChatNamePalette).Colors.Values.ToArray();
         _chatNameColors = new string[nameColors.Length];
         for (var i = 0; i < nameColors.Length; i++)
         {
@@ -840,6 +867,12 @@ public sealed partial class ChatUIController : UIController
         _typingIndicator?.ClientSubmittedChatText();
 
         var text = box.ChatInput.Input.Text;
+        // Start - ganimed->reserve port transliteration - by doing this right here we allow chernorussians to use channels like normal, for example by doing .i POMOGITE NABEG it turns into .и ПОМОГИТЕ НАБЕГ and goes through as a radio message
+        if (_translitEnToRuEnabled)
+        {
+            text = ChatTransliterationSystem.TransliterateEnglishToRussian(text);
+        }
+        // End - ganimed->reserve port transliteration
         box.ChatInput.Input.Clear();
         box.ChatInput.Input.ReleaseKeyboardFocus();
         UpdateSelectedChannel(box);
@@ -929,12 +962,6 @@ public sealed partial class ChatUIController : UIController
                 msg.WrappedMessage = SharedChatSystem.InjectTagInsideTag(msg, "Name", "color", GetNameColor(SharedChatSystem.GetStringInsideTag(msg, "Name")));
         }
 
-        // Color any words chosen by the client.
-        foreach (var highlight in _highlights)
-        {
-            msg.WrappedMessage = SharedChatSystem.InjectTagAroundString(msg, highlight, "color", _highlightsColor);
-        }
-
         // Color any codewords for minds that have roles that use them
         if (_player.LocalUser != null && _mindSystem != null && _roleCodewordSystem != null)
         {
@@ -947,6 +974,45 @@ public sealed partial class ChatUIController : UIController
                 }
             }
         }
+
+        #region Goobstation - Highlight chat sounds/pings!
+        // Goobstation - Highlight chat sounds/pings!
+        // Color any words chosen by the client and check for highlights
+        var hadHighlight = false;
+
+        // Skip highlight check if this is a message from the local player
+        if (_player.LocalSession?.AttachedEntity is not { } localEntity ||
+            msg.SenderEntity != _ent.GetNetEntity(localEntity))
+        {
+            foreach (var highlight in _highlights)
+            {
+                var newMessage = SharedChatSystem.InjectTagAroundString(msg, highlight, "color", _highlightsColor);
+                if (newMessage != msg.WrappedMessage)
+                {
+                    hadHighlight = true;
+                    msg.WrappedMessage = newMessage;
+                }
+            }
+
+            var currentTime = _timing.CurTime;
+
+            // Only play sound if enough time has passed since the last highlight
+            // This avoids playing multiple pings in less than a second
+            if (hadHighlight && (currentTime - LastHighlightTime).TotalMilliseconds >= 500)
+            {
+                LastHighlightTime = currentTime;
+                PlayHighlightSound();
+            }
+        }
+        // Goobstation end
+        #endregion
+
+        // Start - ganimed->reserve port transliteration
+        if (_translitRuToEnEnabled)
+        {
+            msg.WrappedMessage = ChatTransliterationSystem.TransliterateRussianToEnglish(msg.WrappedMessage);
+        }
+        // End - ganimed->reserve port transliteration
 
         // Log all incoming chat to repopulate when filter is un-toggled
         if (!msg.HideChat)

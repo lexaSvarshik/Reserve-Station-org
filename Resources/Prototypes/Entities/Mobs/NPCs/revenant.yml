@@ -113,6 +113,8 @@
   name: revenant
   description: A spooky ghostie.
   components:
+  - type: Emag
+    emagType: All
   - type: Input
     context: "ghost"
   - type: Spectral
@@ -125,7 +127,6 @@
     - state: active
   - type: StatusEffects
     allowed:
-    - Stun
     - Corporeal
     - EssenceRegen # Imp
   - type: Hands # Imp
@@ -203,11 +204,6 @@
   - type: Reactive
     groups:
       Acidic: [Touch]
-  #EE spray paint port begin
-  - type: Tag
-    tags:
-      - NoPaint
-  #EE spray paint port end
   #reserve revenant buff start
   - type: DamageOnAttacked
     damage:
@@ -225,5 +221,9 @@
     ignoreInsulation: true
     electrocutionChance: 0.25
     #reserve revenant buff end
+  - type: Tag
+    tags:
+    - SlowImmune
+    - KnockdownImmune
   - type: WeakToHoly # Goobstation Shitchap
     alwaysTakeHoly: true

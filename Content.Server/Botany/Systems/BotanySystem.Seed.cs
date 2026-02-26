@@ -15,10 +15,18 @@
 // SPDX-FileCopyrightText: 2024 Kara <lunarautomaton6@gmail.com>
 // SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
 // SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
-// SPDX-FileCopyrightText: 2024 drakewill-CRL <46307022+drakewill-CRL@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 Ignaz "Ian" Kraft <ignaz.k@live.de>
+// SPDX-FileCopyrightText: 2025 LuciferMkshelter <154002422+LuciferEOS@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 ReserveBot <211949879+ReserveBot@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 SX-7 <sn1.test.preria.2002@gmail.com>
 // SPDX-FileCopyrightText: 2025 SX_7 <sn1.test.preria.2002@gmail.com>
+// SPDX-FileCopyrightText: 2025 SlamBamActionman <83650252+SlamBamActionman@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 SpaceManiac <tad@platymuus.com>
+// SPDX-FileCopyrightText: 2025 Svarshik <96281939+lexaSvarshik@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tim <timfalken@hotmail.com>
+// SPDX-FileCopyrightText: 2025 drakewill-CRL <46307022+drakewill-CRL@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 nazrin <tikufaev@outlook.com>
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -38,8 +46,11 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Content.Goobstation.Common.NTR.Scan;
+using Content.Server.EntityEffects; // Goobstation
 using Content.Shared.Administration.Logs;
 using Content.Shared.Database;
+using Content.Shared.EntityEffects;
 
 namespace Content.Server.Botany.Systems;
 
@@ -54,6 +65,7 @@ public sealed partial class BotanySystem : EntitySystem
     [Dependency] private readonly MetaDataSystem _metaData = default!;
     [Dependency] private readonly RandomHelperSystem _randomHelper = default!;
     [Dependency] private readonly ISharedAdminLogManager _adminLogger = default!;
+    [Dependency] private readonly SharedEntityEffectSystem _effect = default!; // goob edit
 
     public override void Initialize()
     {
@@ -173,17 +185,7 @@ public sealed partial class BotanySystem : EntitySystem
 
     public IEnumerable<EntityUid> GenerateProduct(SeedData proto, EntityCoordinates position, int yieldMod = 1)
     {
-        var totalYield = 0;
-        if (proto.Yield > -1)
-        {
-            if (yieldMod < 0)
-                totalYield = proto.Yield;
-            else
-                totalYield = proto.Yield * yieldMod;
-
-            totalYield = Math.Max(1, totalYield);
-        }
-
+        var totalYield = CalculateTotalYield(proto.Yield, yieldMod);
         var products = new List<EntityUid>();
 
         if (totalYield > 1 || proto.HarvestRepeat != HarvestType.NoRepeat)
@@ -196,7 +198,8 @@ public sealed partial class BotanySystem : EntitySystem
             var entity = Spawn(product, position);
             _randomHelper.RandomOffset(entity, 0.25f);
             products.Add(entity);
-
+            if (TryComp<ScannableForPointsComponent>(entity, out var scannable)) // Goobstation
+                scannable.Points = 0; // Goobstation, to prevent ntr duping points with botanists
             var produce = EnsureComp<ProduceComponent>(entity);
 
             produce.Seed = proto;
@@ -219,6 +222,21 @@ public sealed partial class BotanySystem : EntitySystem
     public bool CanHarvest(SeedData proto, EntityUid? held = null)
     {
         return !proto.Ligneous || proto.Ligneous && held != null && HasComp<SharpComponent>(held);
+    }
+
+    public static int CalculateTotalYield(int yield, int yieldMod)
+    {
+        var totalYield = 0;
+        if (yield > -1)
+        {
+            if (yieldMod < 0)
+                totalYield = yield;
+            else
+                totalYield = yield * yieldMod;
+
+            totalYield = Math.Max(1, totalYield);
+        }
+        return totalYield;
     }
 
     #endregion

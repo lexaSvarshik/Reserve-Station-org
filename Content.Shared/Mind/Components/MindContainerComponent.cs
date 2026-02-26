@@ -62,6 +62,12 @@ public sealed partial class MindContainerComponent : Component
     [DataField, AutoNetworkedField]
     public EntityUid? Mind { get; set; }
 
+    // Reserve-Start
+    [DataField, AutoNetworkedField]
+    [Access(typeof(SharedMindSystem), Other = AccessPermissions.Read)]
+    public EntityUid? LastMindStored { get; set; }
+    // Reserve-End
+
     /// <summary>
     ///     True if we have a mind, false otherwise.
     /// </summary>

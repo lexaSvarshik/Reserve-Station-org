@@ -19,7 +19,6 @@
 // SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
 // SPDX-FileCopyrightText: 2024 Alzore <140123969+Blackern5000@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2024 ArtisticRoomba <145879011+ArtisticRoomba@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 Aviu00 <93730715+Aviu00@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2024 Brandon Hu <103440971+Brandon-Huu@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2024 CaasGit <87243814+CaasGit@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2024 Chief-Engineer <119664036+Chief-Engineer@users.noreply.github.com>
@@ -107,10 +106,13 @@
 // SPDX-FileCopyrightText: 2025 ActiveMammmoth <140334666+ActiveMammmoth@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 ActiveMammmoth <kmcsmooth@gmail.com>
 // SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Aviu00 <93730715+Aviu00@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 GoobBot <uristmchands@proton.me>
+// SPDX-FileCopyrightText: 2025 Kutosss <162154227+Kutosss@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 Misandry <mary@thughunt.ing>
 // SPDX-FileCopyrightText: 2025 NazrinNya <137837419+NazrinNya@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 ReserveBot <211949879+ReserveBot@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Rouden <149893554+Roudenn@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 SX-7 <sn1.test.preria.2002@gmail.com>
 // SPDX-FileCopyrightText: 2025 ScarKy0 <106310278+ScarKy0@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 Spatison <137375981+Spatison@users.noreply.github.com>
@@ -127,6 +129,8 @@
 
 using System.IO;
 using System.Linq;
+using Content.Shared._Goobstation.Wizard.SpellCards;
+using Content.Client._Shitcode.Wizard.Systems;
 using Content.Goobstation.Common.Actions;
 using Content.Shared.Actions;
 using Content.Shared.Actions.Components;
@@ -140,12 +144,10 @@ using Robust.Shared.GameStates;
 using Robust.Shared.Input.Binding;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Serialization.Manager;
 using Robust.Shared.Serialization.Markdown;
 using Robust.Shared.Serialization.Markdown.Mapping;
 using Robust.Shared.Serialization.Markdown.Sequence;
 using Robust.Shared.Serialization.Markdown.Value;
-using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 using YamlDotNet.RepresentationModel;
 
@@ -161,6 +163,7 @@ namespace Content.Client.Actions
         [Dependency] private readonly IPrototypeManager _proto = default!;
         [Dependency] private readonly IResourceManager _resources = default!;
         [Dependency] private readonly MetaDataSystem _metaData = default!;
+        [Dependency] private readonly ActionTargetMarkSystem _mark = default!;
 
         public event Action<EntityUid>? OnActionAdded;
         public event Action<EntityUid>? OnActionRemoved;
@@ -298,7 +301,7 @@ namespace Content.Client.Actions
         }
 
         // Goobstation start
-        protected override void SaveActions(EntityUid performer)
+        public override void SaveActions(EntityUid performer)
         {
             if (_playerManager.LocalEntity != performer)
                 return;
@@ -306,7 +309,7 @@ namespace Content.Client.Actions
             ActionsSaved?.Invoke(performer);
         }
 
-        protected override void LoadActions(EntityUid performer)
+        public override void LoadActions(EntityUid performer)
         {
             if (_playerManager.LocalEntity != performer)
                 return;
@@ -357,14 +360,14 @@ namespace Content.Client.Actions
             CommandBinds.Unregister<ActionsSystem>();
         }
 
-        public void TriggerAction(Entity<ActionComponent> action)
+        public void TriggerAction(Entity<ActionComponent> action, bool force = false) // Goob edit
         {
             if (_playerManager.LocalEntity is not { } user)
                 return;
 
             // TODO: unhardcode this somehow
 
-            if (!HasComp<InstantActionComponent>(action))
+            if (!force && !HasComp<InstantActionComponent>(action)) // Goob edit
                 return;
 
             if (action.Comp.ClientExclusive)
@@ -374,7 +377,7 @@ namespace Content.Client.Actions
             else
             {
                 var request = new RequestPerformActionEvent(GetNetEntity(action));
-                EntityManager.RaisePredictiveEvent(request);
+                RaisePredictiveEvent(request);
             }
         }
 
@@ -478,6 +481,9 @@ namespace Content.Client.Actions
                 targetEnt = args.Input.EntityUid;
             }
 
+            if (HasComp<LockOnMarkActionComponent>(uid) && Exists(_mark.Target))
+                targetEnt = _mark.Target.Value; // Goobstation
+
             if (action.ClientExclusive)
             {
                 // TODO: abstract away from single event or maybe just RaiseLocalEvent?
@@ -497,8 +503,18 @@ namespace Content.Client.Actions
 
         private void OnEntityTargetAttempt(Entity<EntityTargetActionComponent> ent, ref ActionTargetAttemptEvent args)
         {
-            if (args.Handled || args.Input.EntityUid is not { Valid: true } entity)
+            if (args.Handled)
                 return;
+
+            args.Handled = true;
+
+            if (args.Input.EntityUid is not { Valid: true } entity)
+                return;
+
+            // Goob edit start
+            if (HasComp<LockOnMarkActionComponent>(ent) && Exists(_mark.Target))
+                entity = _mark.Target.Value;
+            // Goob edit end
 
             // let world target component handle it
             var (uid, comp) = ent;
@@ -507,8 +523,6 @@ namespace Content.Client.Actions
                 DebugTools.Assert(HasComp<WorldTargetActionComponent>(ent), $"Action {ToPrettyString(ent)} requires WorldTargetActionComponent for entity-world targeting");
                 return;
             }
-
-            args.Handled = true;
 
             var action = args.Action;
             var user = args.User;

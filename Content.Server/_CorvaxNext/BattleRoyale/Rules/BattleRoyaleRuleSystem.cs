@@ -14,7 +14,7 @@ using Content.Server.Mind;
 using Content.Server.Points;
 using Content.Server.RoundEnd;
 using Content.Server._CorvaxNext.BattleRoyale.Rules.Components;
-using Content.Server._Goobstation.Ghostbar.Components; //Reserve port BattleRoyale
+using Robust.Shared.Audio;
 using Content.Shared.Bed.Sleep;
 using Content.Shared.CombatMode.Pacification;
 using Content.Shared.Chat;
@@ -319,7 +319,7 @@ namespace Content.Server._CorvaxNext.BattleRoyale.Rules
 
             while (mobQuery.MoveNext(out var uid, out var mobState, out var actor))
             {
-                if (HasComp<GhostBarPlayerComponent>(uid) || HasComp<IsDeadICComponent>(uid))
+                if (HasComp<IsDeadICComponent>(uid))
                     continue;
 
                 if (actor.PlayerSession?.Status != SessionStatus.Connected &&

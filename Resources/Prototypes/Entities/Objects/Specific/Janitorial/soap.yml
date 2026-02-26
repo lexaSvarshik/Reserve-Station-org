@@ -32,7 +32,11 @@
 # SPDX-FileCopyrightText: 2024 plykiya <plykiya@protonmail.com>
 # SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2025 BombasterDS <deniskaporoshok@gmail.com>
+# SPDX-FileCopyrightText: 2025 BombasterDS2 <shvalovdenis.workmail@gmail.com>
+# SPDX-FileCopyrightText: 2025 Ghagliiarghii <68826635+Ghagliiarghii@users.noreply.github.com>
 # SPDX-FileCopyrightText: 2025 GoobBot <uristmchands@proton.me>
+# SPDX-FileCopyrightText: 2025 Princess Cheeseballs <66055347+Pronana@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 SolsticeOfTheWinter <solsticeofthewinter@gmail.com>
 # SPDX-FileCopyrightText: 2025 deltanedas <39013340+deltanedas@users.noreply.github.com>
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
@@ -102,7 +106,6 @@
     solution: soap
   - type: DeleteOnSolutionEmpty
     solution: soap
-  - type: PaintRemover
   - type: FlavorProfile
     flavors:
       - clean
@@ -110,6 +113,8 @@
     solution: soap
   - type: BadFood
   - type: CleansForensics
+  - type: FloorCleaner # Goobstation
+    cleanDelay: 12
   - type: Residue
     residueAdjective: residue-slippery
     residueColor: residue-green
@@ -170,8 +175,9 @@
   - type: SolutionContainerVisuals
     fillBaseName: syndie-
   - type: Slippery
+    staminaDamage: 50
     slipData:
-      paralyzeTime: 3
+      knockdownTime: 3
       launchForwardsMultiplier: 3
   - type: Item
     heldPrefix: syndie
@@ -198,9 +204,6 @@
     layers:
     - state: syndie-soaplet
   - type: Slippery
-    slipData:
-      paralyzeTime: 1.5 # these things are tiny
-      launchForwardsMultiplier: 1.5
   - type: StepTrigger
     intersectRatio: 0.04
     triggerGroups: # Goobstation
@@ -226,10 +229,12 @@
         - ItemMask
   - type: DeleteOnTrigger
   - type: EmitSoundOnTrigger
+    predicted: true
+    positional: true
     sound:
       path: "/Audio/Effects/Fluids/splat.ogg"
       params:
-        volume: -20
+        volume: -8
 
 - type: entity
   name: soap
@@ -271,8 +276,9 @@
   - type: SolutionContainerVisuals
     fillBaseName: omega-
   - type: Slippery
+    staminaDamage: 50
     slipData:
-      paralyzeTime: 5.0
+      knockdownTime: 5.0
       launchForwardsMultiplier: 3.0
   - type: Item
     heldPrefix: omega
@@ -302,6 +308,7 @@
     sprite: Objects/Specific/Janitorial/soap.rsi
     storedRotation: -90
   - type: CleansForensics
+  - type: FloorCleaner # Goobstation
   - type: Residue
     residueAdjective: residue-slippery
     residueColor: residue-grey

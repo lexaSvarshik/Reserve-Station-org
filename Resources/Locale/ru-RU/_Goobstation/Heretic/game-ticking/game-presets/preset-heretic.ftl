@@ -26,14 +26,18 @@ heretic-ghoul-greeting =
 heretic-ghoul-greeting-noname =
     Вы были призваны в этот мир Жуткими силами.
     Выполняйте приказы своих хозяев, несмотря ни на что.
+
 ghostrole-ghoul-name = Упырь
 ghostrole-prophet-name = Сырой пророк
 ghostrole-stalker-name = Сталкер
-ghostrole-ghoul-desc = Помогать своему призывателю в достижении вознесения.
+ghostrole-fire-shark-name = Палящая акула
 ghostrole-rustwalker-name = Ржавый ходок
-ghostrole-prophet-desc = Помочь своему призывателю в достижении вознесения. Подключать других верующих к Связи Мансуса.
-ghostrole-stalker-desc = Помочь своему призывателю в достижении вознесения. Охотьтесь на экипаж станции.
+ghostrole-stargazer-name = Звездный наблюдатель
+ghostrole-ghoul-desc = Помогите своему призывателю в достижении вознесения.
+ghostrole-prophet-desc = Помогите своему призывателю в достижении вознесения. Подключать других верующих к Связи Мансуса.
+ghostrole-stalker-desc = Помогите своему призывателю в достижении вознесения. Охотьтесь на экипаж станции.
 ghostrole-ghoul-rules = Вы являетесь [color=red][bold]командным антагонистом[/bold][/color] с тем, кто вызвал вас и других жутких существ.
+ghostrole-stargazer-desc = Помогите своему призывателю привнести хаос.
 ghostrole-rustwalker-desc = Помогите своему призывателю достичь вознесения. Распространите ржавчину повсюду.
 
 # Спи спокойно, Мансур.

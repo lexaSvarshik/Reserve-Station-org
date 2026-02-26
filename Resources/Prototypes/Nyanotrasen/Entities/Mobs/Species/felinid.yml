@@ -35,7 +35,7 @@
       fix1:
         shape:
           !type:PhysShapeCircle
-          radius: 0.28
+          radius: 0.35
         density: 140
         restitution: 0.0
         mask:
@@ -63,7 +63,7 @@
 #    naturalImmunities:
 #    - OwOnavirus
   - type: Speech
-    speechSounds: Alto
+    # speechSounds: Alto Reserve edit
   - type: LanguageKnowledge # Einstein Engines - Languages
     speaks:
     - TauCetiBasic
@@ -77,6 +77,7 @@
         Blunt: 1
   - type: Stamina
     critThreshold: 75 # Goobstation - Siouxcide, felinids take 3 disabler shots to down
+    animationThreshold: 40 # Goob edit
   - type: TypingIndicator
     proto: felinid
   - type: PseudoItem
@@ -91,7 +92,7 @@
       Male: MaleFelinid
       Female: FemaleFelinid
       Unsexed: MaleFelinid
-  #- type: OwOAccent this is just like that book by jorjorwell... 1984
+  - type: OwOAccent # this is just like that book by jorjorwell... 1984 # that's why we're here - Reserve
   - type: Felinid
   - type: NoShoesSilentFootsteps
   - type: Tag

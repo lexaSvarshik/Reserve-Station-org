@@ -25,3 +25,6 @@ ent-HereticBladeRust = ржавый клинок
 ent-HereticBladeVoid = пустотный клинок
     .suffix = Пустота
     .desc = { ent-HereticBladeBase.desc }
+ent-HereticBladeCosmos = клинок космоса
+    .suffix = Космос
+    .desc = Частичка небесного резонанса, сформированная в клинок, сотканный из звезд. Радужный изгнанник, прокладывающий сияющие тропы, отчаянно стремящийся к объединению.

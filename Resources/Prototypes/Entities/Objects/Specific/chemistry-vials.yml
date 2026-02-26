@@ -130,6 +130,7 @@
     solution: beaker
   - type: ExaminableSolution
     solution: beaker
+    exactVolume: true
   - type: DrawableSolution
     solution: beaker
   - type: SolutionTransfer
@@ -229,6 +230,7 @@
     solution: beaker
   - type: ExaminableSolution
     solution: beaker
+    exactVolume: true
   - type: DrawableSolution
     solution: beaker
   - type: SolutionTransfer
@@ -279,7 +281,7 @@
   - type: SolutionContainerManager
     solutions:
       beaker:
-        maxVol: 5
+        maxVol: 30 # Goobstation
         reagents:
           - ReagentId: Radium
             Quantity: 5
@@ -294,7 +296,7 @@
   - type: SolutionContainerManager
     solutions:
       beaker:
-        maxVol: 5
+        maxVol: 30 # Goobstation
         reagents:
           - ReagentId: Chlorine
             Quantity: 5
@@ -309,7 +311,7 @@
   - type: SolutionContainerManager
     solutions:
       beaker:
-        maxVol: 10
+        maxVol: 30 # Goobstation
         reagents:
           - ReagentId: Plasma
-            Quantity: 10
+            Quantity: 30 # Goobstation

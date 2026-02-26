@@ -120,15 +120,19 @@
 // SPDX-FileCopyrightText: 2024 voidnull000 <18663194+voidnull000@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 BeBright <98597725+be1bright@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 BeBright <98597725+bebr3ght@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 Ciarán Walsh <github@ciaranwal.sh>
 // SPDX-FileCopyrightText: 2025 GoobBot <uristmchands@proton.me>
 // SPDX-FileCopyrightText: 2025 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
 // SPDX-FileCopyrightText: 2025 Piras314 <p1r4s@proton.me>
 // SPDX-FileCopyrightText: 2025 Rane <60792108+Elijahrane@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 ReserveBot <211949879+ReserveBot@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 SX-7 <sn1.test.preria.2002@gmail.com>
+// SPDX-FileCopyrightText: 2025 Svarshik <96281939+lexaSvarshik@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 bedroomvampire <leannetoni@proton.me>
 // SPDX-FileCopyrightText: 2025 chromiumboy <50505512+chromiumboy@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 eoineoineoin <helloworld@eoinrul.es>
+// SPDX-FileCopyrightText: 2025 nazrin <tikufaev@outlook.com>
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -310,6 +314,7 @@ namespace Content.Client.Stylesheets
 
         //Background
         public const string StyleClassBackgroundBaseDark = "PanelBackgroundBaseDark";
+        public const string StyleClassBackgroundBaseLight = "PanelBackgroundBaseLight"; // Goob Station
 
         //Buttons
         public const string StyleClassCrossButtonRed = "CrossButtonRed";
@@ -322,6 +327,60 @@ namespace Content.Client.Stylesheets
         public const string StyleClassPinButtonPinned = "pinButtonPinned";
         public const string StyleClassPinButtonUnpinned = "pinButtonUnpinned";
 
+        // Reserve-Start
+        // Department button colors
+        private static readonly Dictionary<string, Color> DepartmentColors = new()
+        {
+            { "CentralCommand", Color.FromHex("#0c344d") },
+            { "Command", Color.FromHex("#334E6D") },
+            { "Security", Color.FromHex("#DE3A3A") },
+            { "Medical", Color.FromHex("#52B4E9") },
+            { "Engineering", Color.FromHex("#EFB341") },
+            { "Cargo", Color.FromHex("#A46106") },
+            { "Science", Color.FromHex("#D381C9") },
+            { "Silicon", Color.FromHex("#D381C9") },
+            { "Civilian", Color.FromHex("#40A166") },
+            { "Justice", Color.FromHex("#8E3D3D") },
+            { "Specific", Color.FromHex("#969696") },
+            { "Antagonist", Color.FromHex("#7F4141") }
+        };
+
+        // Legacy public properties for backward compatibility
+        public static readonly Color ButtonColorCentralCommand = DepartmentColors["CentralCommand"];
+        public static readonly Color ButtonColorCommand = DepartmentColors["Command"];
+        public static readonly Color ButtonColorSecurity = DepartmentColors["Security"];
+        public static readonly Color ButtonColorMedical = DepartmentColors["Medical"];
+        public static readonly Color ButtonColorEngineering = DepartmentColors["Engineering"];
+        public static readonly Color ButtonColorCargo = DepartmentColors["Cargo"];
+        public static readonly Color ButtonColorScience = DepartmentColors["Science"];
+        public static readonly Color ButtonColorSilicon = DepartmentColors["Silicon"];
+        public static readonly Color ButtonColorCivilian = DepartmentColors["Civilian"];
+        public static readonly Color ButtonColorJustice = DepartmentColors["Justice"];
+        public static readonly Color ButtonColorSpecific = DepartmentColors["Specific"];
+        public static readonly Color ButtonColorAntagonist = DepartmentColors["Antagonist"];
+
+        /// <summary>
+        /// Creates style rules for department buttons dynamically to avoid code duplication.
+        /// Each department gets two rules: normal state and normal pseudo-class state.
+        /// </summary>
+        private static List<StyleRule> CreateDepartmentButtonStyles()
+        {
+            var styles = new List<StyleRule>();
+            foreach (var (departmentName, color) in DepartmentColors)
+            {
+                var className = $"ButtonColor{departmentName}Department";
+                
+                // Normal state
+                styles.Add(Element<Button>().Class(className)
+                    .Prop(Control.StylePropertyModulateSelf, color));
+                
+                // Normal pseudo-class state
+                styles.Add(Element<Button>().Class(className).Pseudo(ContainerButton.StylePseudoClassNormal)
+                    .Prop(Control.StylePropertyModulateSelf, color));
+            }
+            return styles;
+        }
+        // Reserve-End
 
         public override Stylesheet Stylesheet { get; }
 
@@ -766,7 +825,7 @@ namespace Content.Client.Stylesheets
             var directionIconQuestionTex = resCache.GetTexture("/Textures/Interface/VerbIcons/information.svg.192dpi.png");
             var directionIconHereTex = resCache.GetTexture("/Textures/Interface/VerbIcons/dot.svg.192dpi.png");
 
-            Stylesheet = new Stylesheet(BaseRules.Concat(new[]
+            var rules = BaseRules.Concat(new[]
             {
                 Element().Class("monospace")
                     .Prop("font", notoSansMono),
@@ -1753,6 +1812,10 @@ namespace Content.Client.Stylesheets
                     .Prop("panel", new StyleBoxTexture(BaseButtonOpenBoth) { Padding = default })
                     .Prop(Control.StylePropertyModulateSelf, Color.FromHex("#1F1F23")),
 
+                Element<PanelContainer>().Class("PanelBackgroundBaseLight") // Goob Station
+                    .Prop("panel", new StyleBoxTexture(BaseButtonOpenBoth) { Padding = default })
+                    .Prop(Control.StylePropertyModulateSelf, Color.FromHex("#2d2d39")),
+
                 Element<PanelContainer>().Class("PanelBackgroundLight")
                     .Prop("panel", new StyleBoxTexture(BaseButtonOpenBoth) { Padding = default })
                     .Prop(Control.StylePropertyModulateSelf, Color.FromHex("#2F2F3B")),
@@ -2060,7 +2123,13 @@ namespace Content.Client.Stylesheets
                 Element<PanelContainer>()
                     .Class(StyleClassInset)
                     .Prop(PanelContainer.StylePropertyPanel, insetBack),
-            }).ToList());
+            }).ToList();
+
+            // Reserve-Start - Add department button styles
+            rules.AddRange(CreateDepartmentButtonStyles());
+            // Reserve-End
+
+            Stylesheet = new Stylesheet(rules);
         }
     }
 }

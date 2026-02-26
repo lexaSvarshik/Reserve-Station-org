@@ -163,13 +163,21 @@
     canInteract: true
   - type: GhostHearing
   - type: Hands
+    hands:
+      hand_right:
+        location: Right
+      hand_left:
+        location: Left
+    sortedHands:
+    - hand_right
+    - hand_left
   - type: ComplexInteraction
   - type: Puller
     needsHands: false
   - type: CombatMode
   - type: Physics
     ignorePaused: true
-    bodyType: KinematicController #Reserve edit
+    bodyType: Kinematic
   - type: Body
     prototype: Aghost
     thermalVisibility: false # WD EDIT
@@ -244,19 +252,21 @@
     prototypes: [ MobAghostGear ]
   - type: BypassInteractionChecks
   - type: SupermatterImmune # Goobstation
-  # Reserve-Start
-  - type: MovementSpeedModifier
-    baseWalkSpeed: 35
-  # Reserve-End
   - type: Speech # Goobstation
     speechVerb: HolierThanThou
   - type: Eye
-    visMask:
-      - Ghost
+    visMask: # Goob edit
       - Normal
-      - CosmicCultMonument # DeltaV - Cosmic Cult
+      - Ghost
       - Abductor
-      - AGhost # WD EDIT
+      - CosmicCultMonument # DeltaV - Cosmic Cult
+      - EldritchInfluence
+      - EldritchInfluenceSpent
+      - Admin
+  - type: OwnInteractionVerbs
+    allowedVerbs: []
+  - type: ExplosionResistance
+    damageCoefficient: 0
 
 - type: entity
   abstract: true

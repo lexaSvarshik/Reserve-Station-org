@@ -104,10 +104,13 @@
   name: department-Cargo
   description: department-Cargo-description
   color: "#A46106"
+  weight: 30 # Reserve-Edit
+  buttonStyle: ButtonColorCargoDepartment # Reserve-Edit
   roles:
   - CargoTechnician
   - Quartermaster
   - SalvageSpecialist
+  - ShaftMiner # Lavaland Change
 
 - type: department
   id: Civilian
@@ -115,6 +118,7 @@
   description: department-Civilian-description
   color: "#9FED58"
   weight: -10
+  buttonStyle: ButtonColorCivilianDepartment # Reserve-Edit
   roles:
   - Bartender
   - Botanist
@@ -133,12 +137,14 @@
   - Visitor
   - Zookeeper
   - ServiceWorker
+  - PartyMaker # event-restricted, Goobstation
 
 - type: department
   id: CentralCommand
   name: department-CentralCommand
   description: department-CentralCommand-description
   color: "#0c344d"
+  buttonStyle: ButtonColorCentralCommandDepartment # Reserve-Edit
   roles:
   - CentralCommandOfficial
   - CBURN
@@ -167,6 +173,7 @@
   name: department-Command
   description: department-Command-description
   color: "#334E6D"
+  buttonStyle: ButtonColorCommandDepartment # Reserve-Edit
   roles:
   - Captain
   - ChiefEngineer
@@ -188,6 +195,7 @@
   - ERTEngineer
   - DeathSquad
   - HecuOperative
+  - CommandMaid # event-restricted, Goobstation
   primary: false
   weight: 100
 
@@ -196,6 +204,8 @@
   name: department-Engineering
   description: department-Engineering-description
   color: "#EFB341"
+  weight: 40 # Reserve-Edit
+  buttonStyle: ButtonColorEngineeringDepartment # Reserve-Edit
   roles:
   - AtmosphericTechnician
   - ChiefEngineer
@@ -207,6 +217,8 @@
   name: department-Medical
   description: department-Medical-description
   color: "#52B4E9"
+  weight: 50 # Reserve-Edit
+  buttonStyle: ButtonColorMedicalDepartment # Reserve-Edit
   roles:
   - Chemist
   - ChiefMedicalOfficer
@@ -214,6 +226,7 @@
   - MedicalIntern
   - Psychologist
   - Paramedic
+  - Virologist # Gooby goob ba gooby goob ba
 
 - type: department
   id: Security
@@ -221,6 +234,7 @@
   description: department-Security-description
   color: "#DE3A3A"
   weight: 20
+  buttonStyle: ButtonColorSecurityDepartment # Reserve-Edit
   roles:
   - HeadOfSecurity
   - SecurityCadet
@@ -228,22 +242,28 @@
   - Detective
   - Warden
   - Brigmedic # Goob
+  - SecurityClown # event-restricted, Goob
 
 - type: department
   id: Science
   name: department-Science
   description: department-Science-description
   color: "#D381C9"
+  weight: 60 # Reserve-Edit
+  buttonStyle: ButtonColorScienceDepartment # Reserve-Edit
   roles:
   - ResearchDirector
   - Scientist
   - ResearchAssistant
+  - Roboticist #Goob
 
 - type: department
   id: Silicon
   name: department-Silicon
   description: department-Silicon-description
   color: "#D381C9"
+  weight: 60 # Reserve-Edit
+  buttonStyle: ButtonColorSiliconDepartment # Reserve-Edit
   roles:
   - Borg
   - StationAi
@@ -254,7 +274,9 @@
   description: department-Specific-description
   color: "#9FED58"
   weight: 10
+  buttonStyle: ButtonColorSpecificDepartment # Reserve-Edit
   roles:
+  - RadioHost # Goobstation
   - Boxer
   - Reporter
   - Zookeeper
