@@ -36,4 +36,16 @@ public sealed partial class BattleRoyaleRuleComponent : Component
 
     [DataField]
     public TimeSpan PacificationDuration = TimeSpan.FromMinutes(2);
+
+    /// <summary>
+    /// The role prototype ID to assign to all Battle Royale players.
+    /// </summary>
+    [DataField("role")]
+    public string Role = "BattleRoyaleFighter";
+
+    /// <summary>
+    /// The map prototype ID to use for Battle Royale. If null, uses the current map.
+    /// </summary>
+    [DataField("mapPrototype")]
+    public string? MapPrototype;
 }

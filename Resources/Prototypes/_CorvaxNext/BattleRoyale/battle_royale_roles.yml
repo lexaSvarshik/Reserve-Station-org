@@ -3,18 +3,11 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-- type: antag
-  id: BattleRoyaleMember
-  name: "Участник рояля"
-  antagonist: true
-  setPreference: true
-  objective: "Выживи сука"
-
 - type: entity
-  parent: BaseMindRoleAntag
-  id: MindRoleBattleRoyaleMember
-  name: Battle Royale member
+  parent: BaseMindRole
+  id: BattleRoyaleFighter
+  name: Battle Royale Fighter Role
   components:
   - type: MindRole
     roleType: SoloAntagonist
-    antagPrototype: BattleRoyaleMember
+  - type: BattleRoyaleFighterRole

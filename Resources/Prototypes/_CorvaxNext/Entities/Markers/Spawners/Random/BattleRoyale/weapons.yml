@@ -108,7 +108,6 @@
         - id: ShellShotgunImprovised
       - id: MagazineShotgunBeanbag
       - id: PowerCellSmall
-      - id: PKAUpgradeLight
     # Tier 1 - Common (25%)
     - !type:GroupSelector
       weight: 25
@@ -317,7 +316,6 @@
       - id: ShellShotgunImprovised
       - id: ShellShotgun
       - id: PowerCellMedium
-      - id: PKAUpgradeLight
     # Tier 1 - Common (25%)
     - !type:GroupSelector
       weight: 25
@@ -510,7 +508,6 @@
       - id: MagazineBoxLightRifle
       - id: SpeedLoaderLightRifle
       - id: PowerCellMedium
-      - id: PKAUpgradeLight
     # Tier 1 - Common (25%)
     - !type:GroupSelector
       weight: 25
@@ -824,14 +821,12 @@
       - id: KukriKnife
       - id: Claymore
       - id: WeaponCrusher
-      - id: LavalandWeaponKineticHammer
       - id: LavalandWeaponKineticClaws
-      - id: LavalandWeaponKineticSpear
       - id: LavalandWeaponKineticMachete
       - id: ThrowingKnivesKit
       - id: UnholyHalberd
       - id: EldritchBlade
-      - id: HereticBladeBase
+      - id: HereticBladeAsh
       - id: HereticBladeBlade
       - !type:AllSelector
         children:
