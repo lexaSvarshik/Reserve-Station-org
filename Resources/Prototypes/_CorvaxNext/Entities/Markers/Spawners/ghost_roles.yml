@@ -38,23 +38,6 @@
       state: radiation
 
 - type: entity
-  categories: [ HideSpawnMenu, Spawner ]
-  parent: BaseAntagSpawner
-  id: SpawnPointBattleRoyale
-  components:
-  - type: GhostRole
-    name: roles-battle-royale-name
-    description: roles-battle-royale-objective
-    rules: role-information-battle-royale-rules
-    mindRoles: [ MindRoleBattleRoyaleMember ]
-  - type: Sprite
-    sprite: Markers/jobs.rsi
-    layers:
-    - state: green
-    - sprite: Mobs/Species/Terminator/parts.rsi
-      state: skull_icon
-
-- type: entity
   id: SpawnPointMarkerBattleRoyale
   parent: MarkerBase
   name: Battle Royale Spawn
