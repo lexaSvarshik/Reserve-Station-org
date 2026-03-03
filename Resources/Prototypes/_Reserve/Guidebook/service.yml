@@ -60,5 +60,3 @@
   id: ChaplainReserve
   name: guide-entry-chaplain
   text: "/ServerInfo/_Reserve/Guidebook/Service/Chaplain.xml"
-  children:
-  - EnchantingReserve
