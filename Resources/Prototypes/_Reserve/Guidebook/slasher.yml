@@ -1,0 +1,4 @@
+- type: guideEntry
+  id: SlasherReserve
+  name: "Мясник" # why no fucking .ftl chuds
+  text: "/ServerInfo/_Reserve/Guidebook/Antagonist/Slasher.xml"

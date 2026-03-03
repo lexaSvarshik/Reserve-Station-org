@@ -42,7 +42,19 @@
 - /Prototypes/_Goobstation/Guidebook/changeling.yml
 - /Prototypes/_Goobstation/Guidebook/blob.yml
 - /Prototypes/_Goobstation/Guidebook/bingle.yml
+- /Prototypes/_Goobstation/Guidebook/sop.yml
+- /Prototypes/_Goobstation/Guidebook/martial_arts.yml
+- /Prototypes/_Goobstation/Guidebook/wraith.yml
+- /Prototypes/_Goobstation/Guidebook/references.yml
+- /Prototypes/_Goobstation/Guidebook/CorporateAgent.yml
+- /Prototypes/_Goobstation/Guidebook/slasher.yml
+- /Prototypes/_Goobstation/SlaughterDemon/Guidebook/slaughter_demon.yml
+- /Prototypes/_Goobstation/Guidebook/xenos.yml
+- /Prototypes/_Goobstation/Guidebook/RevealingConditions.yml
+- /Prototypes/_Goobstation/Guidebook/science.yml # xenobio
 
-- Prototypes/_DV/CosmicCult/Guidebook/antagonist.yml
-- Prototypes/_DV/Guidebook/species.yml
+- /Prototypes/_DV/CosmicCult/Guidebook/antagonist.yml
+- /Prototypes/_DV/Guidebook/species.yml
+
+- /Prototypes/_EinsteinEngines/Shadowling/Guidebook/antagonist.yml
 # Reserve edit - Reserve guidebook end

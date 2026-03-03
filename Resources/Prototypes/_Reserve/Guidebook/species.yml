@@ -42,6 +42,8 @@
     - ResomiReserve
     - OniReserve
     - TajaranReserve
+    - ChitinidReserve
+    - FeroxiReserve
 
 - type: guideEntry
   id: ArachnidReserve
@@ -135,3 +137,13 @@
   id: OniReserve
   name: species-name-oni
   text: "/ServerInfo/_Reserve/Guidebook/Mobs/Oni.xml"
+
+- type: guideEntry
+  id: ChitinidReserve
+  name: species-name-chitinid
+  text: "/ServerInfo/Guidebook/Mobs/_DV/Chitinid.xml"
+
+- type: guideEntry
+  id: FeroxiReserve
+  name: species-name-feroxi
+  text: "/ServerInfo/Guidebook/Mobs/_DV/Feroxi.xml"
