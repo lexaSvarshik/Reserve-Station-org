@@ -44,6 +44,7 @@
     - TajaranReserve
     - ChitinidReserve
     - FeroxiReserve
+    - PlasmamanReserve
 
 - type: guideEntry
   id: ArachnidReserve
@@ -128,7 +129,7 @@
   text: "/ServerInfo/_Reserve/Guidebook/Mobs/Tajaran.xml"
 
 - type: guideEntry
-  id: Plasmaman
+  id: PlasmamanReserve
   name: species-name-plasmaman
   text: "/ServerInfo/_Reserve/Guidebook/Mobs/Plasmaman.xml"
 
