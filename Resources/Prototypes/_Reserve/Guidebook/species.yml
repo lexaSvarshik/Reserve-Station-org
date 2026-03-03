@@ -127,6 +127,11 @@
   name: species-name-tajaran
   text: "/ServerInfo/_Reserve/Guidebook/Mobs/Tajaran.xml"
 
+- type: guideEntry
+  id: Plasmaman
+  name: species-name-plasmaman
+  text: "/ServerInfo/_Reserve/Guidebook/Mobs/Plasmaman.xml"
+
 #DV
 - type: guideEntry
   id: RodentiaReserve
