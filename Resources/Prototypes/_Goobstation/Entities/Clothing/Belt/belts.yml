@@ -138,7 +138,7 @@
       - ScatteringGrenade
   - type: GuideHelp
     guides:
-    - CorporateJudo
+    - CorporateJudoReserve # Reserve guidebook
 
 - type: entity
   parent: [ ChemBag, BaseSyndicateContraband ]

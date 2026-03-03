@@ -354,7 +354,7 @@
   #  gunProto: DragonsBreathGun
   - type: GuideHelp
     guides:
-    - MinorAntagonists
+    - MinorAntagonistsReserve # Reserve guidebook
 
 - type: entity
   categories: [ HideSpawnMenu ]

@@ -1241,8 +1241,8 @@
       task: RuminantCompound
   - type: GuideHelp
     guides:
-    - Chef
-    - FoodRecipes
+    - ChefReserve # Reserve guidebook
+    - FoodRecipesReserve # Reserve guidebook
 
 - type: entity
   name: crab

@@ -122,8 +122,8 @@
     board: BoozeDispenserMachineCircuitboard
   - type: GuideHelp
     guides:
-    - Bartender
-    - Drinks
+    - BartenderReserve # Reserve guidebook
+    - DrinksReserve # Reserve guidebook
   - type: StealTarget
     stealGroup: BoozeDispenser
 

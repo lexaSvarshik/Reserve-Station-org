@@ -446,8 +446,8 @@
     access: [["Bar"]]
   - type: GuideHelp
     guides:
-    - Bartender
-    - Drinks
+    - BartenderReserve # Reserve guidebook
+    - DrinksReserve # Reserve guidebook
 
 - type: entity
   parent: VendingMachineBooze
@@ -480,8 +480,8 @@
     access: [["SyndicateAgent"]]
   - type: GuideHelp
     guides:
-    - Bartender
-    - Drinks
+    - BartenderReserve # Reserve guidebook
+    - DrinksReserve # Reserve guidebook
 
 - type: entity
   parent: VendingMachine
@@ -1237,7 +1237,7 @@
     autoRot: true
   - type: GuideHelp
     guides:
-    - MedicalDoctor
+    - MedicalDoctorReserve # Reserve guidebook
   - type: Transform
     noRot: false
   - type: Rotatable
@@ -1318,8 +1318,8 @@
     autoRot: true
   - type: GuideHelp
     guides:
-    - Security
-    - Antagonists
+    - SecurityReserve # Reserve guidebook
+    - AntagonistsReserve # Reserve guidebook
   - type: Transform
     noRot: false
   - type: Rotatable
@@ -1707,7 +1707,7 @@
     rotateWhilePulling: true
   - type: GuideHelp
     guides:
-    - Robotics
+    - RoboticsReserve # Reserve guidebook
 
 - type: entity
   parent: VendingMachine
@@ -1886,7 +1886,7 @@
     access: [["Salvage"]]
   - type: GuideHelp
     guides:
-    - Salvage
+    - SalvageReserve # Reserve guidebook
 
 - type: entity
   parent: VendingMachine
@@ -2698,4 +2698,4 @@
     access: [["Medical"]]
   - type: GuideHelp
     guides:
-    - Medical
+    - MedicalReserve # Reserve guidebook
