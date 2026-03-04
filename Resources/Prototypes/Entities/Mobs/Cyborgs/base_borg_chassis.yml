@@ -438,8 +438,8 @@
   - type: Emoting
   - type: GuideHelp
     guides:
-    - Cyborgs
-    - Robotics
+    - CyborgsReserve # Reserve guidebook
+    - RoboticsReserve # Reserve guidebook
   - type: LanguageKnowledge # Einstein Engines - Languages
     speaks:
     - TauCetiBasic
