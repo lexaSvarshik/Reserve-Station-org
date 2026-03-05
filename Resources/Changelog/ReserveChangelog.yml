@@ -369,3 +369,11 @@ Entries:
       message: Апстрим с Goob Station на 04.03
   id: 52
   time: '2026-03-04T17:19:07.0000000+00:00'
+- author: 12rabbits, DuckManZac, Svarshik
+  changes:
+    - type: Add
+      message: >-
+        В лобби добавлен манифест, показывающий роли, которые игроки поставили
+        на высокий приоритет.
+  id: 53
+  time: '2026-03-05T12:45:08.0000000+00:00'
