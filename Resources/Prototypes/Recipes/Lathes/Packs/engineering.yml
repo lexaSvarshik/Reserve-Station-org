@@ -63,6 +63,7 @@
   id: EngineeringBoardsStatic
   recipes:
   - SpaceHeaterMachineCircuitBoard
+  - CondenserMachineCircuitBoard # Goob
 
 ## Dynamic
 
@@ -103,3 +104,4 @@
   - HolopadMachineCircuitboard
   - TeslaCoilCircuitboard
   - RadiationCollectorCircuitboard
+  - ReverseEngineeringMachineCircuitboard #reserve: nyano port

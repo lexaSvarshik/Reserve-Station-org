@@ -45,7 +45,6 @@
       - state: icon_pentagramm
         color: "#f7e19f"
     - type: Spellbook
-    - type: EnchantingTool # Goobstation
     - type: Tag
       tags:
       - Spellbook
@@ -84,7 +83,7 @@
         WizCoin: 10 # prices are balanced around this 10 point maximum and how strong the spells are
     - type: GuideHelp # Goobstation
       guides:
-      - Wizard
+      - WizardReserve # Reserve guidebook
 
 # Used for the Antag Planet
 - type: entity
@@ -120,7 +119,7 @@
     - type: EnchantingTool # Goobstation
     - type: GuideHelp # Goobstation
       guides:
-      - Wizard
+      - WizardReserve # Reserve guidebook
     - type: Tag
       tags:
       - GrimoireGhost

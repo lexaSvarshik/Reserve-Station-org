@@ -201,8 +201,8 @@
     sprite: Objects/Weapons/Melee/kitchen_knife.rsi
   - type: GuideHelp
     guides:
-    - Chef
-    - FoodRecipes
+    - ChefReserve # Reserve guidebook
+    - FoodRecipesReserve # Reserve guidebook
   - type: EmbeddableProjectile # Goobstation
     sound: /Audio/Weapons/star_hit.ogg
     offset: -0.15,0.0
@@ -236,8 +236,8 @@
     sprite: Objects/Weapons/Melee/cleaver.rsi
   - type: GuideHelp
     guides:
-    - Chef
-    - FoodRecipes
+    - ChefReserve # Reserve guidebook
+    - FoodRecipesReserve # Reserve guidebook
   - type: Scalpel # Shitmed
     speed: 0.3
   - type: BoneSaw # Shitmed: Better than tg 25% because its a cleaver its meant to hack off limbs
@@ -280,7 +280,11 @@
   - type: ThrowingAngle
     angle: 225
   - type: ThrowableBlocked # Goobstation
-  - type: AttachmentBayonet # Lavaland Change
+  - type: GunUpgrade # Lavaland Change
+    name: gun-upgrade-bayonet-name
+    examineTextType: gun-upgrade-examine-type-can-use
+    insertedTextType: gun-upgrade-inserted-examine-type-attached
+  - type: GunUpgradeBayonet # Lavaland Change
   - type: Fixtures
     fixtures:
       fix1:
@@ -346,7 +350,7 @@
     attackRate: 1.2
     damage:
       types:
-        Slash: 5
+        Slash: 6 #goob - damage matches shiv
   - type: DamageOtherOnHit
     damage:
       types:

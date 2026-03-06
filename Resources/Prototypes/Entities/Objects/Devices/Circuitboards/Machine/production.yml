@@ -204,6 +204,10 @@
     stackRequirements:
       Manipulator: 4
       Glass: 1
+  - type: ReverseEngineering # reserve: nyano port
+    difficulty: 2
+    recipes:
+    - BiofabricatorMachineCircuitboard
 
 - type: entity
   id: SecurityTechFabCircuitboard
@@ -304,7 +308,11 @@
       Glass: 5
   - type: GuideHelp
     guides:
-    - Robotics
+    - RoboticsReserve # Reserve guidebook
+  - type: ReverseEngineering # reserve: nyano port
+    difficulty: 2
+    recipes:
+    - ExosuitFabricatorMachineCircuitboard
 
 # yes i know this prototype name is long i'm just following conventions
 - type: entity

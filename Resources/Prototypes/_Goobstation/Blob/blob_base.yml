@@ -42,6 +42,7 @@
     - type: Clickable
     - type: Transform
       anchored: true
+    - type: BlockTeleport
     - type: Fixtures
       fixtures:
         fix1:
@@ -53,7 +54,7 @@
           density: 1000
     - type: GuideHelp
       guides:
-      - Blob
+      - BlobReserve # Reserve guidebook
 
 - type: entity
   id: MobObserverBlobController

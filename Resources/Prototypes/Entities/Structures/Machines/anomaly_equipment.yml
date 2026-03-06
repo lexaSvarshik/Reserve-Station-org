@@ -105,7 +105,7 @@
       - !type:ExplodeBehavior
   - type: GuideHelp
     guides:
-    - ScannersAndVessels
+    - ScannersAndVesselsReserve # Reserve guidebook
 
 - type: entity
   id: MachineAnomalyVesselExperimental
@@ -122,7 +122,6 @@
     pointMultiplier: 2
   - type: RadiationSource
     intensity: 0.75
-    slope: 0.1
     enabled: false
   - type: Machine
     board: AnomalyVesselExperimentalCircuitboard
@@ -201,7 +200,7 @@
     powerLoad: 100
   - type: GuideHelp
     guides:
-    - APE
+    - APEReserve # Reserve guidebook
   - type: Gun
     projectileSpeed: 10
     fireRate: 10 #just has to be fast enough to keep up with upgrades
@@ -346,4 +345,4 @@
     access: [["Research"]]
   - type: GuideHelp
     guides:
-    - AnomalousResearch
+    - AnomalousResearchReserve # Reserve guidebook
