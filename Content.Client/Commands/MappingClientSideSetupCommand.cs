@@ -108,6 +108,8 @@ internal sealed class MappingClientSideSetupCommand : LocalizedEntityCommands
         _markerSystem.MarkersVisible = true;
         _lightManager.Enabled = false;
         _subfloorSystem.ShowAll = true;
-        _actionSystem.LoadActionAssignments("/mapping_actions.yml", false);
+        // _actionSystem.LoadActionAssignments("/mapping_actions.yml", false); //Reserve - Wizden mapping editor
+        shell.ExecuteCommand("zoom 1,5"); //Reserve - Wizden mapping editor
+        shell.ExecuteCommand("scene MappingState"); //Reserve - Wizden mapping editor
     }
 }
