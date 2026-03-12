@@ -8,8 +8,11 @@
 
 using Content.Server.Administration.Logs;
 using Content.Server.Chat.Managers;
+using Content.Server.Discord;
 using Content.Shared.Administration.Events;
+using Content.Shared.CCVar;
 using Content.Shared.Database;
+using Robust.Shared.Configuration;
 
 namespace Content.Server.Administration.Systems;
 
@@ -18,6 +21,8 @@ public sealed class AdminInfoSystem : EntitySystem
     [Dependency] private readonly IAdminLogManager _adminLog = default!;
     [Dependency] private readonly IChatManager _chatManager = default!;
     [Dependency] private readonly IPlayerLocator _locator = default!;
+    [Dependency] private readonly IConfigurationManager _cfg = default!; // Reserve edit
+    [Dependency] private readonly DiscordWebhook _discord = default!; // Reserve edit
 
     public override void Initialize()
     {
@@ -42,5 +47,20 @@ public sealed class AdminInfoSystem : EntitySystem
         _adminLog.Add(LogType.AdminMessage, LogImpact.High, $"{name} is attempting to connect with a userid from {main.Username}");
         _chatManager.SendAdminAlert($"{name} is attempting to connect with a userid from {main.Username}");
 
+        // Reserve edit begin
+        var webhookUrl = _cfg.GetCVar(CCVars.DiscordAdminchatWebhook);
+        if (!string.IsNullOrEmpty(webhookUrl))
+        {
+            if (await _discord.GetWebhook(webhookUrl) is not { } webhookData)
+                return;
+
+            var payload = new WebhookPayload
+            {
+                Content = $"{name} is attempting to connect with a userid from {main.Username}",
+            };
+            var identifier = webhookData.ToIdentifier();
+            await _discord.CreateMessage(identifier, payload);
+        }
+        // Reserve edit end
     }
 }

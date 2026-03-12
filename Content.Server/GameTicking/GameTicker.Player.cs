@@ -118,20 +118,18 @@ namespace Content.Server.GameTicking
                         : Loc.GetString("player-join-message", ("name", args.Session.Name)));
 
                     // ADT-Tweak-start: Постит в дис админчата, о заходе новых игроков
-                    if (!string.IsNullOrEmpty(_cfg.GetCVar(CCVars.DiscordAdminchatWebhook)) && firstConnection)
+                    var webhookUrl = _cfg.GetCVar(CCVars.DiscordAdminchatWebhook);
+                    if (!string.IsNullOrEmpty(webhookUrl))
                     {
-                        var webhookUrl = _cfg.GetCVar(CCVars.DiscordAdminchatWebhook);
-
-                        if (webhookUrl == null)
-                            return;
-
                         if (await _discord.GetWebhook(webhookUrl) is not { } webhookData)
                             return;
+
                         var payload = new WebhookPayload
                         {
                             Content = Loc.GetString("player-first-join-message-webhook", ("name", args.Session.Name)) + "\n" +
+                            Loc.GetString("player-first-join-date", ("firstSeenTime", firstSeenTime)) + "\n" + //Reserve edit
                             Loc.GetString("player-first-join-account-date", ("creationDate", creationDate)) + "\n" + //Reserve edit
-                            $"userid: {args.Session.UserId.ToString()}" //Reserve edit
+                            $"userid: {args.Session.UserId}" //Reserve edit
                         };
                         var identifier = webhookData.ToIdentifier();
                         await _discord.CreateMessage(identifier, payload);
