@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: 2026 Ceterai <ceterai@protonmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Orchito start
+- type: entity
+  parent: DrinkGlass
+  id: DrinkOrchitoGlass
+  suffix: orchito
+  components:
+  - type: SolutionContainerManager
+    solutions:
+      drink:
+        maxVol: 30
+        reagents:
+        - ReagentId: Orchito
+          Quantity: 30
+  - type: Icon
+    sprite: _Reserve/Objects/Consumable/Drinks/orchito.rsi
+    state: icon
+# Orchito end
