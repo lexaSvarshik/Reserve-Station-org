@@ -201,6 +201,7 @@
   - type: Tag
     tags:
     - PetWearable
+    - MesonGoggles
     - WhitelistChameleon
 
 - type: entity
@@ -321,8 +322,8 @@
     - WhitelistChameleon
   - type: GuideHelp
     guides:
-    - SecurityReserve # Reserve guidebook
-    - AntagonistsReserve # Reserve guidebook
+    - Security
+    - Antagonists
   - type: IdentityBlocker
     coverage: EYES
   - type: Armor # provide more coverage than default ones. you know, it's a sec one
@@ -448,6 +449,7 @@
       tags:
       - PetWearable
       - WhitelistChameleon
+      - HudChemistry #omu edit
 
 - type: entity
   parent: [ClothingEyesBase, BaseMajorContraband]

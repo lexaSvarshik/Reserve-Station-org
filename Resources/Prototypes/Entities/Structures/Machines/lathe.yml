@@ -685,7 +685,7 @@
       - Ingot
   - type: GuideHelp
     guides:
-    - RoboticsReserve # Reserve guidebook
+    - Robotics
 
 - type: entity
   id: Biofabricator
@@ -899,6 +899,7 @@
     - MedicalBoards
     - Janitor
     - Genetics
+    - MedicalCloning
     # Einstein Engines Packs
     - Translators # Language
     - TranslatorImplanters # Language

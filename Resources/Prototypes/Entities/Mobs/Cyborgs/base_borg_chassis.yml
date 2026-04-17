@@ -438,15 +438,48 @@
   - type: Emoting
   - type: GuideHelp
     guides:
-    - CyborgsReserve # Reserve guidebook
-    - RoboticsReserve # Reserve guidebook
+    - Cyborgs
+    - Robotics
   - type: LanguageKnowledge # Einstein Engines - Languages
     speaks:
     - TauCetiBasic
+    - Canilunzt
+    - Bubblish
+    - Nekomimetic
+    - Draconic
+    - SolCommon
+    - RootSpeak
+    - Moffic
+    - ValyrianStandard
+    - Chittin
+    - SiikMaas
     - RobotTalk
+    - Marish
+    - Elyran
+    - Freespeak
+    - Tradeband
+    - Schechi
+    - NewKinPidgin
     understands:
     - TauCetiBasic
+    - Canilunzt
+    - Bubblish
+    - Nekomimetic
+    - Draconic
+    - SolCommon
+    - RootSpeak
+    - Moffic
+    - ValyrianStandard
+    - Chittin
+    - SiikMaas
     - RobotTalk
+    - Marish
+    - Elyran
+    - Freespeak
+    - Tradeband
+    - Sign
+    - Schechi
+    - NewKinPidgin
   - type: ProtectedFromStepTriggers
   - type: DamageOnInteractProtection
     damageProtection:

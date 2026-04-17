@@ -64,8 +64,6 @@
       # Goobstation - changelings (technically, IPCs cant be a ling, but whatever)
       enum.StoreUiKey.Key:
         type: StoreBoundUserInterface
-      enum.HereticLivingHeartKey.Key: # goob edit - heretics
-        type: LivingHeartMenuBoundUserInterface
       enum.WizardTeleportUiKey.Key: # Goobstation - wizard
         type: WizardTeleportBoundUserInterface
         requireInputValidation: false
@@ -144,7 +142,7 @@
     templateId: ipc
   - type: GuideHelp
     guides:
-    - IPCReserve # Reserve guidebook
+    - IPC
   - type: Silicon
     entityType: enum.SiliconType.Player
     batteryPowered: true
