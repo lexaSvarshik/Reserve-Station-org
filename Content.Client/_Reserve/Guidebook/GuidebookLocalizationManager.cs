@@ -65,6 +65,14 @@ public sealed class GuidebookLocalizationManager
     }
 
     /// <summary>
+    ///     Gets the name of the currently selected culture.
+    /// </summary>
+    public string? GetCurrentCultureName()
+    {
+        return _currentCulture?.Name;
+    }
+
+    /// <summary>
     ///     Sets the fallback culture.
     /// </summary>
     public void SetFallbackCulture(CultureInfo culture)

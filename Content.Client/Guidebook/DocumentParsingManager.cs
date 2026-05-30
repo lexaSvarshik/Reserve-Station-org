@@ -155,7 +155,7 @@ public sealed partial class DocumentParsingManager
     public bool TryAddMarkup(Control control, GuideEntry entry, bool log = true)
     {
         // using var file = _resourceManager.ContentFileReadText(entry.Text); // Reserve localized guidebook begin
-        var path = entry.GetLocalizedTextPath(_localization.GetAvailableCultures().FirstOrDefault());
+        var path = entry.GetLocalizedTextPath(_localization.GetCurrentCultureName());
 
         if (path == ResPath.Empty)
         {
